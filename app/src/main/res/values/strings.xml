@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+/**
+ * Copyright (c) 2008, Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at 
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0 
+ *
+ * Unless required by applicable law or agreed to in writing, software 
+ * distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and 
+ * limitations under the License.
+ */
+-->
+
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+
+    <string name="waudio_app_name">Waudio Music</string>
+    <string name="app_name">Waudio Music</string>
+
+    <!--
+     Main / media select activity
+     -->
+
+    <string name="main_activity_label">Waudio Music</string>
+    <string name="editor_activity_label">Waudio - Audio Editor</string>
+
+    <string name="search_edit_box">Search</string>
+
+    <string name="sdcard_readonly">Sorry, the SD Card is mounted as read-only and Waudio requires it to be writable.</string>
+    <string name="no_sdcard">Sorry, Waudio can\'t run unless you have an SD Card inserted.</string>
+    <string name="sdcard_shared">Sorry, Waudio can\'t run while your handset is mounted as a USB device.</string>
+
+    <string name="button_options">Options</string>
+
+    <!--
+     Edit activity
+     -->
+
+    <!-- Labels next to the start and end time edit boxes -->
+    <string name="start_label">Start:</string>
+    <string name="end_label">End:</string>
+
+    <string name="edit_intent">Edit</string>
+
+    <string name="time_seconds">seconds</string>
+
+    <!-- After you save a notification or ringtone and have more options
+         for what to do with them -->
+    <string name="what_to_do_with_ringtone">Saved!  Make this your default ringtone or assign it to a contact?</string>
+
+    <string name="do_nothing_with_ringtone_button">Close</string>
+
+    <!-- Progress dialog text for loading, recording, or saving... -->
+    <string name="progress_dialog_loading">Loading…</string>
+    <string name="progress_dialog_recording">Recording…</string>
+    <string name="progress_dialog_saving">Saving…</string>
+    <string name="progress_dialog_cancel">Cancel</string>
+    <string name="progress_dialog_stop">Stop</string>
+
+    <!-- Image button descriptions for accessibility -->
+
+    <string name="start_marker">Start marker</string>
+    <string name="end_marker">End marker</string>
+    <string name="rewind">Rewind</string>
+    <string name="play">Play</string>
+    <string name="stop">Stop</string>
+    <string name="ffwd">Fast forward</string>
+    <string name="zoom_in">Zoom In</string>
+    <string name="zoom_out">Zoom Out</string>
+    <string name="save_button">Save</string>
+
+    <!--
+     Menu items
+     -->
+
+    <string name="menu_save">Save</string>
+    <string name="menu_reset">Reset</string>
+    <string name="menu_about">About</string>
+
+    <!--
+     Context menu items
+     -->
+
+    <string name="context_menu_edit">Edit</string>
+    <string name="context_menu_delete">Delete</string>
+    <string name="context_menu_default_ringtone">Set as Default Ringtone</string>
+    <string name="context_menu_contact">Assign to Contact</string>
+    <string name="context_menu_default_notification">Set as Default Notification</string>
+
+    <!--
+     File Save dialog
+     -->
+
+    <string name="file_save_title">Save As:</string>
+    <string name="file_save_button_save">Save</string>
+    <string name="file_save_button_cancel">Cancel</string>
+
+    <string name="ringtone_type_label">Type:</string>
+
+    <string name="type_music">Music</string>
+
+    <string name="ringtone_name_label">Name:</string>
+
+    <string name="artist_name">Waudio</string>
+
+    <!--
+     Delete confirmation dialog
+     -->
+
+    <string name="delete_ringtone">Delete Ringtone</string>
+    <string name="delete_alarm">Delete Alarm</string>
+    <string name="delete_notification">Delete Notification</string>
+    <string name="delete_music">Delete Music</string>
+    <string name="delete_audio">Delete Audio</string>
+
+    <string name="confirm_delete_waudio">Are you sure?</string>
+
+    <string name="delete_ok_button">Delete</string>
+    <string name="delete_cancel_button">Cancel</string>
+
+    <string name="delete_failed">Unable to delete file</string>
+
+    <!--
+     Success and error messages
+     -->
+
+    <string name="alert_title_success">Success</string>
+    <string name="alert_title_failure">Error</string>
+    <string name="alert_ok_button">OK</string>
+    <string name="alert_yes_button">Yes, please!</string>
+    <string name="alert_no_button">No, thanks.</string>
+
+    <string name="default_ringtone_success_message">Changed default ringtone</string>
+    <string name="play_error">Unable to play this media file</string>
+    <string name="no_unique_filename">Unable to find unique filename</string>
+    <string name="record_error">Error recording audio</string>
+    <string name="too_small_error">Can\'t save a file that small, try making it longer.</string>
+    <string name="write_error">Error writing file</string>
+    <string name="read_error">Error reading file</string>
+
+    <string name="no_space_error">Your SD card is full, there is not enough space to save this file.</string>
+
+    <string name="bad_extension_error">Sorry, Waudio is not yet able to edit files of type</string>
+    <string name="no_extension_error">Sorry, Waudio can\'t edit a file if it doesn\'t have an extension like .mp3 or .wav</string>
+
+    <!--
+     Choose Contact Activity
+     -->
+
+    <!--
+     About
+     -->
+
+    <string name="about_title">About Waudio</string>
+    <string name="about_text"><![CDATA[Use Waudio to edit MP3, OGG, WAV, AAC, and AMR audio files and create ringtones, alarms, and notifications from them.\n\nTip: copy audio files to your SD card using a USB cable.\n\nTip: tap anywhere on the waveform to start playing at that position.\n\nTip: while playing, tap the word Start or End to quickly set the start and end markers to the current playback time.\n\nVersion %s\n\nDeveloper: Dominic Mazzoni, Nicolas Faralli\nGraphics: Joseph Wain\nSupport and evangelizing: Eugene Koh\nEnhancements: Dan Klufas\n\nWaudio is free software, distributed under the Apache 2.0 license.  Source code is on github.com/google/Waudio\n]]></string>
+    <string name="lblSelectTrack">Choose a track</string>
+    <string name="message_permissions">We need some permissions to read your audios</string>
+    <string name="list_template_activity_label">Waudio - Styles</string>
+    <string name="preview_activity_label">Waudio - Preview</string>
+    <string name="hastag">#MadeWithWaudio\u0020</string>
+    <string name="update_tracks">Refresh Tracks</string>
+    <string name="menu_qualify">Rate Waudio</string>
+    <string name="urlPlayStore">https://play.google.com/store/apps/details?id=com.ecanaveras.gde.waudio</string>
+    <string name="menu_share">Share Waudio</string>
+    <string name="msgShareApp">Have you tried Waudio? The app that lets you share music in Whatsapp status</string>
+    <string name="msgShareTo">Share Waudio...</string>
+
+    <string name="msgCopyRights">© 2017 ecanaveras.</string>
+    <string name="msgCopyRights2">All rights reserved.</string>
+    <string name="lblNext">NEXT</string>
+    <string name="lblEnd">END</string>
+    <string name="lblStart">START</string>
+    <string name="lblDuration">DURATION</string>
+    <string name="lblContinue">CONTINUE</string>
+    <string name="msgChoose30seg">Select 30 seconds of your song, then touch \'next\'</string>
+    <string name="msgRestart">We must start again!</string>
+    <string name="msgExit">Press again to exit</string>
+    <string name="msgDeniedPermitions">Permissions denied</string>
+    <string name="alert_title_choose_style">Choose another style ...</string>
+    <string name="msgWarningStyle">Want to choose another style? Create a new Waudio with the style you choose!</string>
+    <string name="alert_ok_choose_style">YES, CHOOSE STYLE</string>
+    <string name="msgFinish1">Come back soon, there are many Waudios to create!</string>
+    <string name="msgFinish2">Do not forget to share your Waudios!</string>
+    <string name="msgFinish3">Qualify me on Google Play - Waudio ;)</string>
+    <string name="msgFinish4">Share me with your friends, to make me famous - Waudio ;)</string>
+    <string name="msgFinish5">I am Music, music is life - Waudio ;)</string>
+    <string name="msgFinish6">Everyone loves your statu with Waudio ;)</string>
+    <string name="msgWaudioSuccess">Waudio Success...</string>
+    <string name="msgWaudioNoFound">The  Waudio no found...</string>
+    <string name="msgWaudioCreate">Create one from the style library</string>
+    <string name="msgChooseStyle">CHOOSE A STYLE</string>
+    <string name="msgShareWith">Share Waudio with...</string>
+    <string name="msgDeleteWaudio">Delete :(</string>
+    <string name="msgConfirmDelete">Do you want to delete the Waudio?</string>
+    <string name="msgYesDelete">YES, DELETE</string>
+    <string name="alert_cancel">CANCEL</string>
+    <string name="msgOpenWith">Open Waudio with...</string>
+    <string name="lblShare">SHARE</string>
+    <string name="lblGotoEditor">GO TO EDITOR</string>
+    <string name="lblDelete">ELIMINAR</string>
+    <string name="lblOpenWith">OPEN WITH...</string>
+    <string name="lblNewWaudio">NEW WAUDIO</string>
+    <string name="lblFinish">FINISH</string>
+    <string name="msgStyleChoosed">You already created a Waudio, with this style, you want to see it?</string>
+    <string name="alert_ok_preview">PREVIEW</string>
+
+</resources>

@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "450659217515",
+    "firebase_url": "https://waudio-music.firebaseio.com",
+    "project_id": "waudio-music",
+    "storage_bucket": "waudio-music.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:450659217515:android:e13d1c6edc8512b3",
+        "android_client_info": {
+          "package_name": "com.ecanaveras.gde.waudio"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "450659217515-6jdr85a615la4734kl7hs5ao3rr9bj5a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ecanaveras.gde.waudio",
+            "certificate_hash": "b6f776853566dc74d2cf754c9814b56bc758768a"
+          }
+        },
+        {
+          "client_id": "450659217515-m5jalmb0m7s7ns7c9tg0d3m0dksg3loa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.ecanaveras.gde.waudio",
+            "certificate_hash": "580fb4feff5eb53b30e90409746c15ee6cae9c57"
+          }
+        },
+        {
+          "client_id": "450659217515-gnal3n2ppiu04tc9itlcsdt8n3ucthpn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDwcOz-J0Bz8txQhH20j8bdzrhwx3o3c1Q"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "450659217515-gnal3n2ppiu04tc9itlcsdt8n3ucthpn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

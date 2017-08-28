@@ -1,0 +1,113 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    style="@style/ToolbarBackground"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="@dimen/card_margin"
+        android:elevation="3dp"
+        android:foreground="?android:attr/selectableItemBackground"
+        card_view:cardCornerRadius="@dimen/card_album_radius">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="210dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:id="@+id/thumbnail"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:scaleType="centerCrop" />
+
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_gravity="bottom"
+                        android:orientation="horizontal">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <!--<LinearLayout
+                                style="@style/HorizontalDividerBottom"
+                                android:layout_width="match_parent" />-->
+
+                            <TextView
+                                android:id="@+id/title"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:maxLines="1"
+                                android:paddingLeft="10dp"
+                                android:paddingTop="10dp"
+                                android:shadowColor="@color/colorPrimaryDark"
+                                android:shadowDx="2"
+                                android:shadowDy="2"
+                                android:shadowRadius="3"
+                                android:text="ESTILO"
+                                android:textAllCaps="true"
+                                android:textColor="@color/colorTextPrimary"
+                                android:textSize="22dp" />
+
+                            <TextView
+                                android:id="@+id/category"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:paddingLeft="10dp"
+                                android:shadowColor="@color/colorPrimaryDark"
+                                android:shadowDx="1"
+                                android:shadowDy="1"
+                                android:shadowRadius="3"
+                                android:text="CATEGORIA"
+                                android:textAllCaps="true"
+                                android:textColor="@color/colorTextSecondary"
+                                android:textSize="@dimen/songs_count" />
+
+                        </LinearLayout>
+
+                        <Button
+                            android:id="@+id/btnCrearWaudio"
+                            style="@style/WaudioButton"
+                            android:layout_width="100dp"
+                            android:layout_height="40dp"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_gravity="center"
+                            android:layout_margin="6dp"
+                            android:text="@string/lblContinue"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+
+                </FrameLayout>
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>
