@@ -17,10 +17,9 @@ public class SplashScreen extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent mainIntent = new Intent(SplashScreen.this, ListAudioActivity.class);
+                Intent mainIntent = new Intent(SplashScreen.this, MainActivity.class);
                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
                 startActivity(mainIntent);
-
                 finish();
             }
         }, SPLASH_TIME_OUT);

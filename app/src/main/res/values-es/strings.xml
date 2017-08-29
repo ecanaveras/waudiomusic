@@ -157,4 +157,7 @@
     <string name="lblFinish">FINALIZAR</string>
     <string name="msgStyleChoosed">Ya creaste un Waudio, con este estilo, ¿Quieres verlo?</string>
     <string name="alert_ok_preview">PREVISUALIZAR</string>
+    <string name="nameFragmentTracks">TU MÚSICA</string>
+    <string name="nameFragmentWaudios">TUS WAUDIOS</string>
+    <string name="nameFragmentStyles">TUS ESTILOS</string>
 </resources>
