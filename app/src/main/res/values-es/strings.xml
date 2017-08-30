@@ -72,15 +72,13 @@
     <!--
        Cuadro confirmacion eliminacion
        -->
-    <string name="delete_ringtone">Eliminar tono</string>
-    <string name="delete_alarm">Eliminar alarma</string>
-    <string name="delete_notification">Eliminar notificación</string>
     <string name="delete_music">Eliminar música</string>
     <string name="delete_audio">Eliminar sonido</string>
     <string name="confirm_delete_waudio">¿Seguro?</string>
     <string name="delete_ok_button">Eliminar</string>
     <string name="delete_cancel_button">Cancelar</string>
     <string name="delete_failed">Imposible eliminar archivo</string>
+    <string name="info_deleted_waudio">Waudio eliminado</string>
     <!--
        Mensajes de exito y error
        -->
@@ -157,7 +155,12 @@
     <string name="lblFinish">FINALIZAR</string>
     <string name="msgStyleChoosed">Ya creaste un Waudio, con este estilo, ¿Quieres verlo?</string>
     <string name="alert_ok_preview">PREVISUALIZAR</string>
-    <string name="nameFragmentTracks">TU MÚSICA</string>
-    <string name="nameFragmentWaudios">TUS WAUDIOS</string>
-    <string name="nameFragmentStyles">TUS ESTILOS</string>
+    <string name="nameFragmentTracks">MÚSICA</string>
+    <string name="title_fragment_waudios">WAUDIOS</string>
+    <string name="title_fragment_styles">ESTILOS</string>
+    <string name="msgChooseAudio">Selecciona una pista de audio...</string>
+    <string name="tip_pause_music">Tip: para pausar, presiona \'atrás\'</string>
+
+    <!--Formatos-->
+    <string name="formatDeleteWaudio" formatted="false">¿Quieres eliminar el Waudio: %1$s?</string>
 </resources>

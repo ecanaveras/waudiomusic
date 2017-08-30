@@ -111,11 +111,9 @@
      Delete confirmation dialog
      -->
 
-    <string name="delete_ringtone">Delete Ringtone</string>
-    <string name="delete_alarm">Delete Alarm</string>
-    <string name="delete_notification">Delete Notification</string>
     <string name="delete_music">Delete Music</string>
     <string name="delete_audio">Delete Audio</string>
+    <string name="info_deleted_waudio">Waudio eliminado</string>
 
     <string name="confirm_delete_waudio">Are you sure?</string>
 
@@ -210,8 +208,10 @@
     <string name="title_activity_main">MainActivity</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
-    <string name="nameFragmentTracks">TU MÚSICA</string>
-    <string name="nameFragmentWaudios">TUS WAUDIOS</string>
-    <string name="nameFragmentStyles">TUS ESTILOS</string>
+    <string name="nameFragmentTracks">MUSIC</string>
+    <string name="title_fragment_waudios">WAUDIOS</string>
+    <string name="title_fragment_styles">STYLES</string>
+    <string name="msgChooseAudio">Selecciona una pista de audio...</string>
+    <string name="tip_pause_music">Tip: para pausar, presiona \'atrás\'</string>
 
 </resources>

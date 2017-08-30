@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.ecanaveras.gde.waudio.MainApp;
 import com.ecanaveras.gde.waudio.PreviewActivity;
 import com.ecanaveras.gde.waudio.R;
-import com.ecanaveras.gde.waudio.cardview.Template;
+import com.ecanaveras.gde.waudio.models.Template;
 import com.ecanaveras.gde.waudio.editor.CompareWaudio;
 import com.ecanaveras.gde.waudio.editor.GeneratorWaudio;
 import com.ecanaveras.gde.waudio.listener.ItemClickListener;

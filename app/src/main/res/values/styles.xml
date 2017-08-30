@@ -23,6 +23,11 @@
     </style>
 
     <!--Action BAR-->
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
     <style name="Theme.AppLib.ActionBar.Solid" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
         <!--<item name="background">@drawable/cab_background_top</item>-->
         <item name="titleTextStyle">@style/Theme.AppLib.ActionBar.TitleTextStyle</item>
@@ -79,6 +84,12 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
+    <style name="AppTabLayout" parent="Widget.Design.TabLayout">
+        <item name="tabIndicatorHeight">4dp</item>
+        <item name="tabIndicatorColor">@color/colorTextSecondary</item>
+    </style>
+
+
     <!--Editor-->
     <style name="AudioFileInfoOverlayText">
         <item name="android:paddingLeft">4px</item>
@@ -94,10 +105,6 @@
 
     <style name="ToolbarBackground">
         <item name="android:background">#424256</item>
-    </style>
-
-    <style name="ChooseContactBackground">
-        <item name="android:background">#cc9933</item>
     </style>
 
     <style name="VerticalDividerForList">
@@ -131,11 +138,6 @@
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">1px</item>
         <item name="android:background">#000022</item>
-    </style>
-
-    <style name="AppTheme.NoActionBar">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

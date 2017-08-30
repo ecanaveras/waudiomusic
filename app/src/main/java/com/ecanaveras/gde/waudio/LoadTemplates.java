@@ -1,10 +1,9 @@
 package com.ecanaveras.gde.waudio;
 
-import com.ecanaveras.gde.waudio.cardview.Template;
+import com.ecanaveras.gde.waudio.models.Template;
 import com.ecanaveras.gde.waudio.util.Mp4Filter;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 

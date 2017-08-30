@@ -1,4 +1,6 @@
-package com.ecanaveras.gde.waudio.cardview;
+package com.ecanaveras.gde.waudio.models;
+
+import android.graphics.Bitmap;
 
 /**
  * Created by ecanaveras on 04/08/2017.
@@ -8,9 +10,14 @@ public class Template {
 
     private String name;
     private int thumbnail;
+    private Bitmap img_thumbnail;
     private String category;
     private String pathTemplateMp4;
 
+    public Template(String name, String pathTemplateMp4) {
+        this.name = name;
+        this.pathTemplateMp4 = pathTemplateMp4;
+    }
 
     public Template(String name, String filePathMp4, String category) {
         this.name = name;

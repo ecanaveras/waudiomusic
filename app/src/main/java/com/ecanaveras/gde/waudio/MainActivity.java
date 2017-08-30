@@ -2,9 +2,12 @@ package com.ecanaveras.gde.waudio;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -13,18 +16,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ecanaveras.gde.waudio.fragments.LibStylesFragment;
 import com.ecanaveras.gde.waudio.fragments.LibWaudiosFragment;
-import com.ecanaveras.gde.waudio.fragments.TracksFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TracksFragment tracksFragment;
     private LibWaudiosFragment libWaudiosFragment;
     private LibStylesFragment libStylesFragment;
 
@@ -33,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
     private long back_pressed;
+    private TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,31 +44,56 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         if (savedInstanceState == null) {
-            tracksFragment = new TracksFragment();
             libWaudiosFragment = new LibWaudiosFragment();
             libStylesFragment = new LibStylesFragment();
         }
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //toolbar.setTitleTextAppearance(getApplicationContext(), R.style.Theme_AppLib_ActionBar_TitleTextStyle);
         setSupportActionBar(toolbar);
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         setupViewPager(mViewPager);
 
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
+        tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+        changeTabsFont();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent mainIntent = new Intent(MainActivity.this, ListAudioActivity.class);
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+                startActivity(mainIntent);
             }
         });
 
+    }
+
+    private void setupViewPager(ViewPager viewPager) {
+        AdaptadorSecciones adapter = new AdaptadorSecciones(getFragmentManager());
+        //adapter.addFragment(tracksFragment, getString(R.string.nameFragmentTracks));
+        adapter.addFragment(libWaudiosFragment, getString(R.string.title_fragment_waudios));
+        adapter.addFragment(libStylesFragment, getString(R.string.title_fragment_styles));
+        viewPager.setAdapter(adapter);
+    }
+
+    private void changeTabsFont() {
+        ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
+        int tabsCount = vg.getChildCount();
+        for (int j = 0; j < tabsCount; j++) {
+            ViewGroup vgTab = (ViewGroup) vg.getChildAt(j);
+            int tabChildsCount = vgTab.getChildCount();
+            for (int i = 0; i < tabChildsCount; i++) {
+                View tabViewChild = vgTab.getChildAt(i);
+                if (tabViewChild instanceof TextView) {
+                    ((TextView) tabViewChild).setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Dosis-SemiBold.ttf"));
+                }
+            }
+        }
     }
 
 
@@ -77,26 +106,32 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            //case R.id.action_update:
+            //    findMusic(null);
+            //    break;
+            case R.id.action_qualify:
+                Uri uri = Uri.parse("market://details?id=" + this.getApplicationContext().getPackageName());
+                Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+                try {
+                    startActivity(goToMarket);
+                } catch (ActivityNotFoundException e) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.urlPlayStore))));
+                }
+                break;
+            case R.id.action_share:
+                String msg1 = getResources().getString(R.string.msgShareApp);
+                String urlPS = getResources().getString(R.string.urlPlayStore);
+                Intent sendIntent = new Intent();
+                sendIntent.setAction(Intent.ACTION_SEND);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, String.format("%s: %s", msg1, urlPS));
+                sendIntent.setType("text/plain");
+                startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.msgShareTo)));
+                break;
         }
-
-        return super.onOptionsItemSelected(item);
+        return true;
     }
 
-    private void setupViewPager(ViewPager viewPager) {
-        AdaptadorSecciones adapter = new AdaptadorSecciones(getFragmentManager());
-        adapter.addFragment(tracksFragment, getString(R.string.nameFragmentTracks));
-        adapter.addFragment(libWaudiosFragment, getString(R.string.nameFragmentWaudios));
-        adapter.addFragment(libStylesFragment, getString(R.string.nameFragmentStyles));
-        viewPager.setAdapter(adapter);
-    }
 
     @Override
     public void onBackPressed() {

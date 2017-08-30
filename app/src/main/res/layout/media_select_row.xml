@@ -50,7 +50,7 @@
                 android:layout_weight="1"
                 android:maxLines="1"
                 android:textAllCaps="true"
-                android:textColor="@color/colorTextThirdy"
+                android:textColor="@color/colorTextSecondary"
                 android:textSize="12sp" />
 
             <TextView
@@ -70,17 +70,17 @@
             android:layout_width="wrap_content"
             android:layout_height="0dip"
             android:layout_weight="1"
+            android:maxLines="1"
             android:shadowColor="#999999"
             android:shadowDx="1"
             android:shadowDy="1"
             android:shadowRadius="1"
-            android:singleLine="true"
             android:textAllCaps="true"
             android:textSize="16sp" />
 
     </LinearLayout>
 
-    <LinearLayout style="@style/VerticalDividerForList" />
+    <!--<LinearLayout style="@style/VerticalDividerForList" />-->
 
     <!--<ImageView
         android:id="@+id/row_options_button"
