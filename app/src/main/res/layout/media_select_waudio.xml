@@ -4,29 +4,47 @@
     android:layout_height="match_parent"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
+    android:background="@drawable/bkgnd_selected_item"
+    android:descendantFocusability="blocksDescendants"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:gravity="center">
+        android:gravity="center"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp">
 
         <ImageView
             android:id="@+id/thumbnail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:background="@drawable/imageview_rounded"/>
+            android:layout_width="70dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="4dp"
+            android:background="@drawable/imageview_rounded" />
 
-        <TextView
-            android:id="@+id/txtWaudioName"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="filename" />
+            android:orientation="vertical">
 
-        <ImageButton
+            <TextView
+                android:id="@+id/txtWaudioName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/txtDateWaudio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginRight="20dp"
+                android:textColor="@color/colorTextThirdy" />
+
+        </LinearLayout>
+        <!--<ImageButton
             android:id="@+id/btnShare"
             android:layout_width="35dp"
             android:layout_height="35dp"
@@ -38,7 +56,7 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_margin="6dp"
-            android:background="@drawable/ic_delete" />
+            android:background="@drawable/ic_delete" />-->
     </LinearLayout>
 
 </LinearLayout>

@@ -278,7 +278,8 @@ public class GeneratorWaudio implements Serializable {
             fc.close();
             MainApp app = (MainApp) context.getApplicationContext();
             app.addNewWaudio(new CompareWaudio(getTitle().toString(), getPathTemplate(), getOutFileWaudio(), getEndTime()));
-            scanWaudioVideos();
+            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(outFileWaudio)));
+            //scanWaudioVideos();
             Log.i("Waudio", outFileWaudio.getName() + " creado exitosamente");
         } catch (IOException e) {
             e.printStackTrace();

@@ -102,7 +102,7 @@ public class PreviewActivity extends AppCompatActivity {
                 MediaController controller = new MediaController(this);
                 controller.setAnchorView(mediaController);
                 videoView.setMediaController(controller);
-                videoView.setVideoURI(Uri.parse(f.getAbsolutePath()));
+                videoView.setVideoURI(Uri.fromFile(f));
                 videoView.requestFocus();
                 videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                     @Override
@@ -222,12 +222,12 @@ public class PreviewActivity extends AppCompatActivity {
     }
 
     public void onFinish(View view) {
-        int[] idsMsgs = {   R.string.msgFinish1,
-                            R.string.msgFinish2,
-                            R.string.msgFinish3,
-                            R.string.msgFinish4,
-                            R.string.msgFinish5,
-                            R.string.msgFinish6};
+        int[] idsMsgs = {R.string.msgFinish1,
+                R.string.msgFinish2,
+                R.string.msgFinish3,
+                R.string.msgFinish4,
+                R.string.msgFinish5,
+                R.string.msgFinish6};
         Random random = new Random();
         Toast.makeText(this, getResources().getString(idsMsgs[random.nextInt(idsMsgs.length)]), Toast.LENGTH_LONG).show();
         finishAffinity();

@@ -1,10 +1,14 @@
 package com.ecanaveras.gde.waudio.fragments;
 
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.LoaderManager;
+import android.app.Notification;
 import android.content.ContentResolver;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.MergeCursor;
@@ -14,11 +18,18 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
+import android.support.transition.Visibility;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
@@ -49,7 +60,87 @@ public class LibWaudiosFragment extends Fragment implements LoaderManager.Loader
         View view = inflater.inflate(R.layout.fragment_lib_waudios, container, false);
         listWaudios = (ListView) view.findViewById(R.id.listWaudios);
         if (Build.VERSION.SDK_INT >= 21)
-            listWaudios.setNestedScrollingEnabled(true);
+            //listWaudios.setNestedScrollingEnabled(true);
+            listWaudios.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        listWaudios.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            private int nr = 0;
+
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+                if (checked) {
+                    nr++;
+                    mAdapter.setNewSelection(position, checked);
+                } else {
+                    nr--;
+                    mAdapter.removeSelection(position);
+                }
+                if (mode.getMenu() != null) {
+                    if (nr == 1)
+                        mode.getMenu().getItem(0).setVisible(true);
+                    else
+                        mode.getMenu().getItem(0).setVisible(false);
+                }
+                mode.setTitle(nr + " selected");
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                nr = 0;
+                MenuInflater menuInflater = mode.getMenuInflater();
+                menuInflater.inflate(R.menu.menu_waudio_options, menu);
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_share:
+                        mAdapter.shareSelection();
+                        break;
+                    case R.id.action_delete:
+                        new AlertDialog.Builder(getActivity(), R.style.AlertDialogCustom)
+                                .setTitle(getActivity().getResources().getString(R.string.msgDeleteWaudio))
+                                .setMessage(String.format(getActivity().getResources().getString(R.string.formatContextMenuDeleteWaudio), nr))
+                                .setPositiveButton(
+                                        getActivity().getResources().getString(R.string.msgYesDelete),
+                                        new DialogInterface.OnClickListener() {
+                                            public void onClick(DialogInterface dialog,
+                                                                int whichButton) {
+                                                mAdapter.deleteSelection();
+                                            }
+                                        })
+                                .setCancelable(true)
+                                .setNegativeButton(getActivity().getResources().getString(R.string.alert_cancel), null)
+                                .show();
+                        break;
+                }
+                return true;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+                mAdapter.clearSelection();
+            }
+        });
+        listWaudios.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                mAdapter.openWaudio(position);
+            }
+        });
+
+        listWaudios.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                listWaudios.setItemChecked(position, !mAdapter.isPositionChecked(position));
+                return false;
+            }
+        });
         setupListView();
         findWaudios();
         return view;
@@ -75,6 +166,7 @@ public class LibWaudiosFragment extends Fragment implements LoaderManager.Loader
             //mAdapter.fragment = this;
             listWaudios.setAdapter(mAdapter);
             listWaudios.setItemsCanFocus(true);
+            mAdapter.notifyDataSetChanged();
 
         } catch (SecurityException e) {
             // No permission to retrieve audio?
@@ -126,4 +218,5 @@ public class LibWaudiosFragment extends Fragment implements LoaderManager.Loader
     public void onLoaderReset(Loader loader) {
         mAdapter.swapCursor(null);
     }
+
 }

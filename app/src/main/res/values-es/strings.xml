@@ -79,6 +79,7 @@
     <string name="delete_cancel_button">Cancelar</string>
     <string name="delete_failed">Imposible eliminar archivo</string>
     <string name="info_deleted_waudio">Waudio eliminado</string>
+    <string name="info_contextmenu_deleted_waudio">%1$d Waudio(s) eliminado(s)</string>
     <!--
        Mensajes de exito y error
        -->
@@ -163,4 +164,6 @@
 
     <!--Formatos-->
     <string name="formatDeleteWaudio" formatted="false">¿Quieres eliminar el Waudio: %1$s?</string>
+    <string name="formatContextMenuDeleteWaudio" formatted="false">¿Eliminar %1$d Waudio(s) seleccionado(s)?</string>
+    <string name="title_activity_waudio_fullscreen">Previsualizando Waudio</string>
 </resources>
