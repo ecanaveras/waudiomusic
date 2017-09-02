@@ -3,6 +3,7 @@
     <color name="colorPrimary">#606081</color>
     <color name="colorPrimaryDark">#3f3f50</color>
     <color name="colorAccent">#8080a7</color>
+    <color name="colorBgCard">#2c2c3d</color>
     <color name="colorBg">#424256</color>
     <color name="viewBg">#f1f5f8</color>
     <color name="album_title">#4c4c4c</color>

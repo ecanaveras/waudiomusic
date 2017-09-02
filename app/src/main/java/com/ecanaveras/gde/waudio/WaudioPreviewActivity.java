@@ -15,6 +15,8 @@ import java.io.File;
 
 public class WaudioPreviewActivity extends AppCompatActivity implements AudioManager.OnAudioFocusChangeListener {
 
+    public static String PATH_WAUDIO = "path_waudio";
+
     private File wFile;
     private VideoView videoView;
     private AudioManager audioManager;
@@ -32,7 +34,7 @@ public class WaudioPreviewActivity extends AppCompatActivity implements AudioMan
 
         Intent intent = getIntent();
         if (intent != null) {
-            wFile = new File(intent.getStringExtra("path_waudio"));
+            wFile = new File(intent.getStringExtra(PATH_WAUDIO));
             setupWaudioVideo(wFile);
         }
     }

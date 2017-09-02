@@ -18,6 +18,8 @@ import org.mp4parser.muxer.Movie;
 import org.mp4parser.muxer.Track;
 import org.mp4parser.muxer.builder.DefaultMp4Builder;
 import org.mp4parser.muxer.container.mp4.MovieCreator;
+import org.mp4parser.muxer.tracks.AppendTrack;
+import org.mp4parser.muxer.tracks.ClippedTrack;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,6 +29,9 @@ import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.nio.channels.FileChannel;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by ecanaveras on 04/08/2017.
@@ -259,19 +264,22 @@ public class GeneratorWaudio implements Serializable {
             Movie movie = MovieCreator.build(videoInFile);
 
             //Audio
+            long audioDuration = 0;
             for (Track audio : listAudio.getTracks()) {
                 if (audio.getHandler().equals("soun")) {
                     movie.addTrack(audio);
-                    System.out.println("AUDIO:" + audio.getHandler() + " Duracion:" + (audio.getDuration() / audio.getTrackMetaData().getTimescale()) + " Scale:" + audio.getTrackMetaData().getTimescale());
+                    audioDuration = (audio.getDuration() / audio.getTrackMetaData().getTimescale());
+                    System.out.println("AUDIO:" + audio.getHandler() + " Duracion:" + audioDuration + " Scale:" + audio.getTrackMetaData().getTimescale());
                 }
             }
 
-            //TODO Cortar el Mp4 si el audio es menor que 30seg
+            if (audioDuration < 30)
+                movie = getShorTracks(movie, 0, audioDuration + 1);
 
             Container mp4File = new DefaultMp4Builder().build(movie);
             File pathDir = getSDPathToFile(PATH_MEDIA, PATH_VIDEOS);
             pathDir.mkdirs();
-            String nameWaudio = ("WAUDIO-" + (title.length() < 30 ? title : title.subSequence(0, 30)).toString().toUpperCase());
+            String nameWaudio = ((title.length() < 30 ? title : title.subSequence(0, 30)).toString().toUpperCase());
             outFileWaudio = getSDPathToFile(PATH_MEDIA + PATH_VIDEOS, getUniqueFileName(pathDir.getAbsolutePath(), nameWaudio, ".mp4", true));
             FileChannel fc = new FileOutputStream(outFileWaudio).getChannel();
             mp4File.writeContainer(fc);
@@ -363,8 +371,105 @@ public class GeneratorWaudio implements Serializable {
         return path;
     }
 
+
+    /**
+     * Cortar Video
+     *
+     * @param movie
+     * @param startTime
+     * @param endTime
+     * @return
+     * @throws IOException
+     */
+    private static Movie getShorTracks(Movie movie, double startTime, double endTime) throws IOException {
+
+        List<Track> tracks = movie.getTracks();
+        movie.setTracks(new LinkedList<Track>());
+        // remove all tracks we will create new tracks from the old
+
+        System.out.println("startTime:" + startTime + " endTime:" + endTime);
+
+        boolean timeCorrected = false;
+
+        // Here we try to find a track that has sync samples. Since we can only start decoding
+        // at such a sample we SHOULD make sure that the start of the new fragment is exactly
+        // such a frame
+        for (Track track : tracks) {
+            if (track.getSyncSamples() != null && track.getSyncSamples().length > 0) {
+                System.out.println("Video, Duracion real:" + track.getDuration() / track.getTrackMetaData().getTimescale());
+                if (timeCorrected) {
+                    // This exception here could be a false positive in case we have multiple tracks
+                    // with sync samples at exactly the same positions. E.g. a single movie containing
+                    // multiple qualities of the same video (Microsoft Smooth Streaming file)
+
+                    throw new RuntimeException("The startTime has already been corrected by another track with SyncSample. Not Supported.");
+                }
+                //startTime = correctTimeToSyncSample(track, startTime, false);
+                //endTime = correctTimeToSyncSample(track, endTime, true);
+                System.out.println("TImES: start=" + startTime + " end=" + endTime);
+                timeCorrected = true;
+            }
+        }
+
+        for (Track track : tracks) {
+            long currentSample = 0;
+            double currentTime = 0;
+            double lastTime = -1;
+            long startSample1 = -1;
+            long endSample1 = -1;
+
+            for (int i = 0; i < track.getSampleDurations().length; i++) {
+                long delta = track.getSampleDurations()[i];
+
+
+                if (currentTime > lastTime && currentTime <= startTime) {
+                    // current sample is still before the new starttime
+                    startSample1 = currentSample;
+                }
+                if (currentTime > lastTime && currentTime <= endTime) {
+                    // current sample is after the new start time and still before the new endtime
+                    endSample1 = currentSample;
+                }
+                lastTime = currentTime;
+                currentTime += (double) delta / (double) track.getTrackMetaData().getTimescale();
+                currentSample++;
+            }
+            movie.addTrack(new AppendTrack(new ClippedTrack(track, startSample1, endSample1)));//, new ClippedTrack(track, startSample2, endSample2)));
+        }
+        return movie;
+    }
+
+    private static double correctTimeToSyncSample(Track track, double cutHere, boolean next) {
+        double[] timeOfSyncSamples = new double[track.getSyncSamples().length];
+        long currentSample = 0;
+        double currentTime = 0;
+        for (int i = 0; i < track.getSampleDurations().length; i++) {
+            long delta = track.getSampleDurations()[i];
+
+            if (Arrays.binarySearch(track.getSyncSamples(), currentSample + 1) >= 0) {
+                // samples always start with 1 but we start with zero therefore +1
+                timeOfSyncSamples[Arrays.binarySearch(track.getSyncSamples(), currentSample + 1)] = currentTime;
+            }
+            currentTime += (double) delta / (double) track.getTrackMetaData().getTimescale();
+            currentSample++;
+
+        }
+        double previous = 0;
+        for (double timeOfSyncSample : timeOfSyncSamples) {
+            if (timeOfSyncSample > cutHere) {
+                if (next) {
+                    return timeOfSyncSample;
+                } else {
+                    return previous;
+                }
+            }
+            previous = timeOfSyncSample;
+        }
+        return timeOfSyncSamples[timeOfSyncSamples.length - 1];
+    }
+
     private void scanWaudioVideos() {
-        String pathWaudioVideos = "file://" + Environment.getExternalStorageState() + PATH_MEDIA + PATH_VIDEOS;
+        String pathWaudioVideos = "file://" + Environment.getExternalStorageState() + MainApp.PATH_VIDEOS;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
             File f = new File(pathWaudioVideos);//"file://" + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES));

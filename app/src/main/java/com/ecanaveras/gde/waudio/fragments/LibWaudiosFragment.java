@@ -33,6 +33,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 
+import com.ecanaveras.gde.waudio.MainApp;
 import com.ecanaveras.gde.waudio.R;
 import com.ecanaveras.gde.waudio.SplashScreen;
 import com.ecanaveras.gde.waudio.adapters.TemplateListAdapter;
@@ -49,7 +50,6 @@ import java.util.List;
 
 public class LibWaudiosFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private static final String PATH_VIDEOS = "/Waudio/Media/Waudio Videos/";
     private static final int EXTERNAL_CURSOR_ID = 1;
 
     private ListView listWaudios;
@@ -58,10 +58,13 @@ public class LibWaudiosFragment extends Fragment implements LoaderManager.Loader
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_lib_waudios, container, false);
+        setHasOptionsMenu(true); //Para acceder al menu de la activity
+
+
         listWaudios = (ListView) view.findViewById(R.id.listWaudios);
         if (Build.VERSION.SDK_INT >= 21)
-            //listWaudios.setNestedScrollingEnabled(true);
-            listWaudios.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+            listWaudios.setNestedScrollingEnabled(true);
+        listWaudios.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         listWaudios.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
             private int nr = 0;
 
@@ -191,6 +194,7 @@ public class LibWaudiosFragment extends Fragment implements LoaderManager.Loader
             MediaStore.Video.Media.DATA,
             MediaStore.Video.Media.TITLE,
             MediaStore.Video.Media.DISPLAY_NAME,
+            MediaStore.Video.Media.DATE_MODIFIED,
             "\"" + MediaStore.Video.Media.EXTERNAL_CONTENT_URI + "\""
     };
 
@@ -202,9 +206,9 @@ public class LibWaudiosFragment extends Fragment implements LoaderManager.Loader
         StringBuffer selection = new StringBuffer(MediaStore.Video.Media.DATA + " LIKE '%.mp4'");
         selection.append("  AND _DATA LIKE ? ");
         selection.append("  AND _DATA NOT LIKE ? ");
-        selectionArgs.add("%" + Environment.getExternalStorageDirectory().getPath() + PATH_VIDEOS + "%");
+        selectionArgs.add("%" + Environment.getExternalStorageDirectory().getPath() + MainApp.PATH_VIDEOS + "%");
         selectionArgs.add("%espeak-data/scratch%");
-        return new CursorLoader(getActivity(), baseUri, proj, selection.toString(), selectionArgs.toArray(new String[selectionArgs.size()]), MediaStore.Video.Media.DEFAULT_SORT_ORDER);
+        return new CursorLoader(getActivity(), baseUri, proj, selection.toString(), selectionArgs.toArray(new String[selectionArgs.size()]), MediaStore.Video.Media.DATE_MODIFIED + " DESC");
     }
 
     @Override
@@ -219,4 +223,22 @@ public class LibWaudiosFragment extends Fragment implements LoaderManager.Loader
         mAdapter.swapCursor(null);
     }
 
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_orderby:
+                Snackbar.make(getView(), "Order by clicked", Snackbar.LENGTH_SHORT).show();
+                break;
+            default:
+                break;
+        }
+
+        return false;
+    }
 }

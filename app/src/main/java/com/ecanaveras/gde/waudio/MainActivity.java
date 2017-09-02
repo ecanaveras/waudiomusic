@@ -13,6 +13,7 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private long back_pressed;
     private TabLayout tabLayout;
+    private Menu mainMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,12 +76,36 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        AdaptadorSecciones adapter = new AdaptadorSecciones(getFragmentManager());
+        final AdaptadorSecciones adapter = new AdaptadorSecciones(getFragmentManager());
         //adapter.addFragment(tracksFragment, getString(R.string.nameFragmentTracks));
         adapter.addFragment(libWaudiosFragment, getString(R.string.title_fragment_waudios));
         adapter.addFragment(libStylesFragment, getString(R.string.title_fragment_styles));
         viewPager.setAdapter(adapter);
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                if (mainMenu != null) {
+                    if (adapter.getItem(position) instanceof LibWaudiosFragment) {
+                        mainMenu.getItem(0).setVisible(true);
+                    } else {
+                        mainMenu.getItem(0).setVisible(false);
+                    }
+                }
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
+
     }
+
 
     private void changeTabsFont() {
         ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
@@ -94,6 +120,14 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        mainMenu = menu;
+        getMenuInflater().inflate(R.menu.menu_main, mainMenu);
+        return true;
     }
 
     @Override

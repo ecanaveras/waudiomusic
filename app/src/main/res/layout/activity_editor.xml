@@ -21,6 +21,8 @@
     style="@style/ToolbarBackground"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
 
     <TextView
@@ -273,7 +275,7 @@
             android:layout_marginRight="20dp"
             android:gravity="center">
 
-            <!--<ImageButton
+            <ImageButton
                 android:id="@+id/back30"
                 style="@android:style/MediaButton"
                 android:layout_width="64dip"
@@ -282,7 +284,7 @@
                 android:layout_marginTop="6dip"
                 android:layout_weight="1"
                 android:contentDescription="@string/rewind"
-                android:src="@android:drawable/ic_media_previous" />-->
+                android:src="@drawable/ic_replay_30" />
 
             <ImageButton
                 android:id="@+id/rew"
@@ -293,7 +295,7 @@
                 android:layout_marginTop="6dip"
                 android:layout_weight="1"
                 android:contentDescription="@string/rewind"
-                android:src="@android:drawable/ic_media_previous" />
+                android:src="@drawable/ic_skip_previous" />
 
             <ImageButton
                 android:id="@+id/play"
@@ -304,7 +306,7 @@
                 android:layout_marginTop="6dip"
                 android:layout_weight="1"
                 android:contentDescription="@string/play"
-                android:src="@android:drawable/ic_media_play" />
+                android:src="@drawable/ic_play_arrow" />
 
             <ImageButton
                 android:id="@+id/ffwd"
@@ -312,13 +314,12 @@
                 android:layout_width="64dip"
                 android:layout_height="52dip"
                 android:layout_marginBottom="6dip"
-                android:layout_marginRight="5dip"
                 android:layout_marginTop="6dip"
                 android:layout_weight="1"
                 android:contentDescription="@string/ffwd"
-                android:src="@android:drawable/ic_media_next" />
+                android:src="@drawable/ic_skip_next" />
 
-            <!--<ImageButton
+            <ImageButton
                 android:id="@+id/next30"
                 style="@android:style/MediaButton"
                 android:layout_width="64dip"
@@ -327,7 +328,7 @@
                 android:layout_marginTop="6dip"
                 android:layout_weight="1"
                 android:contentDescription="@string/rewind"
-                android:src="@android:drawable/ic_media_previous" />-->
+                android:src="@drawable/ic_forward_30" />
 
         </LinearLayout>
 

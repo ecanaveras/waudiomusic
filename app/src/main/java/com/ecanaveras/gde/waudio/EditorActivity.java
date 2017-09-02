@@ -36,6 +36,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
@@ -140,7 +141,6 @@ public class EditorActivity extends AppCompatActivity
     private TextView lblTitleAudio;
 
     private boolean max30s = true;
-
 
     //
     // Public methods and protected overrides
@@ -1015,10 +1015,10 @@ public class EditorActivity extends AppCompatActivity
 
     private void enableDisableButtons() {
         if (mIsPlaying) {
-            mPlayButton.setImageResource(android.R.drawable.ic_media_pause);
+            mPlayButton.setImageResource(R.drawable.ic_pause);
             mPlayButton.setContentDescription(getResources().getText(R.string.stop));
         } else {
-            mPlayButton.setImageResource(android.R.drawable.ic_media_play);
+            mPlayButton.setImageResource(R.drawable.ic_play_arrow);
             mPlayButton.setContentDescription(getResources().getText(R.string.play));
         }
     }

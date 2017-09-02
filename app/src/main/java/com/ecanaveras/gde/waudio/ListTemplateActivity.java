@@ -49,54 +49,19 @@ public class ListTemplateActivity extends AppCompatActivity {
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(1, dpTopz(10), true));
+        recyclerView.addItemDecoration(new GridSpacingItemDecoration(1, dpTopz(8), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(templatesAdapter);
 
         mFirebaseAnalytics.setUserProperty("open_list_template", String.valueOf(true));
-
-        final float[] historicX = {Float.NaN};
-        final float[] historicY = {Float.NaN};
-        final int DELTA = 50;
-        //enum Direction {LEFT, RIGHT;}
-        /*recyclerView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent event) {
-                switch (event.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
-                        historicX[0] = event.getX();
-                        historicY[0] = event.getY();
-                        break;
-
-                    case MotionEvent.ACTION_UP:
-                        if (event.getX() - historicX[0] < -DELTA) {
-                            //FunctionDeleteRowWhenSlidingLeft();
-                            return true;
-                        } else if (event.getX() - historicX[0] > DELTA) {
-                            //FunctionDeleteRowWhenSlidingRight();
-
-                            //System.out.println("POSITION RECICYER" + recyclerView.getChildAdapterPosition(view));
-                            return true;
-                        }
-                        break;
-
-                    default:
-                        return false;
-                }
-                return false;
-            }
-
-        });*/
-
     }
 
     /**
      * Templates para crear Waudios
      */
     private void prepareTemplates() {
-        LoadTemplates templates = new LoadTemplates(".mp4", getExternalFilesDir("").getAbsolutePath());
+        LoadTemplates templates = new LoadTemplates(".mp4", getExternalFilesDir(null).getAbsolutePath());
         templatesAdapter = new TemplatesAdapter(this, templates.getTemplateList(), generatorWaudio);
-
         templatesAdapter.notifyDataSetChanged();
     }
 

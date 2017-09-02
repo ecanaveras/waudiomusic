@@ -31,6 +31,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -180,10 +181,10 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
                 };
 
                 new AlertDialog.Builder(this, R.style.AlertDialogCustom)
-                        .setTitle("Permisos para Waudio")
+                        .setTitle(getResources().getString(R.string.alert_title_permitions))
                         .setMessage(Html.fromHtml(getString(R.string.message_permissions)))
-                        .setPositiveButton("Continuar", onClickListener)
-                        .setNegativeButton("Cancelar", onClickListener)
+                        .setPositiveButton(getResources().getString(R.string.alert_continue), onClickListener)
+                        .setNegativeButton(getResources().getString(R.string.alert_cancel), onClickListener)
                         .show();
             } else {
                 requestPermissions();
@@ -466,6 +467,13 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
 
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mediaPlayer.isPlaying())
+            mediaPlayer.pause();
+        else
+            super.onBackPressed();
+    }
 
     @Override
     public void onAudioFocusChange(int focusChange) {
@@ -481,18 +489,6 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
                 break;
         }
         */
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (back_pressed + 2000 > System.currentTimeMillis())
-            super.onBackPressed();
-        else if (mediaPlayer.isPlaying())
-            mediaPlayer.pause();
-        else
-            Toast.makeText(this, getResources().getString(R.string.msgExit), Toast.LENGTH_SHORT).show();
-
-        back_pressed = System.currentTimeMillis();
     }
 
 }

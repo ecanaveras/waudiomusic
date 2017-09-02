@@ -1,7 +1,10 @@
 package com.ecanaveras.gde.waudio;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -25,6 +28,8 @@ import java.util.List;
  */
 
 public class MainApp extends Application {
+
+    public static final String PATH_VIDEOS = "/Waudio/Media/Waudio Videos/";
 
     private GeneratorWaudio generatorWaudio;
     private List<CompareWaudio> compareWaudios = new ArrayList<CompareWaudio>();
@@ -145,6 +150,34 @@ public class MainApp extends Application {
             }
         }
         return false;
+    }
+
+    /**
+     * @return Application's version code from the {@code PackageManager}.
+     */
+    public static int getAppVersionCode(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionCode;
+        } catch (PackageManager.NameNotFoundException e) {
+            // should never happen
+            throw new RuntimeException("Could not get package name: " + e);
+        }
+    }
+
+    /**
+     * @return Application's version code from the {@code PackageManager}.
+     */
+    public static String getAppVersionName(Context context) {
+        try {
+            PackageInfo packageInfo = context.getPackageManager()
+                    .getPackageInfo(context.getPackageName(), 0);
+            return packageInfo.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            // should never happen
+            throw new RuntimeException("Could not get package name: " + e);
+        }
     }
 
     public CompareWaudio getCompareWaudioTmp() {

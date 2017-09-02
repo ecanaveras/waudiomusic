@@ -66,7 +66,7 @@
             android:hardwareAccelerated="true"
             android:label="@string/editor_activity_label"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize|stateHidden">
             <intent-filter android:label="@string/edit_intent">
                 <action android:name="android.intent.action.EDIT" />
 
@@ -78,13 +78,14 @@
             android:label="@string/list_template_activity_label"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".PreviewActivity"
+            android:name=".WaudioFinalizedActivity"
             android:label="@string/preview_activity_label"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".WaudioPreviewActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:configChanges="orientation|screenSize"></activity>
+        <activity
+            android:name=".WaudioPreviewActivity"
+            android:configChanges="orientation|screenSize"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
 
         <service android:name=".firebase.MyFirebaseMessagingService">
             <intent-filter>

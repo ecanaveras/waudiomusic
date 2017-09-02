@@ -61,4 +61,12 @@ public class Template {
     public void setPathTemplateMp4(String pathTemplateMp4) {
         this.pathTemplateMp4 = pathTemplateMp4;
     }
+
+    public Bitmap getImg_thumbnail() {
+        return img_thumbnail;
+    }
+
+    public void setImg_thumbnail(Bitmap img_thumbnail) {
+        this.img_thumbnail = img_thumbnail;
+    }
 }

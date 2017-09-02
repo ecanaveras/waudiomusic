@@ -1,6 +1,7 @@
 package com.ecanaveras.gde.waudio;
 
 import com.ecanaveras.gde.waudio.models.Template;
+import com.ecanaveras.gde.waudio.task.FindVideoThumbnail;
 import com.ecanaveras.gde.waudio.util.Mp4Filter;
 
 import java.io.File;
@@ -49,6 +50,7 @@ public class LoadTemplates {
                 boolean category = name.split("_").length > 1;
                 String path = dir.getAbsolutePath() + "/" + name;
                 template = new Template(name.split("_")[0], path, category ? name.split("_")[1].replace(".mp4", "") : "General");
+                new FindVideoThumbnail(template).execute();
                 templateList.add(template);
                 /*if (name.contains("_")) {
                     System.out.println("Name:" + name.split("_")[0] + " Category:" + name.split("_")[1].replace(".mp4", "") + " filename:" + name + " path:" + dir.getAbsolutePath() + "\\" + name);

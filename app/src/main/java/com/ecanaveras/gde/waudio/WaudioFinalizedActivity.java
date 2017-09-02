@@ -20,7 +20,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import java.io.File;
 import java.util.Random;
 
-public class PreviewActivity extends AppCompatActivity {
+public class WaudioFinalizedActivity extends AppCompatActivity {
 
     private FirebaseAnalytics mFirebaseAnalytics;
 
@@ -42,16 +42,16 @@ public class PreviewActivity extends AppCompatActivity {
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
-        setContentView(R.layout.activity_preview);
+        setContentView(R.layout.activity_waudio_finalized);
 
         app = (MainApp) getApplicationContext();
         intent = getIntent();
         handler = new Handler();
 
         videoView = (VideoView) findViewById(R.id.videoView);
-        lblTitleWaudio = (TextView) findViewById(R.id.lblTitleWaudio);
-        lblPathWaudio = (TextView) findViewById(R.id.lblPathWaudio);
-        mediaController = (MediaController) findViewById(R.id.mediaController);
+        //lblTitleWaudio = (TextView) findViewById(R.id.lblTitleWaudio);
+        //lblPathWaudio = (TextView) findViewById(R.id.lblPathWaudio);
+        //mediaController = (MediaController) findViewById(R.id.mediaController);
 
         lp = (LinearLayout) findViewById(R.id.layoutPreview);
         lw = (LinearLayout) findViewById(R.id.layoutWait);
@@ -98,9 +98,10 @@ public class PreviewActivity extends AppCompatActivity {
         if (pathWaudio != null) {
             File f = new File(pathWaudio);
             if (f.exists()) {
+                getSupportActionBar().setTitle("Waudio - " + f.getName().toLowerCase());
                 Toast.makeText(this, getResources().getString(R.string.msgWaudioSuccess), Toast.LENGTH_SHORT).show();
                 MediaController controller = new MediaController(this);
-                controller.setAnchorView(mediaController);
+                controller.setAnchorView(videoView);
                 videoView.setMediaController(controller);
                 videoView.setVideoURI(Uri.fromFile(f));
                 videoView.requestFocus();
@@ -113,9 +114,9 @@ public class PreviewActivity extends AppCompatActivity {
                         }
                     }
                 });
+                //lblPathWaudio.setText(f.getPath().replace(f.getName(), ""));
+                //lblTitleWaudio.setText(f.getName());
 
-                lblPathWaudio.setText(f.getPath().replace(f.getName(), ""));
-                lblTitleWaudio.setText(f.getName());
             } else {
                 lp.setVisibility(View.GONE);
                 showBackAlert(getResources().getString(R.string.msgWaudioNoFound), getResources().getString(R.string.msgWaudioCreate), getResources().getString(R.string.msgChooseStyle), false);
@@ -179,6 +180,7 @@ public class PreviewActivity extends AppCompatActivity {
                                         //app.getGeneratorWaudio().setOutFileWaudio(null);
                                         videoView.setVideoURI(null);
                                         wDel.delete();
+                                        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(wDel)));
                                         finish();
 
                                     }

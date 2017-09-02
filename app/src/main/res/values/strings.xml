@@ -220,5 +220,9 @@
     <string name="formatContextMenuDeleteWaudio">Delete %1$d Waudio(s) selected?</string>
     <string name="formatDeleteWaudio">Do you want to delete the Waudio: %1$s?</string>
     <string name="info_contextmenu_deleted_waudio">%1$d Waudio(s) deleted</string>
+    <string name="msgProblemGenerateWaudio">Out, algo salió mal, vuelve al editor e intenta de nuevo!</string>
+    <string name="lblCategory">CATEGORIA</string>
+    <string name="alert_title_permitions">Permisos para Waudio</string>
+    <string name="alert_continue">CONTINUE</string>
 
 </resources>

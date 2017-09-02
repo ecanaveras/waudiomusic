@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
+import android.util.TimeUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +19,11 @@ import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
+import com.ecanaveras.gde.waudio.MainActivity;
 import com.ecanaveras.gde.waudio.R;
 import com.ecanaveras.gde.waudio.WaudioPreviewActivity;
 import com.ecanaveras.gde.waudio.models.Template;
+import com.ecanaveras.gde.waudio.task.FindVideoThumbnail;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -37,9 +40,7 @@ public class TemplateListAdapter extends SimpleCursorAdapter {
     private Context mContext;
     private LayoutInflater inflater;
     private int mLayout;
-    private File wDel;
     private HashMap<Integer, Boolean> mSelection = new HashMap<Integer, Boolean>();
-    private View view;
 
     //View
     private static class ViewHolder {
@@ -60,8 +61,7 @@ public class TemplateListAdapter extends SimpleCursorAdapter {
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
-        view = inflater.inflate(mLayout, parent, false);
-        return view;
+        return inflater.inflate(mLayout, parent, false);
     }
 
     @Override
@@ -80,34 +80,29 @@ public class TemplateListAdapter extends SimpleCursorAdapter {
             view.setTag(viewHolder);
         }
 
-        int columnId = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
-        int columnName = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.TITLE);
-        int columnPath = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        int columnId = cursor.getColumnIndexOrThrow(MediaStore.Video.Media._ID);
+        int columnName = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE);
+        int columnPath = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+        int columnDate = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_MODIFIED);
 
         Template waudio = new Template(cursor.getString(columnName), cursor.getString(columnPath));
-        File wFile = new File(waudio.getPathTemplateMp4());
-
+        new FindVideoThumbnail(waudio).execute();
         viewHolder.waudioName.setText(waudio.getName().replace("WAUDIO-", ""));
-        Bitmap bitmap = getThumbnail(mContext.getContentResolver(), cursor.getInt(columnId));
-        viewHolder.thumbnail.setImageBitmap(bitmap);
-        viewHolder.date.setText(new SimpleDateFormat("dd/MM/yyyy").format(new Date(wFile.lastModified())));
-        /*viewHolder.btnShare.setOnClickListener(this);
-        viewHolder.btnDelete.setOnClickListener(this);
-        viewHolder.btnShare.setTag(cursor.getPosition());
-        viewHolder.btnDelete.setTag(cursor.getPosition());*/
-
+        //Bitmap bitmap = getThumbnail(mContext.getContentResolver(), cursor.getInt(columnId));
+        viewHolder.thumbnail.setImageBitmap(waudio.getImg_thumbnail());
+        viewHolder.date.setText(new SimpleDateFormat("dd/MM/yyyy").format(new Date(cursor.getLong(columnDate) * 1000L)));
     }
 
     public void openWaudio(int position) {
         Cursor cursor = getCursor();
         cursor.moveToPosition(position);
-        int columnName = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.TITLE);
-        int columnPath = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-        Template waudio = new Template(cursor.getString(columnName), cursor.getString(columnPath));
+        int columnPath = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+        String pathWaudio = cursor.getString(columnPath);
         Intent goIntent = new Intent(mContext, WaudioPreviewActivity.class);
-        goIntent.putExtra("path_waudio", waudio.getPathTemplateMp4());
+        goIntent.putExtra(WaudioPreviewActivity.PATH_WAUDIO, pathWaudio);
         mContext.startActivity(goIntent);
     }
+
 
     public void shareSelection() {
         if (mSelection.size() > 1) {
@@ -117,8 +112,8 @@ public class TemplateListAdapter extends SimpleCursorAdapter {
         Template waudio = null;
         for (Integer position : mSelection.keySet()) {
             cursor.moveToPosition(position);
-            int columnName = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.TITLE);
-            int columnPath = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            int columnName = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE);
+            int columnPath = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
             waudio = new Template(cursor.getString(columnName), cursor.getString(columnPath));
         }
         if (waudio != null) {
@@ -140,8 +135,8 @@ public class TemplateListAdapter extends SimpleCursorAdapter {
         Cursor cursor = getCursor();
         for (Integer position : mSelection.keySet()) {
             cursor.moveToPosition(position);
-            int columnName = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.TITLE);
-            int columnPath = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            int columnName = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE);
+            int columnPath = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
             Template waudio = new Template(cursor.getString(columnName), cursor.getString(columnPath));
             File wDel = new File(waudio.getPathTemplateMp4());
             if (wDel.exists()) {
@@ -149,7 +144,7 @@ public class TemplateListAdapter extends SimpleCursorAdapter {
             }
             mContext.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(wDel)));
         }
-        Snackbar.make(view, String.format(mContext.getResources().getString(R.string.info_contextmenu_deleted_waudio), mSelection.size()), Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(((MainActivity) mContext).findViewById(android.R.id.content), String.format(mContext.getResources().getString(R.string.info_contextmenu_deleted_waudio), mSelection.size()), Snackbar.LENGTH_SHORT).show();
         clearSelection();
     }
 

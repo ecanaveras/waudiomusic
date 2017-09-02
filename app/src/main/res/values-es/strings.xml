@@ -166,4 +166,8 @@
     <string name="formatDeleteWaudio" formatted="false">¿Quieres eliminar el Waudio: %1$s?</string>
     <string name="formatContextMenuDeleteWaudio" formatted="false">¿Eliminar %1$d Waudio(s) seleccionado(s)?</string>
     <string name="title_activity_waudio_fullscreen">Previsualizando Waudio</string>
+    <string name="msgProblemGenerateWaudio">Out, algo salió mal, vuelve al editor e intenta de nuevo!</string>
+    <string name="lblCategory">CATEGORIA</string>
+    <string name="alert_title_permitions">Permisos para Waudio</string>
+    <string name="alert_continue">CONTINUE</string>
 </resources>
