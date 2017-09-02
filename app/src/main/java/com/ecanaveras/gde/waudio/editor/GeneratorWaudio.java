@@ -274,7 +274,7 @@ public class GeneratorWaudio implements Serializable {
             }
 
             if (audioDuration < 30)
-                movie = getShorTracks(movie, 0, audioDuration + 1);
+                movie = getShorTracks(movie, 0, audioDuration + 0.8);
 
             Container mp4File = new DefaultMp4Builder().build(movie);
             File pathDir = getSDPathToFile(PATH_MEDIA, PATH_VIDEOS);
@@ -286,8 +286,8 @@ public class GeneratorWaudio implements Serializable {
             fc.close();
             MainApp app = (MainApp) context.getApplicationContext();
             app.addNewWaudio(new CompareWaudio(getTitle().toString(), getPathTemplate(), getOutFileWaudio(), getEndTime()));
-            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(outFileWaudio)));
-            //scanWaudioVideos();
+            //context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(outFileWaudio)));
+            scanWaudioVideos(outFileWaudio);
             Log.i("Waudio", outFileWaudio.getName() + " creado exitosamente");
         } catch (IOException e) {
             e.printStackTrace();
@@ -439,45 +439,15 @@ public class GeneratorWaudio implements Serializable {
         return movie;
     }
 
-    private static double correctTimeToSyncSample(Track track, double cutHere, boolean next) {
-        double[] timeOfSyncSamples = new double[track.getSyncSamples().length];
-        long currentSample = 0;
-        double currentTime = 0;
-        for (int i = 0; i < track.getSampleDurations().length; i++) {
-            long delta = track.getSampleDurations()[i];
 
-            if (Arrays.binarySearch(track.getSyncSamples(), currentSample + 1) >= 0) {
-                // samples always start with 1 but we start with zero therefore +1
-                timeOfSyncSamples[Arrays.binarySearch(track.getSyncSamples(), currentSample + 1)] = currentTime;
-            }
-            currentTime += (double) delta / (double) track.getTrackMetaData().getTimescale();
-            currentSample++;
-
-        }
-        double previous = 0;
-        for (double timeOfSyncSample : timeOfSyncSamples) {
-            if (timeOfSyncSample > cutHere) {
-                if (next) {
-                    return timeOfSyncSample;
-                } else {
-                    return previous;
-                }
-            }
-            previous = timeOfSyncSample;
-        }
-        return timeOfSyncSamples[timeOfSyncSamples.length - 1];
-    }
-
-    private void scanWaudioVideos() {
-        String pathWaudioVideos = "file://" + Environment.getExternalStorageState() + MainApp.PATH_VIDEOS;
+    private void scanWaudioVideos(File outFileWaudio) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-            File f = new File(pathWaudioVideos);//"file://" + Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES));
-            Uri contentUri = Uri.fromFile(f);
+            Uri contentUri = Uri.fromFile(outFileWaudio);
             mediaScanIntent.setData(contentUri);
             context.sendBroadcast(mediaScanIntent);
         } else {
-            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse(pathWaudioVideos)));
+            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.fromFile(outFileWaudio)));
         }
     }
 

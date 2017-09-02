@@ -25,7 +25,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Generando Waudio..." />
+                android:text="@string/msgWaudioGenerating" />
 
         </LinearLayout>
 
@@ -50,40 +50,10 @@
                 android:gravity="center"
                 android:orientation="vertical">
 
-                <!--<TextView
-                    android:id="@+id/lblTitleWaudio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:maxLines="1"
-                    android:textAllCaps="true"
-                    android:textColor="@color/colorTextThirdy" />-->
-
                 <VideoView
                     android:id="@+id/videoView"
                     android:layout_width="match_parent"
-                    android:layout_height="240dp"
-                    android:scaleType="fitXY" />
-
-                <!--<MediaController
-                    android:id="@+id/mediaController"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"></MediaController>-->
-
-                <!--<TextView
-                    android:id="@+id/lblPathWaudio"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:maxLines="1"
-                    android:textAllCaps="true"
-                    android:textColor="@color/colorTextSecondary"
-                    android:textSize="12sp" />-->
-
+                    android:layout_height="match_parent" />
 
             </LinearLayout>
 

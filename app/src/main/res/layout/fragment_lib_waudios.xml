@@ -6,9 +6,49 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <ListView
-        android:id="@+id/listWaudios"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <!--LISTA-->
+        <LinearLayout
+            android:id="@+id/layoutContent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:keepScreenOn="true"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <ListView
+                android:id="@+id/listWaudios"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scrollbars="vertical" />
+
+        </LinearLayout>
+
+        <!--LOADING-->
+        <LinearLayout
+            android:id="@+id/layoutWait"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/msgWaudioLoading" />
+
+        </LinearLayout>
+
+
+    </FrameLayout>
 
 </LinearLayout>

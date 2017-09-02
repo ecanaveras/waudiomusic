@@ -1,19 +1,15 @@
 package com.ecanaveras.gde.waudio.adapters;
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.media.ThumbnailUtils;
-import android.net.Uri;
 import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -25,49 +21,55 @@ import com.ecanaveras.gde.waudio.MainApp;
 import com.ecanaveras.gde.waudio.WaudioFinalizedActivity;
 import com.ecanaveras.gde.waudio.R;
 import com.ecanaveras.gde.waudio.WaudioPreviewActivity;
-import com.ecanaveras.gde.waudio.models.Template;
+import com.ecanaveras.gde.waudio.models.WaudioModel;
 import com.ecanaveras.gde.waudio.editor.CompareWaudio;
 import com.ecanaveras.gde.waudio.editor.GeneratorWaudio;
 import com.ecanaveras.gde.waudio.listener.ItemClickListener;
-import com.ecanaveras.gde.waudio.task.FindVideoThumbnail;
+import com.ecanaveras.gde.waudio.picasso.VideoRequestHandler;
+import com.squareup.picasso.Picasso;
 
-import java.io.File;
 import java.util.List;
 
 /**
  * Created by ecanaveras on 04/08/2017.
  */
 
-public class TemplatesAdapter extends RecyclerView.Adapter<TemplatesAdapter.MyViewHolder> implements ItemClickListener {
+public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecyclerAdapter.MyViewHolder> implements ItemClickListener {
 
     private Context mContext;
-    private List<Template> templateList;
+    private List<WaudioModel> waudioModelList;
     private GeneratorWaudio generatorWaudio;
+    private VideoRequestHandler videoRequestHandler;
+    private Picasso picassoInstance;
 
-    public TemplatesAdapter(Context mContext, List<Template> templateList, GeneratorWaudio generatorWaudio) {
-        this.mContext = mContext;
-        this.templateList = templateList;
+    public TemplateRecyclerAdapter(Context context, List<WaudioModel> waudioModelList, GeneratorWaudio generatorWaudio) {
+        this.mContext = context;
+        this.waudioModelList = waudioModelList;
         this.generatorWaudio = generatorWaudio;
+        videoRequestHandler = new VideoRequestHandler(VideoRequestHandler.MINI_KIND);
+        picassoInstance = new Picasso.Builder(context.getApplicationContext())
+                .addRequestHandler(videoRequestHandler)
+                .build();
     }
 
     @Override
     public void onItemClick(View view, int position) {
-        Template template = templateList.get(position);
+        WaudioModel waudioModel = waudioModelList.get(position);
         if (generatorWaudio != null) {
             Intent intent = null;
             switch (view.getId()) {
                 case R.id.btnPreview:
                     intent = new Intent(mContext, WaudioPreviewActivity.class);
-                    intent.putExtra(WaudioPreviewActivity.PATH_WAUDIO, template.getPathTemplateMp4());
+                    intent.putExtra(WaudioPreviewActivity.PATH_WAUDIO, waudioModel.getPathMp4());
                     break;
                 default:
                     MainApp app = (MainApp) mContext.getApplicationContext();
-                    CompareWaudio cw = new CompareWaudio(generatorWaudio.getTitle().toString(), template.getPathTemplateMp4(), generatorWaudio.getEndTime());
+                    CompareWaudio cw = new CompareWaudio(generatorWaudio.getTitle().toString(), waudioModel.getPathMp4(), generatorWaudio.getEndTime());
                     if (app.WaudioExist(cw)) {
                         showAlert(app.getCompareWaudioTmp().getPathWaudio().getAbsolutePath());
                     } else {
                         generatorWaudio.setOutFileWaudio(null);
-                        generatorWaudio.generateWaudio(template.getPathTemplateMp4());
+                        generatorWaudio.generateWaudio(waudioModel.getPathMp4());
                         intent = new Intent(mContext, WaudioFinalizedActivity.class);
                     }
                     break;
@@ -75,31 +77,29 @@ public class TemplatesAdapter extends RecyclerView.Adapter<TemplatesAdapter.MyVi
             if (intent != null)
                 mContext.startActivity(intent);
         } else {
-            Log.e(TemplatesAdapter.class.getName(), "GeneratorWaudio is null");
+            Log.e(TemplateRecyclerAdapter.class.getName(), "GeneratorWaudio is null");
             Toast.makeText(mContext, mContext.getResources().getString(R.string.msgProblemGenerateWaudio), Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
-    public TemplatesAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public TemplateRecyclerAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.template_card, parent, false);
         return new MyViewHolder(itemView, this);
     }
 
     @Override
-    public void onBindViewHolder(final TemplatesAdapter.MyViewHolder holder, int position) {
-        Template template = templateList.get(position);
-        holder.name.setText(template.getName());
-        holder.category.setText(template.getCategory());
-        //holder.thumbnail.setVideoPath(template.getPathTemplateMp4());
-        //Bitmap bitmap = ThumbnailUtils.createVideoThumbnail(template.getPathTemplateMp4(), MediaStore.Video.Thumbnails.FULL_SCREEN_KIND);
-        //new FindVideoThumbnail(holder.thumbnail).execute(template);
-        holder.thumbnail.setImageBitmap(template.getImg_thumbnail());
+    public void onBindViewHolder(final TemplateRecyclerAdapter.MyViewHolder holder, int position) {
+        WaudioModel waudioModel = waudioModelList.get(position);
+        holder.name.setText(waudioModel.getName());
+        holder.category.setText(waudioModel.getCategory());
+        //holder.thumbnail.setImageBitmap(waudioModel.getImgThumbnail());
+        picassoInstance.load(VideoRequestHandler.SCHEME_VIDEO + ":" + waudioModel.getPathMp4()).into(holder.thumbnail);
     }
 
     @Override
     public int getItemCount() {
-        return templateList.size();
+        return waudioModelList.size();
     }
 
     public static Bitmap getThumbnail(ContentResolver cr, String path) {
@@ -109,14 +109,14 @@ public class TemplatesAdapter extends RecyclerView.Adapter<TemplatesAdapter.MyVi
             ca.close();
             return MediaStore.Video.Thumbnails.getThumbnail(cr, id, MediaStore.Video.Thumbnails.MINI_KIND, null);
         } else {
-            Log.d(TemplatesAdapter.class.getName(), "Thumbnail no found, path:" + path);
+            Log.d(TemplateRecyclerAdapter.class.getName(), "Thumbnail no found, path:" + path);
         }
         ca.close();
         return null;
     }
 
-    public Template getTemplate(int position) {
-        return templateList.get(position);
+    public WaudioModel getTemplate(int position) {
+        return waudioModelList.get(position);
     }
 
 

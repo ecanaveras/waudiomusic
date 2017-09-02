@@ -53,10 +53,10 @@ public class MainApp extends Application {
     }
 
     private void setupFonts() {
-        FontsOverride.setDefaultFont(this, "DEFAULT", "fonts/Dosis-Light.ttf");
-        FontsOverride.setDefaultFont(this, "MONOSPACE", "fonts/Dosis-Medium.ttf");
-        FontsOverride.setDefaultFont(this, "SERIF", "fonts/Dosis-Regular.ttf");
-        FontsOverride.setDefaultFont(this, "SANS_SERIF", "fonts/Dosis-SemiBold.ttf");
+        FontsOverride.setDefaultFont(this, "SERIF", "fonts/Dosis-Light.ttf");
+        FontsOverride.setDefaultFont(this, "MONOSPACE", "fonts/Dosis-Regular.ttf");
+        FontsOverride.setDefaultFont(this, "SANS_SERIF", "fonts/Dosis-Medium.ttf");
+        FontsOverride.setDefaultFont(this, "DEFAULT_BOLD", "fonts/Dosis-Bold.ttf");
     }
 
     private void copyAssets() {

@@ -170,4 +170,8 @@
     <string name="lblCategory">CATEGORIA</string>
     <string name="alert_title_permitions">Permisos para Waudio</string>
     <string name="alert_continue">CONTINUE</string>
+    <string name="msgWaudioGenerating">Generando Waudio...</string>
+    <string name="msgTemplatesLoading">Cargando tus estilos...</string>
+    <string name="msgTracksLoading">Cargando Música...</string>
+    <string name="msgWaudioLoading">Cargando tus Waudios...</string>
 </resources>

@@ -32,6 +32,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -68,6 +69,8 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
     private Cursor mExternalCursor;
     private boolean runFirst = true, showTips = true; //controla cuando mostrar el texto de seleccionar un audio
     //private boolean mWasGetContentIntent;
+    private boolean mKeyboardStatus = false;
+    private SearchView searchView;
 
     private AdapterView.OnItemClickListener MusicGridListener = new AdapterView.OnItemClickListener() {
 
@@ -149,6 +152,9 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
             if (mediaPlayer.isPlaying())
                 mediaPlayer.pause();
             try {
+                if (isKeyboardActive()) {
+                    dismissKeyboard();
+                }
                 MainApp app = (MainApp) getApplicationContext();
                 app.setFilename(filename);
                 Intent intent = new Intent(Intent.ACTION_EDIT, Uri.parse(filename));
@@ -358,6 +364,33 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
         });
     }
 
+    public void dismissKeyboard() {
+        InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(searchView.getWindowToken(), 0);
+        mKeyboardStatus = false;
+    }
+
+    public void showKeyboard() {
+        InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+        mKeyboardStatus = true;
+    }
+
+    private boolean isKeyboardActive() {
+        return mKeyboardStatus;
+    }
+
+    private void permissionNoGranted() {
+        Toast.makeText(getApplicationContext(), getResources().getString(R.string.msgDeniedPermitions), Toast.LENGTH_SHORT).show();
+        finish();
+    }
+
+    private void requestPermissions() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
+                REQUEST_CODE);
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -374,17 +407,6 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
                 permissionNoGranted();
             }
         }
-    }
-
-    private void permissionNoGranted() {
-        Toast.makeText(getApplicationContext(), getResources().getString(R.string.msgDeniedPermitions), Toast.LENGTH_SHORT).show();
-        finish();
-    }
-
-    private void requestPermissions() {
-        ActivityCompat.requestPermissions(this,
-                new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
-                REQUEST_CODE);
     }
 
     @Override
@@ -410,7 +432,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
 
         // Associate searchable configuration with the SearchView
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView = (SearchView) menu.findItem(R.id.action_search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         if (searchView != null) {
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
