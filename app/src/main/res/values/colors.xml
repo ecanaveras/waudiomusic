@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#606081</color>
-    <color name="colorPrimaryDark">#3f3f50</color>
-    <color name="colorAccent">#8080a7</color>
+    <!--http://paletton.com/#uid=34v0X0kqwtDo6H5pjyJqIoqqkiU-->
+    <color name="colorPrimary">#463c59</color>
+    <color name="colorPrimaryDark">#362e45</color>
+    <color name="colorAccent">#6d5d81</color>
     <color name="colorBgCard">#2c2c3d</color>
     <color name="colorBg">#424256</color>
+    <color name="colorBg2">#392f45</color>
     <color name="viewBg">#f1f5f8</color>
     <color name="album_title">#4c4c4c</color>
     <color name="album">#9d9dba</color>
@@ -12,22 +14,17 @@
     <color name="colorTextPrimary">#FFFFFF</color>
     <color name="colorTextSecondary">#e87f58</color>
     <color name="colorTextThirdy">#9d9dba</color>
+    <color name="colorBgTitleTemplate">#9b11041d</color>
 
     <!--Editor-->
     <color name="waveform_selected">#f57160</color>
     <color name="waveform_unselected">#a31a4b</color>
     <color name="waveform_unselected_bkgnd_overlay">#0a242d</color>
     <color name="selection_border">#0a242d</color>
-    <color name="playback_indicator">#4eba5a</color>
+    <color name="playback_indicator">#58AC1C</color>
     <color name="grid_line">#0a242d</color>
     <color name="timecode">#f1f5f8</color>
     <color name="timecode_shadow">#aa000000</color>
-
-    <color name="type_bkgnd_alarm">#88880000</color>
-    <color name="type_bkgnd_ringtone">#88008888</color>
-    <color name="type_bkgnd_notification">#88666600</color>
-    <color name="type_bkgnd_music">#88000000</color>
-    <color name="type_bkgnd_unsupported">#88cccccc</color>
 
     <color name="black_overlay">#66000000</color>
 </resources>

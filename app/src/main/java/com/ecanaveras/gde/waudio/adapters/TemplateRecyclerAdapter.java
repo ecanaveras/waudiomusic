@@ -41,8 +41,21 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
     private GeneratorWaudio generatorWaudio;
     private VideoRequestHandler videoRequestHandler;
     private Picasso picassoInstance;
+    private int mLayout;
+
+    public TemplateRecyclerAdapter(Context context, int mLayout, List<WaudioModel> waudioModelList) {
+        this.mLayout = mLayout;
+        this.mContext = context;
+        this.waudioModelList = waudioModelList;
+        videoRequestHandler = new VideoRequestHandler(VideoRequestHandler.MINI_KIND);
+        picassoInstance = new Picasso.Builder(context.getApplicationContext())
+                .addRequestHandler(videoRequestHandler)
+                .build();
+    }
+
 
     public TemplateRecyclerAdapter(Context context, List<WaudioModel> waudioModelList, GeneratorWaudio generatorWaudio) {
+        this.mLayout = R.layout.media_template_card;
         this.mContext = context;
         this.waudioModelList = waudioModelList;
         this.generatorWaudio = generatorWaudio;
@@ -55,36 +68,55 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
     @Override
     public void onItemClick(View view, int position) {
         WaudioModel waudioModel = waudioModelList.get(position);
-        if (generatorWaudio != null) {
-            Intent intent = null;
+        Intent intent = null;
+        //Action in Library
+        if (mLayout == R.layout.media_style_card) {
             switch (view.getId()) {
-                case R.id.btnPreview:
+                case R.id.btnDelete:
+                    break;
+                case R.id.btnFavorite:
+                    break;
+                default: //Vista previa
                     intent = new Intent(mContext, WaudioPreviewActivity.class);
                     intent.putExtra(WaudioPreviewActivity.PATH_WAUDIO, waudioModel.getPathMp4());
-                    break;
-                default:
-                    MainApp app = (MainApp) mContext.getApplicationContext();
-                    CompareWaudio cw = new CompareWaudio(generatorWaudio.getTitle().toString(), waudioModel.getPathMp4(), generatorWaudio.getEndTime());
-                    if (app.WaudioExist(cw)) {
-                        showAlert(app.getCompareWaudioTmp().getPathWaudio().getAbsolutePath());
-                    } else {
-                        generatorWaudio.setOutFileWaudio(null);
-                        generatorWaudio.generateWaudio(waudioModel.getPathMp4());
-                        intent = new Intent(mContext, WaudioFinalizedActivity.class);
-                    }
+                    mContext.startActivity(intent);
                     break;
             }
-            if (intent != null)
-                mContext.startActivity(intent);
-        } else {
-            Log.e(TemplateRecyclerAdapter.class.getName(), "GeneratorWaudio is null");
-            Toast.makeText(mContext, mContext.getResources().getString(R.string.msgProblemGenerateWaudio), Toast.LENGTH_SHORT).show();
+
+        }
+        //Action in Waudio Creation
+        if (mLayout == R.layout.media_template_card) {
+            if (generatorWaudio != null) {
+                switch (view.getId()) {
+                    case R.id.btnPreview:
+                        intent = new Intent(mContext, WaudioPreviewActivity.class);
+                        intent.putExtra(WaudioPreviewActivity.PATH_WAUDIO, waudioModel.getPathMp4());
+                        break;
+                    default:
+                        MainApp app = (MainApp) mContext.getApplicationContext();
+                        CompareWaudio cw = new CompareWaudio(generatorWaudio.getTitle().toString(), waudioModel.getPathMp4(), generatorWaudio.getEndTime());
+                        if (app.WaudioExist(cw)) {
+                            showAlert(app.getCompareWaudioTmp().getPathWaudio().getAbsolutePath());
+                        } else {
+                            generatorWaudio.setOutFileWaudio(null);
+                            generatorWaudio.generateWaudio(waudioModel.getPathMp4());
+                            intent = new Intent(mContext, WaudioFinalizedActivity.class);
+                            intent.putExtra(WaudioFinalizedActivity.TEMPLATE_USED, waudioModel.getPathMp4());
+                        }
+                        break;
+                }
+                if (intent != null)
+                    mContext.startActivity(intent);
+            } else {
+                Log.e(TemplateRecyclerAdapter.class.getName(), "GeneratorWaudio is null");
+                Toast.makeText(mContext, mContext.getResources().getString(R.string.msgProblemGenerateWaudio), Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
     @Override
     public TemplateRecyclerAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.template_card, parent, false);
+        View itemView = LayoutInflater.from(parent.getContext()).inflate(mLayout, parent, false);
         return new MyViewHolder(itemView, this);
     }
 
@@ -157,7 +189,8 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
             txtNext = (TextView) itemView.findViewById(R.id.txtNext);
 
             itemView.setOnClickListener(this);
-            btnPreview.setOnClickListener(this);
+            if (btnPreview != null)
+                btnPreview.setOnClickListener(this);
             this.listener = listener;
         }
 

@@ -13,7 +13,6 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -39,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private long back_pressed;
     private TabLayout tabLayout;
     private Menu mainMenu;
+    private AdaptadorSecciones adaptadorSecciones;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         //toolbar.setTitleTextAppearance(getApplicationContext(), R.style.Theme_AppLib_ActionBar_TitleTextStyle);
         setSupportActionBar(toolbar);
 
-        // Set up the ViewPager with the sections adapter.
+        // Set up the ViewPager with the sections adaptadorSecciones.
         mViewPager = (ViewPager) findViewById(R.id.container);
         setupViewPager(mViewPager);
 
@@ -63,12 +64,11 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
         changeTabsFont();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent mainIntent = new Intent(MainActivity.this, ListAudioActivity.class);
-                mainIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
                 startActivity(mainIntent);
             }
         });
@@ -76,36 +76,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupViewPager(ViewPager viewPager) {
-        final AdaptadorSecciones adapter = new AdaptadorSecciones(getFragmentManager());
-        //adapter.addFragment(tracksFragment, getString(R.string.nameFragmentTracks));
-        adapter.addFragment(libWaudiosFragment, getString(R.string.title_fragment_waudios));
-        adapter.addFragment(libStylesFragment, getString(R.string.title_fragment_styles));
-        viewPager.setAdapter(adapter);
-
+        adaptadorSecciones = new AdaptadorSecciones(getFragmentManager());
+        //adaptadorSecciones.addFragment(tracksFragment, getString(R.string.nameFragmentTracks));
+        adaptadorSecciones.addFragment(libWaudiosFragment, getString(R.string.title_fragment_waudios));
+        adaptadorSecciones.addFragment(libStylesFragment, getString(R.string.title_fragment_styles));
+        viewPager.setAdapter(adaptadorSecciones);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                if (mainMenu != null) {
-                    if (adapter.getItem(position) instanceof LibWaudiosFragment) {
-                        mainMenu.getItem(0).setVisible(true);
-                    } else {
-                        mainMenu.getItem(0).setVisible(false);
-                    }
-                }
+
             }
 
             @Override
             public void onPageSelected(int position) {
-
+                if (position != 0) {
+                    fab.setVisibility(View.GONE);
+                } else {
+                    fab.setVisibility(View.VISIBLE);
+                }
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
+
             }
         });
-
     }
-
 
     private void changeTabsFont() {
         ViewGroup vg = (ViewGroup) tabLayout.getChildAt(0);
@@ -125,17 +121,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        mainMenu = menu;
-        getMenuInflater().inflate(R.menu.menu_main, mainMenu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            //case R.id.action_update:
-            //    findMusic(null);
-            //    break;
             case R.id.action_qualify:
                 Uri uri = Uri.parse("market://details?id=" + this.getApplicationContext().getPackageName());
                 Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
@@ -155,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.msgShareTo)));
                 break;
         }
-        return true;
+        return super.onOptionsItemSelected(item);
     }
 
 

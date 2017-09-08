@@ -163,7 +163,7 @@
     <string name="update_tracks">Refresh Tracks</string>
     <string name="menu_qualify">Rate Waudio</string>
     <string name="urlPlayStore">https://play.google.com/store/apps/details?id=com.ecanaveras.gde.waudio</string>
-    <string name="menu_share">Share Waudio</string>
+    <string name="menu_share">Share Waudio Music</string>
     <string name="msgShareApp">Have you tried Waudio? The app that lets you share music in Whatsapp status</string>
     <string name="msgShareTo">Share Waudio...</string>
 
@@ -189,7 +189,7 @@
     <string name="msgFinish6">Everyone loves your statu with Waudio ;)</string>
     <string name="msgWaudioSuccess">Waudio Success...</string>
     <string name="msgWaudioNoFound">The  Waudio no found...</string>
-    <string name="msgWaudioCreate">Create one from the style library</string>
+    <string name="msgWaudioCreate">Create one, choosing a style</string>
     <string name="msgChooseStyle">CHOOSE A STYLE</string>
     <string name="msgShareWith">Share Waudio with...</string>
     <string name="msgDeleteWaudio">Delete :(</string>
@@ -228,5 +228,11 @@
     <string name="msgTemplatesLoading">Cargando tus estilos...</string>
     <string name="msgTracksLoading">Cargando Música...</string>
     <string name="msgWaudioLoading">Cargando tus Waudios...</string>
+    <string name="menu_action_order_by">Ordenar por...</string>
+    <string name="menu_action_goto_store">Waudio Store</string>
+    <string name="formatOrderby">Ordenado por: %1$s</string>
+    <string name="lblOrderbyDate">Fecha de creación</string>
+    <string name="lblOrderbyTitle">Nombre</string>
+    <string name="msgErrorDeleteWaudio">Problemas al eliminar el waudio, intentalo de nuevo</string>
 
 </resources>

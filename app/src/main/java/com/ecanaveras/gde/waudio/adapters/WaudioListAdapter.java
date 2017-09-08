@@ -111,6 +111,7 @@ public class WaudioListAdapter extends SimpleCursorAdapter implements View.OnCli
         String pathWaudio = cursor.getString(columnPath);
         Intent goIntent = new Intent(mContext, WaudioPreviewActivity.class);
         goIntent.putExtra(WaudioPreviewActivity.PATH_WAUDIO, pathWaudio);
+        goIntent.getBooleanExtra(WaudioPreviewActivity.IS_WAUDIO, true);
         mContext.startActivity(goIntent);
     }
 

@@ -7,11 +7,13 @@ import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Loader;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.util.Log;
@@ -40,16 +42,24 @@ import java.util.ArrayList;
 public class LibWaudiosFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int EXTERNAL_CURSOR_ID = 1;
+    private static final String PREF_ORDERBY = "orderby_waudio";
 
     private ListView listWaudios;
     private WaudioListAdapter mAdapter;
     private LinearLayout layoutWait, layoutContent;
     private Cursor data;
+    private String orderBy;
+    private String orderbyDefault = MediaStore.Video.Media.DATE_MODIFIED + " DESC";
+    private String orderbyTitle = MediaStore.Video.Media.TITLE;
+
+    private SharedPreferences preferences;
+    SharedPreferences.Editor editor_pref;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_lib_waudios, container, false);
-        setHasOptionsMenu(true); //Para acceder al menu de la activity
+        preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        editor_pref = preferences.edit();
 
         layoutWait = (LinearLayout) view.findViewById(R.id.layoutWait);
         layoutContent = (LinearLayout) view.findViewById(R.id.layoutContent);
@@ -59,12 +69,15 @@ public class LibWaudiosFragment extends Fragment implements LoaderManager.Loader
             listWaudios.setNestedScrollingEnabled(true);
         }
         setupListView();
-        findWaudios();
+        orderBy = preferences.getString(PREF_ORDERBY, orderbyDefault);
+        findWaudios(orderBy);
         return view;
     }
 
-    public void findWaudios() {
-        getLoaderManager().restartLoader(EXTERNAL_CURSOR_ID, null, this);
+    public void findWaudios(String orderby) {
+        Bundle args = new Bundle();
+        args.putString("orderby", orderby);
+        getLoaderManager().restartLoader(EXTERNAL_CURSOR_ID, args, this);
     }
 
     private static final String[] EXTERNAL_COLUMNS = new String[]{
@@ -88,7 +101,7 @@ public class LibWaudiosFragment extends Fragment implements LoaderManager.Loader
         selection.append("  AND _DATA NOT LIKE ? ");
         selectionArgs.add("%" + Environment.getExternalStorageDirectory().getPath() + MainApp.PATH_VIDEOS + "%");
         selectionArgs.add("%espeak-data/scratch%");
-        return new CursorLoader(getActivity(), baseUri, proj, selection.toString(), selectionArgs.toArray(new String[selectionArgs.size()]), MediaStore.Video.Media.DATE_MODIFIED + " DESC");
+        return new CursorLoader(getActivity(), baseUri, proj, selection.toString(), selectionArgs.toArray(new String[selectionArgs.size()]), args.getString("orderby"));
     }
 
     @Override
@@ -103,6 +116,7 @@ public class LibWaudiosFragment extends Fragment implements LoaderManager.Loader
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_lib_waudios_fragment, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -110,13 +124,27 @@ public class LibWaudiosFragment extends Fragment implements LoaderManager.Loader
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_orderby:
-                Snackbar.make(getView(), "Order by clicked", Snackbar.LENGTH_SHORT).show();
-                break;
-            default:
+                String lblOrder = getResources().getString(R.string.lblOrderbyDate);
+                if (orderBy.equals(orderbyDefault)) {
+                    orderBy = orderbyTitle;
+                    lblOrder = getResources().getString(R.string.lblOrderbyTitle);
+                } else {
+                    orderBy = orderbyDefault;
+                }
+                findWaudios(orderBy);
+                //Guardar la preferencia
+                editor_pref.putString(PREF_ORDERBY, orderBy);
+                Snackbar.make(getView(), String.format(getResources().getString(R.string.formatOrderby), lblOrder), Snackbar.LENGTH_SHORT).show();
                 break;
         }
 
-        return false;
+        return true;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setHasOptionsMenu(isVisible());
     }
 
     private void setupListView() {

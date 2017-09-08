@@ -88,6 +88,9 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
                 if (mediaPlayer != null || mediaPlayer.isPlaying()) {
                     mediaPlayer.reset();
                 }
+                //Request del audio
+                audioManager.requestAudioFocus(ListAudioActivity.this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+
                 mediaPlayer.setDataSource(filename);
                 mediaPlayer.prepare();
                 mediaPlayer.start();
@@ -117,7 +120,6 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
 
         //Maneja el audio en llamadas
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
 
         //Intent intent = getIntent();
         //mWasGetContentIntent = intent.getAction().equals(                Intent.ACTION_GET_CONTENT);
@@ -155,6 +157,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
                 if (isKeyboardActive()) {
                     dismissKeyboard();
                 }
+                audioManager.abandonAudioFocus(ListAudioActivity.this);
                 MainApp app = (MainApp) getApplicationContext();
                 app.setFilename(filename);
                 Intent intent = new Intent(Intent.ACTION_EDIT, Uri.parse(filename));
@@ -423,6 +426,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
         if (mediaPlayer != null) {
             mediaPlayer.release();
         }
+        audioManager.abandonAudioFocus(this);
     }
 
     @Override

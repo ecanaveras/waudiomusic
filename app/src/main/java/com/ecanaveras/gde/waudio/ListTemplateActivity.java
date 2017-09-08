@@ -56,9 +56,10 @@ public class ListTemplateActivity extends AppCompatActivity {
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 1);
         recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.addItemDecoration(new GridSpacingItemDecoration(1, dpTopz(8), true));
+        //recyclerView.addItemDecoration(new GridSpacingItemDecoration(1, dpTopz(0), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(templateRecyclerAdapter);
+        recyclerView.setHasFixedSize(true);
 
         mFirebaseAnalytics.setUserProperty("open_list_template", String.valueOf(true));
     }

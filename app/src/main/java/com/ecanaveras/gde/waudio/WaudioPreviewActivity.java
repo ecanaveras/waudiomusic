@@ -16,7 +16,7 @@ import java.io.File;
 public class WaudioPreviewActivity extends AppCompatActivity implements AudioManager.OnAudioFocusChangeListener {
 
     public static String PATH_WAUDIO = "path_waudio";
-
+    public static String IS_WAUDIO = "is_waudio";
     private File wFile;
     private VideoView videoView;
     private AudioManager audioManager;
@@ -26,13 +26,15 @@ public class WaudioPreviewActivity extends AppCompatActivity implements AudioMan
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waudio_preview);
 
-        //Maneja el audio en llamadas
-        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-
         videoView = (VideoView) findViewById(R.id.videoView);
 
         Intent intent = getIntent();
+        if (intent.getBooleanExtra(IS_WAUDIO, false)) {
+            //Maneja el audio en llamadas
+            audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+            audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        }
+
         if (intent != null) {
             wFile = new File(intent.getStringExtra(PATH_WAUDIO));
             setupWaudioVideo(wFile);
@@ -92,4 +94,10 @@ public class WaudioPreviewActivity extends AppCompatActivity implements AudioMan
         return true;
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (audioManager != null)
+            audioManager.abandonAudioFocus(this);
+    }
 }

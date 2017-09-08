@@ -353,7 +353,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_margin="12dp"
-                android:onClick="onNewSave"
+                android:onClick="onNext"
                 android:text="@string/lblNext" />
         </LinearLayout>
     </LinearLayout>

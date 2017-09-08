@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.ecanaveras.gde.waudio.MainActivity">
+
+    <item
+        android:id="@+id/action_orderby"
+        android:icon="@drawable/ic_action_orderby"
+        android:title="@string/menu_action_order_by"
+        app:showAsAction="always" />
+
+</menu>

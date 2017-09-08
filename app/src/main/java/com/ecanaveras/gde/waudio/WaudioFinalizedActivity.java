@@ -1,8 +1,10 @@
 package com.ecanaveras.gde.waudio;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,13 +17,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.ecanaveras.gde.waudio.editor.CompareWaudio;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.File;
 import java.util.Random;
 
-public class WaudioFinalizedActivity extends AppCompatActivity {
+public class WaudioFinalizedActivity extends AppCompatActivity implements AudioManager.OnAudioFocusChangeListener {
 
+    public static final String TEMPLATE_USED = "template_used";
     private FirebaseAnalytics mFirebaseAnalytics;
 
     private String pathWaudio;
@@ -35,12 +39,19 @@ public class WaudioFinalizedActivity extends AppCompatActivity {
     private Intent intent;
     private boolean goBack;
     private int position = 0;
+    private AudioManager audioManager;
+    private String templateUsed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        //Maneja el audio en llamadas
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+
 
         setContentView(R.layout.activity_waudio_finalized);
 
@@ -84,6 +95,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity {
         }
 
         if (pathWaudio != null) {
+            templateUsed = intent.getStringExtra(TEMPLATE_USED);
             loadWaudio();
             lp.setVisibility(View.VISIBLE);
             lw.setVisibility(View.GONE);
@@ -99,7 +111,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity {
             File f = new File(pathWaudio);
             if (f.exists()) {
                 getSupportActionBar().setTitle("Waudio - " + f.getName().toLowerCase());
-                Toast.makeText(this, getResources().getString(R.string.msgWaudioSuccess), Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, getResources().getString(R.string.msgWaudioSuccess), Toast.LENGTH_SHORT).show();
                 MediaController controller = new MediaController(this);
                 controller.setAnchorView(videoView);
                 videoView.setMediaController(controller);
@@ -108,15 +120,18 @@ public class WaudioFinalizedActivity extends AppCompatActivity {
                 videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                     @Override
                     public void onPrepared(MediaPlayer mediaPlayer) {
-                        videoView.seekTo(1);
-                        if (position == 0) {
-                            //videoView.start();
-                        }
+                        audioManager.requestAudioFocus(WaudioFinalizedActivity.this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+                        videoView.start();
+                    }
+                });
+                videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        audioManager.abandonAudioFocus(WaudioFinalizedActivity.this);
                     }
                 });
                 //lblPathWaudio.setText(f.getPath().replace(f.getName(), ""));
                 //lblTitleWaudio.setText(f.getName());
-
             } else {
                 lp.setVisibility(View.GONE);
                 showBackAlert(getResources().getString(R.string.msgWaudioNoFound), getResources().getString(R.string.msgWaudioCreate), getResources().getString(R.string.msgChooseStyle), false);
@@ -164,9 +179,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity {
     }
 
     public void onDelete(View view) {
-        //TODO Quitar de la lista de MainApp.CompareWaudio los waudios que se eliminan
         if (pathWaudio != null) {
-
             final File wDel = new File(pathWaudio);
             if (wDel.exists()) {
                 new AlertDialog.Builder(this, R.style.AlertDialogCustom)
@@ -178,10 +191,16 @@ public class WaudioFinalizedActivity extends AppCompatActivity {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
                                         //app.getGeneratorWaudio().setOutFileWaudio(null);
-                                        videoView.setVideoURI(null);
-                                        wDel.delete();
-                                        sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(wDel)));
-                                        finish();
+                                        if (wDel.delete()) {
+                                            videoView.setVideoURI(null);
+                                            CompareWaudio cw = app.getCompareWaudioTmp();
+                                            if (app.WaudioExist(cw))
+                                                app.removeWaudio(cw);
+                                            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(wDel)));
+                                            finish();
+                                        } else {
+                                            Toast.makeText(WaudioFinalizedActivity.this, getResources().getString(R.string.msgErrorDeleteWaudio), Toast.LENGTH_SHORT).show();
+                                        }
 
                                     }
                                 })
@@ -189,10 +208,8 @@ public class WaudioFinalizedActivity extends AppCompatActivity {
                         .setNegativeButton(getResources().getString(R.string.alert_cancel), null)
                         .show();
             }
-            //goBack = true;
-            //onBackPressed();
-
         }
+
     }
 
     private void showBackAlert(String title, String message, String textPositive, boolean cancelable) {
@@ -238,11 +255,19 @@ public class WaudioFinalizedActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        if (videoView.isPlaying())
+            videoView.pause();
         if (goBack) {
             super.onBackPressed();
         } else {
             showBackAlert(getResources().getString(R.string.alert_title_choose_style), getResources().getString(R.string.msgWarningStyle), getResources().getString(R.string.alert_ok_choose_style), true);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        audioManager.abandonAudioFocus(this);
     }
 
     // When you change direction of phone, this method will be called.
@@ -265,5 +290,10 @@ public class WaudioFinalizedActivity extends AppCompatActivity {
         // Get saved position.
         position = savedInstanceState.getInt("CurrentPosition");
         videoView.seekTo(position);
+    }
+
+    @Override
+    public void onAudioFocusChange(int focusChange) {
+
     }
 }

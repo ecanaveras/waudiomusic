@@ -141,6 +141,10 @@ public class MainApp extends Application {
         compareWaudios.add(compareWaudio);
     }
 
+    public void removeWaudio(CompareWaudio compareWaudio){
+        compareWaudios.remove(compareWaudio);
+    }
+
     public boolean WaudioExist(CompareWaudio compareWaudio) {
         for (CompareWaudio cw : compareWaudios) {
             //System.out.println("MAINAPP " + cw.getTitle() + " " + cw.getTemplate() + " " + cw.getEntTime());

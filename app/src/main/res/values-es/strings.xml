@@ -115,7 +115,7 @@
     <string name="app_name">Waudio Music</string>
     <string name="button_options">Opciones</string>
     <string name="play">Play</string>
-    <string name="menu_share">Compartir Waudio</string>
+    <string name="menu_share">Compartir Waudio Music</string>
     <string name="msgShareApp">¿Ya probaste Waudio? La app que permite compartir música en los estados de Whatsapp</string>
     <string name="msgShareTo">Recomendar Waudio...</string>
     <string name="lblNext">SIGUIENTE</string>
@@ -147,7 +147,7 @@
     <string name="msgYesDelete">SI, ELIMINAR</string>
     <string name="alert_cancel">CANCELAR</string>
     <string name="msgOpenWith">Abrir Waudio con...</string>
-    <string name="msgWaudioCreate">Crea uno desde la biblioteca de estilos</string>
+    <string name="msgWaudioCreate">Crea uno eligiendo un estilo</string>
     <string name="lblShare">COMPARTIR</string>
     <string name="lblGotoEditor">IR AL EDITOR</string>
     <string name="lblDelete">ELIMINAR</string>
@@ -174,4 +174,10 @@
     <string name="msgTemplatesLoading">Cargando tus estilos...</string>
     <string name="msgTracksLoading">Cargando Música...</string>
     <string name="msgWaudioLoading">Cargando tus Waudios...</string>
+    <string name="menu_action_order_by">Ordenar por...</string>
+    <string name="menu_action_goto_store">Waudio Store</string>
+    <string name="formatOrderby">Ordenado por: %1$s</string>
+    <string name="lblOrderbyDate">Fecha de creación</string>
+    <string name="lblOrderbyTitle">Nombre</string>
+    <string name="msgErrorDeleteWaudio">Problemas al eliminar el waudio, intentalo de nuevo</string>
 </resources>

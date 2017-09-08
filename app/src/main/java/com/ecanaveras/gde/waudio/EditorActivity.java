@@ -19,11 +19,13 @@ package com.ecanaveras.gde.waudio;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Rect;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -67,7 +69,7 @@ import java.io.StringWriter;
  */
 public class EditorActivity extends AppCompatActivity
         implements MarkerView.MarkerListener,
-        WaveformView.WaveformListener {
+        WaveformView.WaveformListener, AudioManager.OnAudioFocusChangeListener {
 
     private FirebaseAnalytics mFirebaseAnalytics;
 
@@ -143,6 +145,7 @@ public class EditorActivity extends AppCompatActivity
     private TextView lblTitleAudio;
 
     private boolean max30s = true;
+    private AudioManager audioManager;
 
     //
     // Public methods and protected overrides
@@ -157,6 +160,9 @@ public class EditorActivity extends AppCompatActivity
         super.onCreate(icicle);
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+
+        //Maneja el audio en llamadas
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
         mPlayer = null;
         mIsPlaying = false;
@@ -248,6 +254,8 @@ public class EditorActivity extends AppCompatActivity
             mPlayer.release();
             mPlayer = null;
         }
+
+        audioManager.abandonAudioFocus(this);
 
         super.onDestroy();
     }
@@ -1102,6 +1110,7 @@ public class EditorActivity extends AppCompatActivity
         if (mPlayer != null && mPlayer.isPlaying()) {
             mPlayer.pause();
         }
+        audioManager.abandonAudioFocus(this);
         mWaveformView.setPlayback(-1);
         mIsPlaying = false;
         enableDisableButtons();
@@ -1135,6 +1144,7 @@ public class EditorActivity extends AppCompatActivity
             });
             mIsPlaying = true;
 
+            audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
             mPlayer.seekTo(mPlayStartMsec);
             mPlayer.start();
             updateDisplay();
@@ -1213,11 +1223,10 @@ public class EditorActivity extends AppCompatActivity
      *
      * @param view
      */
-    public void onNewSave(View view) {
+    public void onNext(View view) {
         if (mIsPlaying) {
             handlePause();
         }
-
         double startTime = mWaveformView.pixelsToSeconds(mStartPos);
         double endTime = mWaveformView.pixelsToSeconds(mEndPos);
         int startFrame = mWaveformView.secondsToFrames(startTime);
@@ -1343,5 +1352,20 @@ public class EditorActivity extends AppCompatActivity
         StringWriter writer = new StringWriter();
         e.printStackTrace(new PrintWriter(writer));
         return writer.toString();
+    }
+
+    @Override
+    public void onAudioFocusChange(int focusChange) {
+        switch (focusChange) {
+            case AudioManager.AUDIOFOCUS_GAIN:
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                //mediaPlayer.start(); // Resume your media player here
+                break;
+            case AudioManager.AUDIOFOCUS_LOSS:
+            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                if (mPlayer.isPlaying())
+                    mPlayer.pause();// Pause your media player here
+                break;
+        }
     }
 }
