@@ -1021,7 +1021,7 @@ public class EditorActivity extends AppCompatActivity
             }
             int duration = mEndPos - mStartPos;
             mDurationText.setText(formatTime(duration));
-            if (duration > 0 && Double.valueOf(formatTime(duration)) > 30.0) {
+            if (duration > 0 && Double.valueOf(formatTime(duration)) > 31.0) {
                 mDurationText.setTextColor(ContextCompat.getColor(EditorActivity.this, R.color.colorTextSecondary));
             } else {
                 mDurationText.setTextColor(ContextCompat.getColor(EditorActivity.this, R.color.playback_indicator));
@@ -1324,17 +1324,21 @@ public class EditorActivity extends AppCompatActivity
     private OnClickListener mNext30sListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            Double fin = Double.parseDouble(formatTime(mWaveformView.getEnd()));
-            Double posStart = mStartPos + 30.0;
-            if (posStart > fin) {
+            Double fin = Double.parseDouble(formatTime(mWaveformView.maxPos()));
+            Double posStart = Double.parseDouble(formatTime(mEndPos));
+            if (posStart >= fin) {
                 return;
             }
+            //Double dif = Double.parseDouble(formatTime(mEndPos)) - Double.parseDouble(formatTime(mStartPos));
             mStartPos = mWaveformView.secondsToPixels(posStart);
             Double posEnd = posStart + 30;
             if (posEnd > fin) {
                 posEnd = fin;
             }
             mEndPos = mWaveformView.secondsToPixels(posEnd);
+            //Hacer mover al WaveForm
+            onPlay(mStartPos);
+            handlePause();
             updateDisplay();
         }
     };
@@ -1342,18 +1346,21 @@ public class EditorActivity extends AppCompatActivity
     private OnClickListener mBack30sListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-            Double inicio = Double.parseDouble(formatTime(mWaveformView.getStart()));
-            Double dif = Double.parseDouble(formatTime(mEndPos)) - Double.parseDouble(formatTime(mStartPos));
-            Double posStart = mStartPos - 30.0;
+            Double inicio = 0.0;
+            Double posStart = Double.parseDouble(formatTime(mStartPos)) - 30.0;
             if (posStart < inicio) {
                 posStart = inicio;
             }
+            Double dif = Double.parseDouble(formatTime(mEndPos)) - Double.parseDouble(formatTime(mStartPos));
             mStartPos = mWaveformView.secondsToPixels(posStart);
-            Double posEnd = posStart + (Double.parseDouble(formatTime(mEndPos)) - dif);
-            if (posEnd <= inicio) {
+            Double posEnd = Double.parseDouble(formatTime(mEndPos)) - dif;
+            if(posStart==inicio){
                 posEnd = posStart + dif;
             }
             mEndPos = mWaveformView.secondsToPixels(posEnd);
+            //Hacer mover al WaveForm
+            onPlay(mStartPos);
+            handlePause();
             updateDisplay();
         }
     };

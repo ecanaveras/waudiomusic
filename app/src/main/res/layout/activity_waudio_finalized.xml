@@ -213,15 +213,35 @@
                 android:orientation="vertical"
                 android:padding="22dp">
 
-                <Button
-                    android:id="@+id/btnNew"
-                    style="@style/WaudioButtonBlank"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_marginBottom="10dp"
-                    android:maxHeight="40dp"
-                    android:onClick="onNewWaudio"
-                    android:text="@string/lblNewWaudio" />
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnNew"
+                        style="@style/WaudioButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginRight="2dp"
+                        android:layout_weight="1"
+                        android:maxHeight="40dp"
+                        android:onClick="onNewWaudio"
+                        android:text="@string/lblNewWaudio" />
+
+                    <Button
+                        android:id="@+id/btnGoHome"
+                        style="@style/WaudioButtonBlank"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="2dp"
+                        android:layout_weight="1"
+                        android:maxHeight="40dp"
+                        android:onClick="onGoHome"
+                        android:text="@string/lblGoHome" />
+                </LinearLayout>
 
                 <Button
                     android:id="@+id/btnFinish"

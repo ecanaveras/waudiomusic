@@ -16,12 +16,9 @@
  */
 -->
 <resources>
-    <string name="waudio_app_name">Waudio Music</string>
     <!--
        Actividad principal/seleccion multimedia
        -->
-    <string name="main_activity_label">Waudio Music</string>
-    <string name="editor_activity_label">Waudio - Audio Editor</string>
 
     <string name="search_edit_box">Buscar</string>
 
@@ -112,7 +109,6 @@
     <string name="update_tracks">Actualizar</string>
     <string name="menu_qualify">Calificar Waudio</string>
     <string name="urlPlayStore">https://play.google.com/store/apps/details?id=com.ecanaveras.gde.waudio</string>
-    <string name="app_name">Waudio Music</string>
     <string name="button_options">Opciones</string>
     <string name="play">Play</string>
     <string name="menu_share">Compartir Waudio Music</string>
@@ -181,4 +177,5 @@
     <string name="lblOrderbyTitle">Nombre</string>
     <string name="msgErrorDeleteWaudio">Problemas al eliminar el waudio, intentalo de nuevo</string>
     <string name="msgComingSoonStore">Pronto podrás descargar muchos estilos!</string>
+    <string name="lblGoHome">IR A WAUDIOS</string>
 </resources>

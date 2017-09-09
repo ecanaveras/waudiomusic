@@ -247,6 +247,14 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
         finishAffinity();
     }
 
+    public void onGoHome(View view) {
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.addFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finishAffinity();
+    }
+
     public void onFinish(View view) {
         int[] idsMsgs = {R.string.msgFinish1,
                 R.string.msgFinish2,
