@@ -24,7 +24,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Rect;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,8 +38,6 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewTreeObserver;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
@@ -146,6 +143,8 @@ public class EditorActivity extends AppCompatActivity
 
     private boolean max30s = true;
     private AudioManager audioManager;
+    private ImageButton mBack30s;
+    private ImageButton mNext30s;
 
     //
     // Public methods and protected overrides
@@ -570,6 +569,11 @@ public class EditorActivity extends AppCompatActivity
 
         ((RadioGroup) findViewById(R.id.toggleGroup)).setOnCheckedChangeListener(ToggleListener);
 
+        mNext30s = (ImageButton) findViewById(R.id.next30);
+        mNext30s.setOnClickListener(mNext30sListener);
+        mBack30s = (ImageButton) findViewById(R.id.back30);
+        mBack30s.setOnClickListener(mBack30sListener);
+
         mPlayButton = (ImageButton) findViewById(R.id.play);
         mPlayButton.setOnClickListener(mPlayListener);
         mRewindButton = (ImageButton) findViewById(R.id.rew);
@@ -862,6 +866,10 @@ public class EditorActivity extends AppCompatActivity
         mStartMarker.setVisibility(View.VISIBLE);
         mStartMarker.requestFocus();
         mEndMarker.setVisibility(View.VISIBLE);
+        if (Double.valueOf(formatTime(mMaxPos)) < 31.0) {
+            mNext30s.setVisibility(View.INVISIBLE);
+            mBack30s.setVisibility(View.INVISIBLE);
+        }
 
         mStartText.setEnabled(true);
         mEndText.setEnabled(true);
@@ -1312,6 +1320,44 @@ public class EditorActivity extends AppCompatActivity
             }
         }
     };
+
+    private OnClickListener mNext30sListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Double fin = Double.parseDouble(formatTime(mWaveformView.getEnd()));
+            Double posStart = mStartPos + 30.0;
+            if (posStart > fin) {
+                return;
+            }
+            mStartPos = mWaveformView.secondsToPixels(posStart);
+            Double posEnd = posStart + 30;
+            if (posEnd > fin) {
+                posEnd = fin;
+            }
+            mEndPos = mWaveformView.secondsToPixels(posEnd);
+            updateDisplay();
+        }
+    };
+
+    private OnClickListener mBack30sListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Double inicio = Double.parseDouble(formatTime(mWaveformView.getStart()));
+            Double dif = Double.parseDouble(formatTime(mEndPos)) - Double.parseDouble(formatTime(mStartPos));
+            Double posStart = mStartPos - 30.0;
+            if (posStart < inicio) {
+                posStart = inicio;
+            }
+            mStartPos = mWaveformView.secondsToPixels(posStart);
+            Double posEnd = posStart + (Double.parseDouble(formatTime(mEndPos)) - dif);
+            if (posEnd <= inicio) {
+                posEnd = posStart + dif;
+            }
+            mEndPos = mWaveformView.secondsToPixels(posEnd);
+            updateDisplay();
+        }
+    };
+
 
     private TextWatcher mTextWatcher = new TextWatcher() {
         public void beforeTextChanged(CharSequence s, int start,

@@ -32,6 +32,7 @@ import android.widget.ListView;
 import com.ecanaveras.gde.waudio.MainApp;
 import com.ecanaveras.gde.waudio.R;
 import com.ecanaveras.gde.waudio.adapters.WaudioListAdapter;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 

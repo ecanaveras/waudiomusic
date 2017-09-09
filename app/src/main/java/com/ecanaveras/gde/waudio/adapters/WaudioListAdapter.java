@@ -17,13 +17,14 @@ import android.widget.TextView;
 import com.ecanaveras.gde.waudio.MainActivity;
 import com.ecanaveras.gde.waudio.R;
 import com.ecanaveras.gde.waudio.WaudioPreviewActivity;
+import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
 import com.ecanaveras.gde.waudio.models.WaudioModel;
 import com.ecanaveras.gde.waudio.picasso.VideoRequestHandler;
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -32,7 +33,9 @@ import java.util.HashMap;
 
 public class WaudioListAdapter extends SimpleCursorAdapter implements View.OnClickListener {
 
-    private Cursor dataSet;
+    private FirebaseAnalytics mFirebaseAnalytics;
+    private DataFirebaseHelper mDataFirebaseHelper;
+
     private Context mContext;
     private LayoutInflater inflater;
     private int mLayout;
@@ -59,7 +62,6 @@ public class WaudioListAdapter extends SimpleCursorAdapter implements View.OnCli
 
     public WaudioListAdapter(Context context, int layout, Cursor dataSet, String[] from, int[] to, int flags) {
         super(context, layout, dataSet, from, to, flags);
-        this.dataSet = dataSet;
         this.mContext = context;
         this.mLayout = layout;
         this.inflater = LayoutInflater.from(context);
@@ -67,6 +69,8 @@ public class WaudioListAdapter extends SimpleCursorAdapter implements View.OnCli
         picassoInstance = new Picasso.Builder(context.getApplicationContext())
                 .addRequestHandler(videoRequestHandler)
                 .build();
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(mContext);
+        mDataFirebaseHelper = new DataFirebaseHelper();
     }
 
     @Override
@@ -123,6 +127,8 @@ public class WaudioListAdapter extends SimpleCursorAdapter implements View.OnCli
         WaudioModel waudio = new WaudioModel(cursor.getString(columnName), cursor.getString(columnPath));
         ;
         if (waudio != null) {
+            mFirebaseAnalytics.setUserProperty("share", String.valueOf(true));
+            mDataFirebaseHelper.incrementWaudioShared();
             Intent sendIntent = new Intent();
             sendIntent.setAction(Intent.ACTION_SEND);
             sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(waudio.getPathMp4()));
@@ -160,6 +166,7 @@ public class WaudioListAdapter extends SimpleCursorAdapter implements View.OnCli
             }
             mContext.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(wDel)));
         }
+        mDataFirebaseHelper.incrementWaudioDeleted(mSelection.size());
         Snackbar.make(((MainActivity) mContext).findViewById(android.R.id.content), String.format(mContext.getResources().getString(R.string.info_contextmenu_deleted_waudio), mSelection.size()), Snackbar.LENGTH_SHORT).show();
         clearSelection();
     }

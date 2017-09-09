@@ -12,6 +12,7 @@ import android.util.Log;
 
 import com.ecanaveras.gde.waudio.MainApp;
 import com.ecanaveras.gde.waudio.R;
+import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
 
 import org.mp4parser.Container;
 import org.mp4parser.muxer.Movie;
@@ -29,7 +30,6 @@ import java.io.RandomAccessFile;
 import java.io.Serializable;
 import java.io.StringWriter;
 import java.nio.channels.FileChannel;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -41,6 +41,8 @@ public class GeneratorWaudio implements Serializable {
 
     private static final String PATH_MEDIA = "/Waudio/Media/";
     private static final String PATH_VIDEOS = "/Waudio Videos/";
+
+    private DataFirebaseHelper mDataFirebaseHelper;
 
     private final Context context;
     private Thread mSaveSoundFileThread;
@@ -67,6 +69,7 @@ public class GeneratorWaudio implements Serializable {
         this.startFrame = startFrame;
         this.endFrame = endFrame;
         this.duration = (int) (endTime - startTime + 0.5);
+        mDataFirebaseHelper = new DataFirebaseHelper();
     }
 
 
@@ -284,6 +287,7 @@ public class GeneratorWaudio implements Serializable {
             FileChannel fc = new FileOutputStream(outFileWaudio).getChannel();
             mp4File.writeContainer(fc);
             fc.close();
+            mDataFirebaseHelper.incrementWaudioCreated();
             MainApp app = (MainApp) context.getApplicationContext();
             app.addNewWaudio(new CompareWaudio(getTitle().toString(), getPathTemplate(), getOutFileWaudio(), getEndTime()));
             scanWaudioVideos(outFileWaudio);

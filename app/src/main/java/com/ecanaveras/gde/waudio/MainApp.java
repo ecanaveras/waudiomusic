@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -13,6 +14,8 @@ import com.ecanaveras.gde.waudio.editor.CompareWaudio;
 import com.ecanaveras.gde.waudio.editor.GeneratorWaudio;
 import com.ecanaveras.gde.waudio.util.FontsOverride;
 import com.ecanaveras.gde.waudio.util.Mp4Filter;
+import com.google.firebase.crash.FirebaseCrash;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -41,6 +44,8 @@ public class MainApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        FirebaseCrash.setCrashCollectionEnabled(!BuildConfig.DEBUG);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor_pref = preferences.edit();
         setupFonts();
@@ -141,7 +146,7 @@ public class MainApp extends Application {
         compareWaudios.add(compareWaudio);
     }
 
-    public void removeWaudio(CompareWaudio compareWaudio){
+    public void removeWaudio(CompareWaudio compareWaudio) {
         compareWaudios.remove(compareWaudio);
     }
 
@@ -159,29 +164,31 @@ public class MainApp extends Application {
     /**
      * @return Application's version code from the {@code PackageManager}.
      */
-    public static int getAppVersionCode(Context context) {
-        try {
+    public static int getAppVersionCode() {
+        return BuildConfig.VERSION_CODE;
+        /*try {
             PackageInfo packageInfo = context.getPackageManager()
                     .getPackageInfo(context.getPackageName(), 0);
             return packageInfo.versionCode;
         } catch (PackageManager.NameNotFoundException e) {
             // should never happen
             throw new RuntimeException("Could not get package name: " + e);
-        }
+        }*/
     }
 
     /**
      * @return Application's version code from the {@code PackageManager}.
      */
-    public static String getAppVersionName(Context context) {
-        try {
+    public static String getAppVersionName() {
+        return BuildConfig.VERSION_NAME;
+        /*try {
             PackageInfo packageInfo = context.getPackageManager()
                     .getPackageInfo(context.getPackageName(), 0);
             return packageInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
             // should never happen
             throw new RuntimeException("Could not get package name: " + e);
-        }
+        }*/
     }
 
     public CompareWaudio getCompareWaudioTmp() {

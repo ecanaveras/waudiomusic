@@ -20,6 +20,12 @@ import android.view.ViewGroup;
 import com.ecanaveras.gde.waudio.LoadTemplates;
 import com.ecanaveras.gde.waudio.R;
 import com.ecanaveras.gde.waudio.adapters.TemplateRecyclerAdapter;
+import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 /**
  * Created by ecanaveras on 28/08/2017.
@@ -29,10 +35,14 @@ public class LibStylesFragment extends Fragment {
 
     private RecyclerView recyclerView;
     private TemplateRecyclerAdapter templateRecyclerAdapter;
+    private DataFirebaseHelper mDataFirebaseHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_list_styles, container, false);
+
+        //Database
+        mDataFirebaseHelper = new DataFirebaseHelper();
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
 
@@ -65,12 +75,13 @@ public class LibStylesFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_goto_store:
-                Snackbar.make(getView(), "Go to Store", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(getView(), getResources().getString(R.string.msgComingSoonStore), Snackbar.LENGTH_SHORT).show();
+                mDataFirebaseHelper.incrementGotoStore();
                 break;
         }
-
         return true;
     }
+
 
     @Override
     public void onResume() {
@@ -111,6 +122,7 @@ public class LibStylesFragment extends Fragment {
             }
 
         }
+
     }
 
     private int dpTopz(int dp) {

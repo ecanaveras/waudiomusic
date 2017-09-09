@@ -234,5 +234,6 @@
     <string name="lblOrderbyDate">Fecha de creación</string>
     <string name="lblOrderbyTitle">Nombre</string>
     <string name="msgErrorDeleteWaudio">Problemas al eliminar el waudio, intentalo de nuevo</string>
+    <string name="msgComingSoonStore">Pronto podrás descargar muchos estilos!</string>
 
 </resources>

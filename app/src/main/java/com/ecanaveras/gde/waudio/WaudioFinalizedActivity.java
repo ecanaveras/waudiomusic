@@ -18,6 +18,7 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.ecanaveras.gde.waudio.editor.CompareWaudio;
+import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.File;
@@ -27,6 +28,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
 
     public static final String TEMPLATE_USED = "template_used";
     private FirebaseAnalytics mFirebaseAnalytics;
+    private DataFirebaseHelper mDataFirebaseHelper;
 
     private String pathWaudio;
     private VideoView videoView;
@@ -47,6 +49,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
         super.onCreate(savedInstanceState);
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mDataFirebaseHelper = new DataFirebaseHelper();
 
         //Maneja el audio en llamadas
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -116,6 +119,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
                 controller.setAnchorView(videoView);
                 videoView.setMediaController(controller);
                 videoView.setVideoURI(Uri.fromFile(f));
+                videoView.setKeepScreenOn(true);
                 videoView.requestFocus();
                 videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                     @Override
@@ -134,6 +138,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
                 //lblTitleWaudio.setText(f.getName());
             } else {
                 lp.setVisibility(View.GONE);
+                app.removeWaudio(app.getCompareWaudioTmp());
                 showBackAlert(getResources().getString(R.string.msgWaudioNoFound), getResources().getString(R.string.msgWaudioCreate), getResources().getString(R.string.msgChooseStyle), false);
             }
         }
@@ -153,6 +158,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
             startActivity(Intent.createChooser(sendIntent, getResources().getString(R.string.msgShareWith)));
 
             mFirebaseAnalytics.setUserProperty("shared", String.valueOf(true));
+            mDataFirebaseHelper.incrementWaudioShared();
         }
     }
 
@@ -192,6 +198,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
                                                         int whichButton) {
                                         //app.getGeneratorWaudio().setOutFileWaudio(null);
                                         if (wDel.delete()) {
+                                            mDataFirebaseHelper.incrementWaudioDeleted();
                                             videoView.setVideoURI(null);
                                             CompareWaudio cw = app.getCompareWaudioTmp();
                                             if (app.WaudioExist(cw))
