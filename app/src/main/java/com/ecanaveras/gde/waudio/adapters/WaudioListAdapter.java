@@ -102,7 +102,7 @@ public class WaudioListAdapter extends SimpleCursorAdapter implements View.OnCli
         WaudioModel waudio = new WaudioModel(cursor.getString(columnName), cursor.getString(columnPath), cursor.getLong(columnDate), cursor.getLong(columnSize));
         viewHolder.waudioName.setText(waudio.getName().replace("WAUDIO-", ""));
         picassoInstance.load(VideoRequestHandler.SCHEME_VIDEO + ":" + waudio.getPathMp4()).into(viewHolder.thumbnail);
-        viewHolder.date.setText(new SimpleDateFormat("dd/MM/yyyy").format(waudio.getDateModified()));
+        viewHolder.date.setText(new SimpleDateFormat("dd/MM/yyyy").format(waudio.getDate()));
         viewHolder.size.setText(waudio.getSizeFormat());
         viewHolder.btnShare.setTag(cursor.getPosition());
     }

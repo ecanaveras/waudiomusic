@@ -44,7 +44,7 @@ public class MainApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+        //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         FirebaseCrash.setCrashCollectionEnabled(!BuildConfig.DEBUG);
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor_pref = preferences.edit();

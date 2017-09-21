@@ -2,10 +2,10 @@ package com.ecanaveras.gde.waudio.fragments;
 
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,13 +19,9 @@ import android.view.ViewGroup;
 
 import com.ecanaveras.gde.waudio.LoadTemplates;
 import com.ecanaveras.gde.waudio.R;
+import com.ecanaveras.gde.waudio.StoreActivity;
 import com.ecanaveras.gde.waudio.adapters.TemplateRecyclerAdapter;
 import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 /**
  * Created by ecanaveras on 28/08/2017.
@@ -39,7 +35,7 @@ public class LibStylesFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_list_styles, container, false);
+        View view = inflater.inflate(R.layout.fragment_lib_styles, container, false);
 
         //Database
         mDataFirebaseHelper = new DataFirebaseHelper();
@@ -75,8 +71,10 @@ public class LibStylesFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_goto_store:
-                Snackbar.make(getView(), getResources().getString(R.string.msgComingSoonStore), Snackbar.LENGTH_SHORT).show();
-                mDataFirebaseHelper.incrementGotoStore();
+                //Snackbar.make(getView(), getResources().getString(R.string.msgComingSoonStore), Snackbar.LENGTH_SHORT).show();
+                //mDataFirebaseHelper.incrementGotoStore()
+                Intent intent = new Intent(getActivity(), StoreActivity.class);
+                startActivity(intent);
                 break;
         }
         return true;

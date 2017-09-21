@@ -18,13 +18,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ecanaveras.gde.waudio.MainApp;
-import com.ecanaveras.gde.waudio.WaudioFinalizedActivity;
 import com.ecanaveras.gde.waudio.R;
+import com.ecanaveras.gde.waudio.WaudioFinalizedActivity;
 import com.ecanaveras.gde.waudio.WaudioPreviewActivity;
-import com.ecanaveras.gde.waudio.models.WaudioModel;
 import com.ecanaveras.gde.waudio.editor.CompareWaudio;
 import com.ecanaveras.gde.waudio.editor.GeneratorWaudio;
 import com.ecanaveras.gde.waudio.listener.ItemClickListener;
+import com.ecanaveras.gde.waudio.models.WaudioModel;
 import com.ecanaveras.gde.waudio.picasso.VideoRequestHandler;
 import com.squareup.picasso.Picasso;
 
@@ -42,6 +42,14 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
     private VideoRequestHandler videoRequestHandler;
     private Picasso picassoInstance;
     private int mLayout;
+    private boolean isRemote;
+
+    public TemplateRecyclerAdapter(Context context, int mLayout, List<WaudioModel> waudioModelList, boolean isRemote) {
+        this.mLayout = mLayout;
+        this.mContext = context;
+        this.waudioModelList = waudioModelList;
+        this.isRemote = isRemote;
+    }
 
     public TemplateRecyclerAdapter(Context context, int mLayout, List<WaudioModel> waudioModelList) {
         this.mLayout = mLayout;
@@ -125,26 +133,15 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
         WaudioModel waudioModel = waudioModelList.get(position);
         holder.name.setText(waudioModel.getName());
         holder.category.setText(waudioModel.getCategory());
-        //holder.thumbnail.setImageBitmap(waudioModel.getImgThumbnail());
-        picassoInstance.load(VideoRequestHandler.SCHEME_VIDEO + ":" + waudioModel.getPathMp4()).into(holder.thumbnail);
+        if (isRemote) {
+            Picasso.with(mContext).load(waudioModel.getUrlThumbnail()).into(holder.thumbnail);
+        } else
+            picassoInstance.load(VideoRequestHandler.SCHEME_VIDEO + ":" + waudioModel.getPathMp4()).into(holder.thumbnail);
     }
 
     @Override
     public int getItemCount() {
         return waudioModelList.size();
-    }
-
-    public static Bitmap getThumbnail(ContentResolver cr, String path) {
-        Cursor ca = cr.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, new String[]{MediaStore.MediaColumns._ID}, MediaStore.MediaColumns.DATA + ".=?", new String[]{path}, null);
-        if (ca != null && ca.moveToFirst()) {
-            int id = ca.getInt(ca.getColumnIndex(MediaStore.MediaColumns._ID));
-            ca.close();
-            return MediaStore.Video.Thumbnails.getThumbnail(cr, id, MediaStore.Video.Thumbnails.MINI_KIND, null);
-        } else {
-            Log.d(TemplateRecyclerAdapter.class.getName(), "Thumbnail no found, path:" + path);
-        }
-        ca.close();
-        return null;
     }
 
     public WaudioModel getTemplate(int position) {
