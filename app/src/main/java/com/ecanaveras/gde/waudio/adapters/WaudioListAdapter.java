@@ -1,7 +1,11 @@
 package com.ecanaveras.gde.waudio.adapters;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -26,6 +30,7 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by elcap on 29/08/2017.
@@ -125,17 +130,31 @@ public class WaudioListAdapter extends SimpleCursorAdapter implements View.OnCli
         int columnName = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE);
         int columnPath = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
         WaudioModel waudio = new WaudioModel(cursor.getString(columnName), cursor.getString(columnPath));
-        ;
+
         if (waudio != null) {
-            mFirebaseAnalytics.setUserProperty("share", String.valueOf(true));
-            mDataFirebaseHelper.incrementWaudioShared();
-            Intent sendIntent = new Intent();
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(waudio.getPathMp4()));
+            File w = new File(waudio.getPathMp4());
+            Intent sendIntent = new Intent(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(w));
             sendIntent.putExtra(Intent.EXTRA_TEXT, mContext.getResources().getString(R.string.hastag));
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.setType("video/mp4");
+            sendIntent.setType("video/*");
             mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getString(R.string.msgShareWith)));
+
+            mFirebaseAnalytics.setUserProperty("shared", String.valueOf(true));
+            mDataFirebaseHelper.incrementWaudioShared();
+            //Setup Twitter
+            /*PackageManager pm = mContext.getPackageManager();
+            List<ResolveInfo> resolveInfoList = pm.queryIntentActivities(sendIntent, 0);
+            for (ResolveInfo app : resolveInfoList) {
+                if (app.activityInfo.name.equals("com.twitter.android.PostActivity")) {
+                    ActivityInfo ai = app.activityInfo;
+                    ComponentName cn = new ComponentName(app.activityInfo.packageName, ai.name);
+                    sendIntent.addCategory(Intent.CATEGORY_LAUNCHER);
+                    sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                    sendIntent.setComponent(cn);
+                    break;
+                }
+            }*/
+
         }
     }
 

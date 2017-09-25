@@ -101,7 +101,8 @@
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_noti" />
 
-        <activity android:name=".StoreActivity"></activity>
+        <activity android:name=".StoreActivity"
+            android:label="@string/store_activity_label"></activity>
     </application>
 
 </manifest>

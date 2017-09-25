@@ -89,7 +89,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
         }
 
         if (pathWaudio == null) {
-            handler.postDelayed(new Runnable() {//Check cada 2 segundos
+            handler.postDelayed(new Runnable() {//Check cada 1 segundos
                 @Override
                 public void run() {
                     checkWaudio();
@@ -105,7 +105,9 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
             System.out.println("Waudio in preview: " + pathWaudio);
             return;
         }
-
+        if (app.getGeneratorWaudio() == null) {
+            onGoHome(null);
+        }
     }
 
 
@@ -149,12 +151,11 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
             if (videoView.isPlaying()) {
                 videoView.pause();
             }
-            Intent sendIntent = new Intent();
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(pathWaudio));
+            File w = new File(pathWaudio);
+            Intent sendIntent = new Intent(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(w));
             sendIntent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.hastag));
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.setType("video/mp4");
+            sendIntent.setType("video/*");
             startActivity(Intent.createChooser(sendIntent, getResources().getString(R.string.msgShareWith)));
 
             mFirebaseAnalytics.setUserProperty("shared", String.valueOf(true));

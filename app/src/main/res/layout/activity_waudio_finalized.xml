@@ -250,7 +250,8 @@
                     android:layout_height="40dp"
                     android:maxHeight="40dp"
                     android:onClick="onFinish"
-                    android:text="@string/lblFinish" />
+                    android:text="@string/lblFinish"
+                    />
             </LinearLayout>
         </LinearLayout>
     </FrameLayout>

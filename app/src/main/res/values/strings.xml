@@ -235,5 +235,6 @@
     <string name="app_name" translatable="false">Waudio Music</string>
     <string name="main_activity_label" translatable="false">Waudio Music</string>
     <string name="lblGoHome">GO TO WAUDIOS</string>
+    <string name="store_activity_label">Waudio Store</string>
 
 </resources>

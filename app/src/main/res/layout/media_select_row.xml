@@ -61,7 +61,10 @@
                 android:layout_weight="1"
                 android:maxLines="1"
                 android:textSize="12sp"
-                android:visibility="gone" />
+                android:textColor="@color/colorTextThirdy"
+                android:visibility="gone"
+                android:gravity="right"
+                />
 
         </LinearLayout>
 

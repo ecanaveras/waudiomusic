@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.ecanaveras.gde.waudio.fragments.LibStylesFragment;
 import com.ecanaveras.gde.waudio.fragments.LibWaudiosFragment;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,10 +42,15 @@ public class MainActivity extends AppCompatActivity {
     private AdaptadorSecciones adaptadorSecciones;
     private FloatingActionButton fab;
 
+    private FirebaseAnalytics mFirebaseAnalytics;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        mFirebaseAnalytics.setUserProperty("open_main_activity", String.valueOf(true));
 
         if (savedInstanceState == null) {
             libWaudiosFragment = new LibWaudiosFragment();
