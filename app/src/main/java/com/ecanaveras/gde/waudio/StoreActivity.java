@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 
 import com.ecanaveras.gde.waudio.adapters.TemplateRecyclerAdapter;
+import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
 import com.ecanaveras.gde.waudio.models.WaudioModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
@@ -26,14 +27,13 @@ import java.util.List;
 
 public class StoreActivity extends AppCompatActivity {
 
-    public static final String REF_WAUDIO_TEMPLATES = "waudio-templates";
 
     private List<WaudioModel> waudioModelList = new ArrayList<WaudioModel>();
     private StorageReference mStorage;
     private ImageView imgTemplate;
     private TemplateRecyclerAdapter templateRecyclerAdapter;
 
-    private DatabaseReference mDatabaseReference;
+    private DataFirebaseHelper mDataFirebaseHelper;
     private DatabaseReference mRef;
 
     private WaudioModel waudioModel;
@@ -54,8 +54,8 @@ public class StoreActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
         mStorage = FirebaseStorage.getInstance().getReference();
-        mDatabaseReference = FirebaseDatabase.getInstance().getReference();//StoreActivity.TEMPLATES_DATABASE);
-        mRef = mDatabaseReference.child(REF_WAUDIO_TEMPLATES);
+        mDataFirebaseHelper = new DataFirebaseHelper();
+        mRef = mDataFirebaseHelper.getDatabaseReference(DataFirebaseHelper.REF_WAUDIO_TEMPLATES);
 
         findInfoTemplate();
 
@@ -67,7 +67,7 @@ public class StoreActivity extends AppCompatActivity {
     }
 
     private void findInfoTemplate() {
-        mRef.addValueEventListener(new ValueEventListener() {
+        mRef.orderByKey().addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
