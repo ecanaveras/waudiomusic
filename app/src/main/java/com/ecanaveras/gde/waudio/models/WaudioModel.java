@@ -91,6 +91,13 @@ public class WaudioModel {
         return null;
     }
 
+    public String getSimpleName() {
+        if (name != null && name.contains(".")) {
+            return name.split("\\.")[0];
+        }
+        return name;
+    }
+
     public void setDateModified(long dateModified) {
         this.dateModified = dateModified;
     }

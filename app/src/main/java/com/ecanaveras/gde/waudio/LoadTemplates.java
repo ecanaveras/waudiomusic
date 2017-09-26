@@ -1,9 +1,6 @@
 package com.ecanaveras.gde.waudio;
 
-import android.provider.MediaStore;
-
 import com.ecanaveras.gde.waudio.models.WaudioModel;
-import com.ecanaveras.gde.waudio.task.FindVideoThumbnail;
 import com.ecanaveras.gde.waudio.util.Mp4Filter;
 
 import java.io.File;
@@ -16,7 +13,7 @@ import java.util.List;
 
 public class LoadTemplates {
 
-    private List<WaudioModel> waudioModelList = new ArrayList<WaudioModel>();
+    private List<WaudioModel> sdWaudioModelList = new ArrayList<WaudioModel>();
     private String extension;
 
     public static void main(String[] args) {
@@ -51,8 +48,8 @@ public class LoadTemplates {
             for (String name : dir.list(new Mp4Filter(".mp4"))) {
                 boolean category = name.split("_").length > 1;
                 String path = dir.getAbsolutePath() + "/" + name;
-                waudioModel = new WaudioModel(name.split("_")[0], path, category ? name.split("_")[1].replace(".mp4", "") : "General");
-                waudioModelList.add(waudioModel);
+                waudioModel = new WaudioModel(name, path, category ? name.split("_")[1].replace(".mp4", "") : "General");
+                sdWaudioModelList.add(waudioModel);
                 /*if (name.contains("_")) {
                     System.out.println("Name:" + name.split("_")[0] + " Category:" + name.split("_")[1].replace(".mp4", "") + " filename:" + name + " path:" + dir.getAbsolutePath() + "\\" + name);
                 }*/
@@ -61,11 +58,11 @@ public class LoadTemplates {
     }
 
     public void clearTemplates() {
-        waudioModelList.clear();
+        sdWaudioModelList.clear();
     }
 
 
-    public List<WaudioModel> getWaudioModelList() {
-        return waudioModelList;
+    public List<WaudioModel> getSdWaudioModelList() {
+        return sdWaudioModelList;
     }
 }

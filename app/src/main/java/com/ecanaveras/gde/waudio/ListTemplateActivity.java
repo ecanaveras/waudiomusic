@@ -3,7 +3,6 @@ package com.ecanaveras.gde.waudio;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Rect;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -15,7 +14,6 @@ import android.widget.LinearLayout;
 
 import com.ecanaveras.gde.waudio.adapters.TemplateRecyclerAdapter;
 import com.ecanaveras.gde.waudio.editor.GeneratorWaudio;
-import com.ecanaveras.gde.waudio.task.LoadTemplatesTask;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class ListTemplateActivity extends AppCompatActivity {
@@ -69,7 +67,7 @@ public class ListTemplateActivity extends AppCompatActivity {
      */
     private void prepareTemplates() {
         LoadTemplates templates = new LoadTemplates(".mp4", getExternalFilesDir(null).getAbsolutePath());
-        templateRecyclerAdapter = new TemplateRecyclerAdapter(this, templates.getWaudioModelList(), generatorWaudio);
+        templateRecyclerAdapter = new TemplateRecyclerAdapter(this, templates.getSdWaudioModelList(), generatorWaudio);
         templateRecyclerAdapter.notifyDataSetChanged();
     }
 

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorBgCard">
+
+    <FrameLayout
+        android:id="@+id/lyfragment"
+        android:layout_width="match_parent"
+        android:layout_height="280dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@null"
+            android:src="@drawable/ic_movie_filter" />
+
+        <ImageView
+            android:id="@+id/thumbnail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitXY" />
+    </FrameLayout>
+
+    <!--Title-->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_alignBottom="@id/lyfragment"
+        android:background="@color/colorBgTitleTemplate"
+        android:gravity="center"
+        android:padding="10dp">
+
+        <ImageView
+            android:id="@+id/isFavorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/ic_action_favorite"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/isFavorite"
+            android:maxLines="1"
+            android:shadowColor="@color/colorPrimaryDark"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="3"
+            android:text="ESTILO"
+            android:textAllCaps="true"
+            android:textColor="@color/colorTextPrimary"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title"
+            android:layout_toRightOf="@+id/isFavorite"
+            android:maxLines="1"
+            android:shadowColor="@color/colorPrimaryDark"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="3"
+            android:text="GENERAL"
+            android:textAllCaps="true"
+            android:textColor="@color/colorTextSecondary"
+            android:textSize="14sp" />
+
+        <ImageButton
+            android:id="@+id/btnPreview"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="left"
+            android:layout_marginRight="4dp"
+            android:layout_toLeftOf="@+id/btnDownload"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:padding="5dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_eye" />
+
+        <Button
+            android:id="@+id/btnDownload"
+            style="@style/WaudioButton"
+            android:layout_width="120dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:maxHeight="40dp"
+            android:onClick="onDownload"
+            android:text="DESCARGAR"
+            android:layout_gravity="center_horizontal"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

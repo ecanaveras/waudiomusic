@@ -2,20 +2,26 @@ package com.ecanaveras.gde.waudio;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.HandlerThread;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.ecanaveras.gde.waudio.adapters.TemplateRecyclerAdapter;
 import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
+import com.ecanaveras.gde.waudio.fragments.DownloadBottomSheetDialogFragment;
 import com.ecanaveras.gde.waudio.models.WaudioModel;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageMetadata;
@@ -28,7 +34,8 @@ import java.util.List;
 public class StoreActivity extends AppCompatActivity {
 
 
-    private List<WaudioModel> waudioModelList = new ArrayList<WaudioModel>();
+    private List<WaudioModel> storeWaudioModelList = new ArrayList<WaudioModel>();
+    private List<WaudioModel> sdWaudioModelList = new ArrayList<>();
     private StorageReference mStorage;
     private ImageView imgTemplate;
     private TemplateRecyclerAdapter templateRecyclerAdapter;
@@ -38,6 +45,8 @@ public class StoreActivity extends AppCompatActivity {
 
     private WaudioModel waudioModel;
     private RecyclerView recyclerView;
+    private BottomSheetBehavior mBottomSheetBehavior;
+    private WaudioModel downloadItemWaudio;
 
 
     @Override
@@ -45,8 +54,12 @@ public class StoreActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_store);
 
-        imgTemplate = (ImageView) findViewById(R.id.imgTemplate);
+        //imgTemplate = (ImageView) findViewById(R.id.imgTemplate);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        View bottomSheet = findViewById(R.id.bottom_sheet);
+
+        mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -57,6 +70,10 @@ public class StoreActivity extends AppCompatActivity {
         mDataFirebaseHelper = new DataFirebaseHelper();
         mRef = mDataFirebaseHelper.getDatabaseReference(DataFirebaseHelper.REF_WAUDIO_TEMPLATES);
 
+        //TODO realizar tarea en un hilo
+        LoadTemplates loadTemplates = new LoadTemplates(".mp4", getExternalFilesDir(null).getAbsolutePath());
+        sdWaudioModelList = loadTemplates.getSdWaudioModelList();
+
         findInfoTemplate();
 
         //uploadInfoTemplate("Inglaterra_mundo.m4v");
@@ -66,6 +83,7 @@ public class StoreActivity extends AppCompatActivity {
         //uploadInfoTemplate("Vinilo_waudio.mp4");
     }
 
+
     private void findInfoTemplate() {
         mRef.orderByKey().addValueEventListener(new ValueEventListener() {
             @Override
@@ -73,9 +91,17 @@ public class StoreActivity extends AppCompatActivity {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     //System.out.println("OBJECT " + data.getValue());
                     WaudioModel wt = data.getValue(WaudioModel.class);
-                    waudioModelList.add(wt);
+                    storeWaudioModelList.add(wt);
                 }
-                templateRecyclerAdapter = new TemplateRecyclerAdapter(StoreActivity.this, R.layout.media_style_card, waudioModelList, true);
+                for (WaudioModel sd : sdWaudioModelList) {
+                    for (WaudioModel store : storeWaudioModelList) {
+                        if (sd.getName().equals(store.getName())) {
+                            storeWaudioModelList.remove(store);
+                            break;
+                        }
+                    }
+                }
+                templateRecyclerAdapter = new TemplateRecyclerAdapter(StoreActivity.this, R.layout.media_style_card, storeWaudioModelList, true);
                 recyclerView.setAdapter(templateRecyclerAdapter);
             }
 
@@ -127,6 +153,18 @@ public class StoreActivity extends AppCompatActivity {
                 saveTemplateFirebase();
             }
         });
+    }
+
+    public void onClicDownloadItem(WaudioModel item) {
+        Log.i("ITEM", item + "");
+        //mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        downloadItemWaudio = item;
+        DownloadBottomSheetDialogFragment bottomSheetDialogFragment = new DownloadBottomSheetDialogFragment(item);
+        bottomSheetDialogFragment.show(getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
+    }
+
+    public void onDownload(View v) {
+        Toast.makeText(StoreActivity.this, downloadItemWaudio.getName(), Toast.LENGTH_SHORT).show();
     }
 
     private void saveTemplateFirebase() {

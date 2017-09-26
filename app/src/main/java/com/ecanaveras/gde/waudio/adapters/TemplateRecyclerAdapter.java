@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.ecanaveras.gde.waudio.MainApp;
 import com.ecanaveras.gde.waudio.R;
+import com.ecanaveras.gde.waudio.StoreActivity;
 import com.ecanaveras.gde.waudio.WaudioFinalizedActivity;
 import com.ecanaveras.gde.waudio.WaudioPreviewActivity;
 import com.ecanaveras.gde.waudio.editor.CompareWaudio;
@@ -84,10 +85,14 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
                     break;
                 case R.id.btnFavorite:
                     break;
-                default: //Vista previa
-                    intent = new Intent(mContext, WaudioPreviewActivity.class);
-                    intent.putExtra(WaudioPreviewActivity.PATH_WAUDIO, waudioModel.getPathMp4());
-                    mContext.startActivity(intent);
+                default: //Vista previa o Store
+                    if (isRemote) {
+                        showDownloadDialog(waudioModel);
+                    } else {
+                        intent = new Intent(mContext, WaudioPreviewActivity.class);
+                        intent.putExtra(WaudioPreviewActivity.PATH_WAUDIO, waudioModel.getPathMp4());
+                        mContext.startActivity(intent);
+                    }
                     break;
             }
 
@@ -164,6 +169,11 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
                 .setNegativeButton("NO", null)
                 .setCancelable(true)
                 .show();
+    }
+
+    private void showDownloadDialog(WaudioModel model) {
+        StoreActivity activity = (StoreActivity) mContext;
+        activity.onClicDownloadItem(model);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

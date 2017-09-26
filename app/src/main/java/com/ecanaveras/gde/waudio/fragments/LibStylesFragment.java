@@ -21,6 +21,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.ecanaveras.gde.waudio.LoadTemplates;
 import com.ecanaveras.gde.waudio.R;
@@ -48,6 +49,8 @@ public class LibStylesFragment extends Fragment {
     private DataFirebaseHelper mDataFirebaseHelper;
     private DatabaseReference mRef;
     private LinearLayout lyContentItemStore;
+    private LoadTemplates templates;
+    private List<WaudioModel> storeWaudioModelList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -79,16 +82,33 @@ public class LibStylesFragment extends Fragment {
     }
 
     public void getNewItemsStore(int limit) {
-        final List<WaudioModel> waudioModelList = new ArrayList<>();
-        mRef.orderByKey().limitToLast(limit).addValueEventListener(new ValueEventListener() {
+        mRef.orderByKey().limitToLast(10).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     System.out.println("OBJECT " + data.getValue());
                     WaudioModel wt = data.getValue(WaudioModel.class);
-                    waudioModelList.add(wt);
+                    storeWaudioModelList.add(wt);
                 }
-                setupViewItemsStore(waudioModelList);
+                int resulok = 0; //max 3
+                for (WaudioModel sd : templates.getSdWaudioModelList()) {
+                    for (WaudioModel store : storeWaudioModelList) {
+                        if (getSimpleName(store.getName()).equals(getSimpleName(sd.getName()))) {
+                            storeWaudioModelList.remove(store);
+                            break;
+                        } else {
+                            resulok++;
+                        }
+                        if (resulok == 3) {
+                            break;
+                        }
+                    }
+                    if (resulok == 3) {
+                        break;
+                    }
+                }
+
+                setupViewItemsStore(storeWaudioModelList);
             }
 
             @Override
@@ -109,12 +129,11 @@ public class LibStylesFragment extends Fragment {
             CardView view = (CardView) inflater.inflate(R.layout.store_item_new, null);
 
             ImageView img = (ImageView) view.findViewById(R.id.thumbnail);
-            //TextView title = (TextView) view.findViewById(R.id.title);
+            TextView title = (TextView) view.findViewById(R.id.title);
             //TextView category = (TextView) view.findViewById(R.id.category);
 
-            view.setTag(waudioModel.getName());
             Picasso.with(getActivity()).load(waudioModel.getUrlThumbnail()).resize(160, 140).into(img);
-            //title.setText(waudioModel.getName().replaceAll("_", " ").split("\\.")[0]);
+            title.setText(getSimpleName(waudioModel.getName()));
             //category.setText(waudioModel.getCategory());
             lyContentItemStore.addView(view);
             view.startAnimation(bounce);
@@ -123,12 +142,19 @@ public class LibStylesFragment extends Fragment {
 
     }
 
+    private String getSimpleName(String name) {
+        if (name != null && name.contains(".")) {
+            return name.split("\\.")[0];
+        }
+        return name;
+    }
+
     /**
      * Templates para crear Waudios
      */
     private void prepareTemplates() {
-        LoadTemplates templates = new LoadTemplates(".mp4", getActivity().getExternalFilesDir(null).getAbsolutePath());
-        templateRecyclerAdapter = new TemplateRecyclerAdapter(getActivity(), R.layout.media_style_card, templates.getWaudioModelList());
+        templates = new LoadTemplates(".mp4", getActivity().getExternalFilesDir(null).getAbsolutePath());
+        templateRecyclerAdapter = new TemplateRecyclerAdapter(getActivity(), R.layout.media_style_card, templates.getSdWaudioModelList());
         templateRecyclerAdapter.notifyDataSetChanged();
     }
 

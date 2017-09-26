@@ -1,35 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.ecanaveras.gde.waudio.StoreActivity">
+    android:fitsSystemWindows="true">
 
-    <ImageView
-        android:id="@+id/imgTemplate"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
-    <!--LISTA-->
-    <LinearLayout
-        android:id="@+id/layoutRecycler"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:keepScreenOn="true"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:visibility="visible"
-        tools:layout_editor_absoluteX="8dp"
-        tools:layout_editor_absoluteY="0dp">
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
+        <!--<ImageView
+            android:id="@+id/imgTemplate"
+            android:layout_width="match_parent"
+            <android:layout_height="wrap_content" />-->
+
+        <!--LISTA-->
+        <LinearLayout
+            android:id="@+id/layoutRecycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:clipToPadding="false"
-            android:scrollbars="vertical" />
+            android:keepScreenOn="true"
+            android:orientation="vertical"
+            android:visibility="visible">
 
-    </LinearLayout>
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clipToPadding="false"
+                android:scrollbars="vertical" />
 
-</LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/colorBgCard"
+        android:clipToPadding="true"
+        app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>
