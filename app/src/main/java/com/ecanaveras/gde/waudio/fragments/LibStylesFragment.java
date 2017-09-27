@@ -24,6 +24,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ecanaveras.gde.waudio.LoadTemplates;
+import com.ecanaveras.gde.waudio.MainApp;
 import com.ecanaveras.gde.waudio.R;
 import com.ecanaveras.gde.waudio.StoreActivity;
 import com.ecanaveras.gde.waudio.adapters.TemplateRecyclerAdapter;
@@ -51,6 +52,7 @@ public class LibStylesFragment extends Fragment {
     private LinearLayout lyContentItemStore;
     private LoadTemplates templates;
     private List<WaudioModel> storeWaudioModelList = new ArrayList<>();
+    private List<WaudioModel> sdWaudioModelList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -70,30 +72,31 @@ public class LibStylesFragment extends Fragment {
             }
         });
 
-        prepareTemplates();
-        getNewItemsStore(3);
-
         RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
         recyclerView.setLayoutManager(mLayoutManager);
         //recyclerView.addItemDecoration(new GridSpacingItemDecoration(1, dpTopz(0), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(templateRecyclerAdapter);
+
+        prepareTemplates();
+        getNewItemsStore(10);
+
         return view;
     }
 
     public void getNewItemsStore(int limit) {
-        mRef.orderByKey().limitToLast(10).addValueEventListener(new ValueEventListener() {
+        mRef.orderByKey().limitToLast(limit).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                storeWaudioModelList.clear();
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     System.out.println("OBJECT " + data.getValue());
                     WaudioModel wt = data.getValue(WaudioModel.class);
                     storeWaudioModelList.add(wt);
                 }
                 int resulok = 0; //max 3
-                for (WaudioModel sd : templates.getSdWaudioModelList()) {
+                for (WaudioModel sd : sdWaudioModelList) {
                     for (WaudioModel store : storeWaudioModelList) {
-                        if (getSimpleName(store.getName()).equals(getSimpleName(sd.getName()))) {
+                        if (store.getSimpleName().equals(sd.getSimpleName())) {
                             storeWaudioModelList.remove(store);
                             break;
                         } else {
@@ -119,7 +122,7 @@ public class LibStylesFragment extends Fragment {
     }
 
     private void setupViewItemsStore(List<WaudioModel> list) {
-        if (list.isEmpty()) {
+        if (list.isEmpty() || getActivity() == null) {
             ((LinearLayout) lyContentItemStore.getParent()).setVisibility(View.GONE);
             return;
         }
@@ -133,7 +136,7 @@ public class LibStylesFragment extends Fragment {
             //TextView category = (TextView) view.findViewById(R.id.category);
 
             Picasso.with(getActivity()).load(waudioModel.getUrlThumbnail()).resize(160, 140).into(img);
-            title.setText(getSimpleName(waudioModel.getName()));
+            title.setText(waudioModel.getSimpleName());
             //category.setText(waudioModel.getCategory());
             lyContentItemStore.addView(view);
             view.startAnimation(bounce);
@@ -142,20 +145,21 @@ public class LibStylesFragment extends Fragment {
 
     }
 
-    private String getSimpleName(String name) {
-        if (name != null && name.contains(".")) {
-            return name.split("\\.")[0];
-        }
-        return name;
-    }
-
     /**
      * Templates para crear Waudios
      */
     private void prepareTemplates() {
+        MainApp app = (MainApp) getActivity().getApplicationContext();
+        if (!app.reloadWaudios) {
+            return;
+        }
+        sdWaudioModelList.clear();
         templates = new LoadTemplates(".mp4", getActivity().getExternalFilesDir(null).getAbsolutePath());
-        templateRecyclerAdapter = new TemplateRecyclerAdapter(getActivity(), R.layout.media_style_card, templates.getSdWaudioModelList());
+        sdWaudioModelList = templates.getSdWaudioModelList();
+        templateRecyclerAdapter = new TemplateRecyclerAdapter(getActivity(), R.layout.media_style_card, sdWaudioModelList);
+        recyclerView.setAdapter(templateRecyclerAdapter);
         templateRecyclerAdapter.notifyDataSetChanged();
+        app.reloadWaudios = false;
     }
 
     @Override
@@ -169,7 +173,6 @@ public class LibStylesFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.action_goto_store:
                 //Snackbar.make(getView(), getResources().getString(R.string.msgComingSoonStore), Snackbar.LENGTH_SHORT).show();
-                //mDataFirebaseHelper.incrementGotoStore()
                 onGoStore(null);
                 break;
         }
@@ -181,52 +184,13 @@ public class LibStylesFragment extends Fragment {
     public void onResume() {
         super.onResume();
         setHasOptionsMenu(isVisible());
+        prepareTemplates();
+        getNewItemsStore(10);
     }
 
     public void onGoStore(View view) {
+        mDataFirebaseHelper.incrementGotoStore();
         Intent intent = new Intent(getActivity(), StoreActivity.class);
         startActivity(intent);
     }
-
-    private class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
-        private int spanCount;
-        private int spacing;
-        boolean includeEdge;
-
-        public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
-            this.spanCount = spanCount;
-            this.spacing = spacing;
-            this.includeEdge = includeEdge;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-            //TODO Revisar Codigo que renderiza el RecyclerView
-            int position = parent.getChildAdapterPosition(view); //item position
-            int column = position % spanCount; //item column;
-
-            if (includeEdge) {
-                outRect.left = spacing - column * spacing / spanCount;
-                outRect.right = (column + 1) * spacing / spanCount;
-                if (position < spanCount) {
-                    outRect.top = spacing;
-                }
-                outRect.bottom = spacing;
-            } else {
-                outRect.left = column * spacing / spanCount;
-                outRect.right = spacing - (column + 1) * spacing / spanCount;
-                if (position >= spanCount) {
-                    outRect.top = spacing;
-                }
-            }
-
-        }
-
-    }
-
-    private int dpTopz(int dp) {
-        Resources resources = getResources();
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics()));
-    }
-
 }

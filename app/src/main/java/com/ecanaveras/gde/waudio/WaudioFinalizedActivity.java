@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.ecanaveras.gde.waudio.controllers.WaudioController;
 import com.ecanaveras.gde.waudio.editor.CompareWaudio;
 import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -43,10 +45,12 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
     private int position = 0;
     private AudioManager audioManager;
     private String templateUsed;
+    private WaudioController waudioController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_waudio_finalized);
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         mDataFirebaseHelper = new DataFirebaseHelper();
@@ -54,9 +58,6 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
         //Maneja el audio en llamadas
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
-
-
-        setContentView(R.layout.activity_waudio_finalized);
 
         app = (MainApp) getApplicationContext();
         intent = getIntent();
@@ -80,7 +81,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
 
 
     private void checkWaudio() {
-        System.out.println("checking....");
+        Log.i("Checking W Generation", "CHECK");
         if (intent.getStringExtra("waudio") != null) {
             pathWaudio = intent.getStringExtra("waudio");
         }
@@ -102,7 +103,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
             loadWaudio();
             lp.setVisibility(View.VISIBLE);
             lw.setVisibility(View.GONE);
-            System.out.println("Waudio in preview: " + pathWaudio);
+            Log.i("Waudio in preview", pathWaudio);
             return;
         }
         if (app.getGeneratorWaudio() == null) {
@@ -114,8 +115,9 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
     private void loadWaudio() {
         if (pathWaudio != null) {
             File f = new File(pathWaudio);
+            waudioController = new WaudioController(this, f);
             if (f.exists()) {
-                getSupportActionBar().setTitle("Waudio - " + f.getName().toLowerCase());
+                getSupportActionBar().setTitle("WAUDIO - " + f.getName().toUpperCase());
                 //Toast.makeText(this, getResources().getString(R.string.msgWaudioSuccess), Toast.LENGTH_SHORT).show();
                 MediaController controller = new MediaController(this);
                 controller.setAnchorView(videoView);
@@ -147,27 +149,15 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
     }
 
     public void onShare(View view) {
-        if (pathWaudio != null) {
+        if (waudioController != null) {
             if (videoView.isPlaying()) {
                 videoView.pause();
             }
-            File w = new File(pathWaudio);
-            Intent sendIntent = new Intent(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(w));
-            sendIntent.putExtra(Intent.EXTRA_TEXT, getResources().getString(R.string.hastag));
-            sendIntent.setType("video/*");
-            startActivity(Intent.createChooser(sendIntent, getResources().getString(R.string.msgShareWith)));
-
-            mFirebaseAnalytics.setUserProperty("shared", String.valueOf(true));
-            mDataFirebaseHelper.incrementWaudioShared();
+            waudioController.onShare();
         }
     }
 
     public void onGoEditor(View view) {
-        /*Intent intent = new Intent(this, EditorActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-        startActivity(intent);
-        */
         Intent intent = new Intent(Intent.ACTION_EDIT, Uri.parse(app.getFilename()));
         //intent.putExtra("was_get_content_intent", mWasGetContentIntent);
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
@@ -177,47 +167,13 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
     }
 
     public void onGoFile(View view) {
-        if (pathWaudio != null) {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-            Uri uri = Uri.parse(pathWaudio);
-            intent.setDataAndType(uri, "video/mp4");
-            startActivity(Intent.createChooser(intent, getResources().getString(R.string.msgOpenWith)));
-        }
+        if (waudioController != null)
+            waudioController.onGoFile();
     }
 
     public void onDelete(View view) {
-        if (pathWaudio != null) {
-            final File wDel = new File(pathWaudio);
-            if (wDel.exists()) {
-                new AlertDialog.Builder(this, R.style.AlertDialogCustom)
-                        .setTitle(getResources().getString(R.string.msgDeleteWaudio))
-                        .setMessage(getResources().getString(R.string.msgConfirmDelete))
-                        .setPositiveButton(
-                                getResources().getString(R.string.msgYesDelete),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,
-                                                        int whichButton) {
-                                        //app.getGeneratorWaudio().setOutFileWaudio(null);
-                                        if (wDel.delete()) {
-                                            mDataFirebaseHelper.incrementWaudioDeleted();
-                                            videoView.setVideoURI(null);
-                                            CompareWaudio cw = app.getCompareWaudioTmp();
-                                            if (app.WaudioExist(cw))
-                                                app.removeWaudio(cw);
-                                            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(wDel)));
-                                            finish();
-                                        } else {
-                                            Toast.makeText(WaudioFinalizedActivity.this, getResources().getString(R.string.msgErrorDeleteWaudio), Toast.LENGTH_SHORT).show();
-                                        }
-
-                                    }
-                                })
-                        .setCancelable(true)
-                        .setNegativeButton(getResources().getString(R.string.alert_cancel), null)
-                        .show();
-            }
-        }
-
+        if (waudioController != null)
+            waudioController.onDelete();
     }
 
     private void showBackAlert(String title, String message, String textPositive, boolean cancelable) {

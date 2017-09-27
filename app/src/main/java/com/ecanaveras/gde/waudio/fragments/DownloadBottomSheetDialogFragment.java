@@ -6,7 +6,9 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.ecanaveras.gde.waudio.R;
 import com.ecanaveras.gde.waudio.models.WaudioModel;
@@ -18,10 +20,13 @@ import com.squareup.picasso.Picasso;
 
 public class DownloadBottomSheetDialogFragment extends BottomSheetDialogFragment {
 
-    private WaudioModel item;
+    private WaudioModel waudioModel;
 
-    public DownloadBottomSheetDialogFragment(WaudioModel i) {
-        this.item = i;
+    public DownloadBottomSheetDialogFragment() {
+    }
+
+    public DownloadBottomSheetDialogFragment(WaudioModel model) {
+        this.waudioModel = model;
     }
 
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetCallback = new BottomSheetBehavior.BottomSheetCallback() {
@@ -48,10 +53,19 @@ public class DownloadBottomSheetDialogFragment extends BottomSheetDialogFragment
         CoordinatorLayout.Behavior behavior = params.getBehavior();
 
         ImageView imageView = (ImageView) contentView.findViewById(R.id.thumbnail);
-        Picasso.with(getContext()).load(item.getUrlThumbnail()).into(imageView);
+        TextView txtSizeWaudio = (TextView) contentView.findViewById(R.id.txtSizeWaudio);
+        TextView txtTitle = (TextView) contentView.findViewById(R.id.title);
+        TextView txtCategory = (TextView) contentView.findViewById(R.id.category);
+
+        //Data
+        txtTitle.setText(waudioModel.getSimpleName());
+        txtCategory.setText(waudioModel.getCategory());
+        Picasso.with(getContext()).load(waudioModel.getUrlThumbnail()).into(imageView);
+        txtSizeWaudio.setText(waudioModel.getSizeFormat());
 
         if (behavior != null && behavior instanceof BottomSheetBehavior) {
             ((BottomSheetBehavior) behavior).setBottomSheetCallback(mBottomSheetCallback);
         }
     }
 }
+

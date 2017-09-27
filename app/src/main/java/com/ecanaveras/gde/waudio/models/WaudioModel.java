@@ -20,6 +20,7 @@ public class WaudioModel {
     private long size;
     private Date date;
     private String sizeFormat;
+    private String extension;
 
     public WaudioModel() {
     }
@@ -65,10 +66,6 @@ public class WaudioModel {
         this.name = name;
     }
 
-    public String getCategory() {
-        return category;
-    }
-
     public void setCategory(String category) {
         this.category = category;
     }
@@ -93,9 +90,29 @@ public class WaudioModel {
 
     public String getSimpleName() {
         if (name != null && name.contains(".")) {
-            return name.split("\\.")[0];
+            String[] strings = name.split("\\s");
+            return name.replaceAll(strings[strings.length - 1], "");
         }
         return name;
+    }
+
+    public String getCategory() {
+        if (name != null) {
+            String[] strings = name.split("\\s");
+            return strings.length > 1 ? strings[strings.length - 1].replaceAll("\\.[a-z]*[0-9]", "") : "GENERAL";
+        }
+        return category;
+    }
+
+    private String getExtension() {
+        if (name != null && name.contains(".")) {
+            return name.split("\\.")[1];
+        }
+        return null;
+    }
+
+    public void setExtension(String extension) {
+        this.extension = extension;
     }
 
     public void setDateModified(long dateModified) {

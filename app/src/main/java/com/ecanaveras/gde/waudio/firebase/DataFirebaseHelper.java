@@ -63,6 +63,10 @@ public class DataFirebaseHelper {
         incrementValue(REF_WAUDIO_STORE, "visitas");
     }
 
+    public void incrementItemDownload() {
+        incrementValue(REF_WAUDIO_STORE, "downloads");
+    }
+
     public void incrementWaudioShared() {
         incrementValue(REF_WAUDIO_EVENTS, "compartidos");
     }

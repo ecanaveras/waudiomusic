@@ -42,17 +42,15 @@ public class LoadTemplates {
     }
 
     private void loads(String directoryPath) {
+        sdWaudioModelList.clear();
         File dir = new File(directoryPath);
         WaudioModel waudioModel;
         if (dir.exists()) {
-            for (String name : dir.list(new Mp4Filter(".mp4"))) {
-                boolean category = name.split("_").length > 1;
+            for (String name : dir.list(new Mp4Filter(this.extension))) {
+                boolean category = name.split("\\s").length > 1;
                 String path = dir.getAbsolutePath() + "/" + name;
-                waudioModel = new WaudioModel(name, path, category ? name.split("_")[1].replace(".mp4", "") : "General");
+                waudioModel = new WaudioModel(name, path);
                 sdWaudioModelList.add(waudioModel);
-                /*if (name.contains("_")) {
-                    System.out.println("Name:" + name.split("_")[0] + " Category:" + name.split("_")[1].replace(".mp4", "") + " filename:" + name + " path:" + dir.getAbsolutePath() + "\\" + name);
-                }*/
             }
         }
     }

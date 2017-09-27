@@ -40,6 +40,7 @@ public class MainApp extends Application {
     private String filename;
     private SharedPreferences preferences;
     SharedPreferences.Editor editor_pref;
+    public boolean reloadWaudios = true;
 
     @Override
     public void onCreate() {
@@ -49,10 +50,8 @@ public class MainApp extends Application {
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor_pref = preferences.edit();
         setupFonts();
-        if (preferences.getBoolean("remove_assets", true)) {
+        if (preferences.getBoolean("is_version_old", true)) {
             removeAssetsOld();
-        }
-        if (preferences.getBoolean("copy_assets", true)) {
             copyAssets();
         }
     }
@@ -105,9 +104,8 @@ public class MainApp extends Application {
             }
         }
         //Guardar data
-        editor_pref.putBoolean("copy_assets", false);
+        editor_pref.putBoolean("is_version_old", false);
         editor_pref.commit();
-        System.out.println("Waudio: Assets copy success");
     }
 
     private void copyFile(InputStream in, OutputStream out) throws IOException {
@@ -128,9 +126,6 @@ public class MainApp extends Application {
                 }
                 Log.e(MainApp.class.getSimpleName(), "Asset: " + name + " delete");
             }
-            //Guardar data
-            editor_pref.putBoolean("remove_assets", false);
-            editor_pref.commit();
         }
     }
 

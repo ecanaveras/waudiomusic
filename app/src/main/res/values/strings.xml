@@ -192,6 +192,7 @@
     <string name="msgShareWith">Share Waudio with...</string>
     <string name="msgDeleteWaudio">Delete :(</string>
     <string name="msgConfirmDelete">Do you want to delete the Waudio?</string>
+    <string name="msgConfirmTemplateDelete">Do you want to delete the Style?</string>
     <string name="msgYesDelete">YES, DELETE</string>
     <string name="alert_cancel">CANCEL</string>
     <string name="msgOpenWith">Open Waudio with...</string>

@@ -95,7 +95,6 @@
                             android:id="@+id/btnShare"
                             android:layout_width="wrap_content"
                             android:layout_height="40dp"
-
                             android:layout_weight="1"
                             android:background="@null"
                             android:minHeight="60dp"

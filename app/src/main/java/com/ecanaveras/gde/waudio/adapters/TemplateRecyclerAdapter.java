@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ecanaveras.gde.waudio.MainActivity;
 import com.ecanaveras.gde.waudio.MainApp;
 import com.ecanaveras.gde.waudio.R;
 import com.ecanaveras.gde.waudio.StoreActivity;
@@ -91,6 +92,7 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
                     } else {
                         intent = new Intent(mContext, WaudioPreviewActivity.class);
                         intent.putExtra(WaudioPreviewActivity.PATH_WAUDIO, waudioModel.getPathMp4());
+                        intent.putExtra(WaudioPreviewActivity.IS_TEMPLATE, true);
                         mContext.startActivity(intent);
                     }
                     break;
@@ -136,7 +138,7 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
     @Override
     public void onBindViewHolder(final TemplateRecyclerAdapter.MyViewHolder holder, int position) {
         WaudioModel waudioModel = waudioModelList.get(position);
-        holder.name.setText(waudioModel.getName());
+        holder.name.setText(waudioModel.getSimpleName());
         holder.category.setText(waudioModel.getCategory());
         if (isRemote) {
             Picasso.with(mContext).load(waudioModel.getUrlThumbnail()).into(holder.thumbnail);

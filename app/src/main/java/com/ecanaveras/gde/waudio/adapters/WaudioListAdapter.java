@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.ecanaveras.gde.waudio.MainActivity;
 import com.ecanaveras.gde.waudio.R;
 import com.ecanaveras.gde.waudio.WaudioPreviewActivity;
+import com.ecanaveras.gde.waudio.controllers.WaudioController;
 import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
 import com.ecanaveras.gde.waudio.models.WaudioModel;
 import com.ecanaveras.gde.waudio.picasso.VideoRequestHandler;
@@ -47,6 +48,7 @@ public class WaudioListAdapter extends SimpleCursorAdapter implements View.OnCli
     private HashMap<Integer, Boolean> mSelection = new HashMap<Integer, Boolean>();
     private VideoRequestHandler videoRequestHandler;
     private Picasso picassoInstance;
+    private WaudioController waudioController;
 
     @Override
     public void onClick(View v) {
@@ -120,7 +122,7 @@ public class WaudioListAdapter extends SimpleCursorAdapter implements View.OnCli
         String pathWaudio = cursor.getString(columnPath);
         Intent goIntent = new Intent(mContext, WaudioPreviewActivity.class);
         goIntent.putExtra(WaudioPreviewActivity.PATH_WAUDIO, pathWaudio);
-        goIntent.getBooleanExtra(WaudioPreviewActivity.IS_WAUDIO, true);
+        goIntent.putExtra(WaudioPreviewActivity.IS_WAUDIO, true);
         mContext.startActivity(goIntent);
     }
 
@@ -133,28 +135,8 @@ public class WaudioListAdapter extends SimpleCursorAdapter implements View.OnCli
 
         if (waudio != null) {
             File w = new File(waudio.getPathMp4());
-            Intent sendIntent = new Intent(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(w));
-            sendIntent.putExtra(Intent.EXTRA_TEXT, mContext.getResources().getString(R.string.hastag));
-            sendIntent.setType("video/*");
-            mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getString(R.string.msgShareWith)));
-
-            mFirebaseAnalytics.setUserProperty("shared", String.valueOf(true));
-            mDataFirebaseHelper.incrementWaudioShared();
-            //Setup Twitter
-            /*PackageManager pm = mContext.getPackageManager();
-            List<ResolveInfo> resolveInfoList = pm.queryIntentActivities(sendIntent, 0);
-            for (ResolveInfo app : resolveInfoList) {
-                if (app.activityInfo.name.equals("com.twitter.android.PostActivity")) {
-                    ActivityInfo ai = app.activityInfo;
-                    ComponentName cn = new ComponentName(app.activityInfo.packageName, ai.name);
-                    sendIntent.addCategory(Intent.CATEGORY_LAUNCHER);
-                    sendIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                    sendIntent.setComponent(cn);
-                    break;
-                }
-            }*/
-
+            waudioController = new WaudioController(mContext, w);
+            waudioController.onShare();
         }
     }
 
