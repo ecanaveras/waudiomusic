@@ -15,6 +15,12 @@
     </style>
 
     <!--Elder Style-->
+    <style name="AppTheme.ActionBar.Transparent" parent="AppTheme">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="colorPrimary">@android:color/transparent</item>
+    </style>
+
     <style name="AlertDialogCustom" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowNoTitle">false</item>
         <item name="android:windowContentOverlay">@null</item>

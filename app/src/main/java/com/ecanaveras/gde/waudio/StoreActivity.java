@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.ecanaveras.gde.waudio.adapters.TemplateRecyclerAdapter;
 import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
-import com.ecanaveras.gde.waudio.fragments.DownloadBottomSheetDialogFragment;
+import com.ecanaveras.gde.waudio.fragments.DownloadDialogFragment;
 import com.ecanaveras.gde.waudio.models.WaudioModel;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -28,7 +28,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageMetadata;
 import com.google.firebase.storage.StorageReference;
-import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,7 +50,7 @@ public class StoreActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private BottomSheetBehavior mBottomSheetBehavior;
     private WaudioModel downloadItemWaudio;
-    private DownloadBottomSheetDialogFragment bottomSheetDialogFragment;
+    private DownloadDialogFragment bottomSheetDialogFragment;
     private LoadTemplates loadTemplates;
     private FirebaseAnalytics mFirebaseAnalytics;
 
@@ -175,7 +174,7 @@ public class StoreActivity extends AppCompatActivity {
 
     public void onClicDownloadItem(WaudioModel item) {
         downloadItemWaudio = item;
-        bottomSheetDialogFragment = new DownloadBottomSheetDialogFragment(item);
+        bottomSheetDialogFragment = new DownloadDialogFragment(item);
         bottomSheetDialogFragment.show(getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
     }
 

@@ -58,12 +58,12 @@ public class WaudioController {
         onDelete(true);
     }
 
-    private void onDelete(boolean istemplate) {
+    private void onDelete(boolean isTemplate) {
         if (fileWaudio == null) {
             return;
         }
         String msg = context.getResources().getString(R.string.msgConfirmDelete);
-        if (istemplate) {
+        if (isTemplate) {
             msg = context.getResources().getString(R.string.msgConfirmTemplateDelete);
         }
         final MainApp app = (MainApp) context.getApplicationContext();

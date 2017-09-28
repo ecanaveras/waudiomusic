@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/ToolbarBackground"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:orientation="vertical"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    android:orientation="vertical">
 
 
-    <!--<TextView
+    <!--<TextView style="@style/ToolbarBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -18,11 +15,21 @@
         android:textAllCaps="true"
         android:textColor="@color/colorTextSecondary" />-->
 
+    <ImageView
+        android:id="@+id/imgBg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg1" />
+
     <ListView
         android:id="@+id/listAudio"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1" />
+        android:layout_alignLeft="@+id/imgBg"
+        android:layout_alignStart="@+id/imgBg"
+        android:layout_weight="1" /> <!--android:paddingTop="?android:attr/actionBarSize"-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -51,4 +58,4 @@
     </LinearLayout>
 
 
-</LinearLayout>
+</RelativeLayout>

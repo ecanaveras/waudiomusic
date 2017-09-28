@@ -3,14 +3,11 @@ package com.ecanaveras.gde.waudio.fragments;
 
 import android.app.Fragment;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -53,6 +50,7 @@ public class LibStylesFragment extends Fragment {
     private LoadTemplates templates;
     private List<WaudioModel> storeWaudioModelList = new ArrayList<>();
     private List<WaudioModel> sdWaudioModelList = new ArrayList<>();
+    private MainApp app;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -61,6 +59,8 @@ public class LibStylesFragment extends Fragment {
         //Database
         mDataFirebaseHelper = new DataFirebaseHelper();
         mRef = mDataFirebaseHelper.getDatabaseReference(DataFirebaseHelper.REF_WAUDIO_TEMPLATES);
+
+        app = (MainApp) getActivity().getApplicationContext();
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         lyContentItemStore = (LinearLayout) view.findViewById(R.id.lyContentItemStore);
@@ -77,8 +77,9 @@ public class LibStylesFragment extends Fragment {
         //recyclerView.addItemDecoration(new GridSpacingItemDecoration(1, dpTopz(0), true));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
 
+        app.reloadWaudios = true;
         prepareTemplates();
-        getNewItemsStore(10);
+        getNewItemsStore(5);
 
         return view;
     }
@@ -149,7 +150,6 @@ public class LibStylesFragment extends Fragment {
      * Templates para crear Waudios
      */
     private void prepareTemplates() {
-        MainApp app = (MainApp) getActivity().getApplicationContext();
         if (!app.reloadWaudios) {
             return;
         }
@@ -185,7 +185,7 @@ public class LibStylesFragment extends Fragment {
         super.onResume();
         setHasOptionsMenu(isVisible());
         prepareTemplates();
-        getNewItemsStore(10);
+        getNewItemsStore(5);
     }
 
     public void onGoStore(View view) {

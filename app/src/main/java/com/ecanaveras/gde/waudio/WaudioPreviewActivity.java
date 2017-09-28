@@ -1,29 +1,23 @@
 package com.ecanaveras.gde.waudio;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.ecanaveras.gde.waudio.controllers.WaudioController;
-import com.ecanaveras.gde.waudio.editor.CompareWaudio;
 import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
 import com.google.firebase.analytics.FirebaseAnalytics;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 
@@ -43,7 +37,7 @@ public class WaudioPreviewActivity extends AppCompatActivity implements AudioMan
     private RelativeLayout layoutWaudioButtons;
     private TextView txtTitle;
     private WaudioController waudioController;
-    private boolean isTemplate;
+    private boolean isTemplate = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +63,7 @@ public class WaudioPreviewActivity extends AppCompatActivity implements AudioMan
             layoutWaudioButtons.setVisibility(View.VISIBLE);
         }
         if (intent.getBooleanExtra(IS_TEMPLATE, false)) {
+            isTemplate = true;
             layoutButtons.setVisibility(View.VISIBLE);
             layoutTemplateButtons.setVisibility(View.VISIBLE);
         }
@@ -114,7 +109,11 @@ public class WaudioPreviewActivity extends AppCompatActivity implements AudioMan
         if (videoView.isPlaying()) {
             videoView.pause();
         }
-        waudioController.onDeleteTemplate();
+        if (isTemplate) {
+            waudioController.onDeleteTemplate();
+        } else {
+            waudioController.onDelete();
+        }
     }
 
     public void onGoFile(View view) {

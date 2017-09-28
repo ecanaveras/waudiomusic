@@ -47,6 +47,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /*requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);*/
         setContentView(R.layout.activity_main);
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
@@ -56,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
             libWaudiosFragment = new LibWaudiosFragment();
             libStylesFragment = new LibStylesFragment();
         }
-
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //toolbar.setTitleTextAppearance(getApplicationContext(), R.style.Theme_AppLib_ActionBar_TitleTextStyle);
@@ -159,9 +161,9 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (back_pressed + 2000 > System.currentTimeMillis())
-            super.onBackPressed();
-        else
+        if (back_pressed + 2000 > System.currentTimeMillis()) {
+            finishAffinity();
+        } else
             Toast.makeText(this, getResources().getString(R.string.msgExit), Toast.LENGTH_SHORT).show();
         back_pressed = System.currentTimeMillis();
     }

@@ -6,7 +6,7 @@
     android:background="@drawable/bkgnd_selected_item"
     android:descendantFocusability="blocksDescendants"
     android:orientation="vertical"
-    android:paddingLeft="10dp"
+    android:paddingLeft="20dp"
     android:paddingRight="10dp">
 
     <LinearLayout
@@ -16,10 +16,10 @@
         android:orientation="horizontal">
 
         <android.support.v7.widget.CardView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp"
+            android:layout_width="80dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:foreground="?android:attr/selectableItemBackground"
             card_view:cardBackgroundColor="@color/colorBgCard"
             card_view:cardCornerRadius="@dimen/card_album_radius"
