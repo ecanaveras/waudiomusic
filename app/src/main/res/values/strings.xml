@@ -69,7 +69,6 @@
     <string name="ffwd">Fast forward</string>
     <string name="zoom_in" translatable="false">Zoom In</string>
     <string name="zoom_out" translatable="false">Zoom Out</string>
-    <string name="save_button">Save</string>
 
     <!--
      Menu items
@@ -85,9 +84,6 @@
 
     <string name="context_menu_edit">Edit</string>
     <string name="context_menu_delete">Delete</string>
-    <string name="context_menu_default_ringtone">Set as Default Ringtone</string>
-    <string name="context_menu_contact">Assign to Contact</string>
-    <string name="context_menu_default_notification">Set as Default Notification</string>
 
     <!--
      File Save dialog
@@ -213,12 +209,10 @@
     <string name="tip_pause_music">Tip: To pause, press \'back\'</string>
 
     <string name="title_activity_waudio_fullscreen">Waudio Preview</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="formatContextMenuDeleteWaudio">Delete %1$d Waudio(s) selected?</string>
     <string name="formatDeleteWaudio">Do you want to delete the Waudio: %1$s?</string>
     <string name="info_contextmenu_deleted_waudio">%1$d Waudio(s) deleted</string>
-    <string name="msgProblemGenerateWaudio">Out, algo salió mal, vuelve al editor e intenta de nuevo!</string>
+    <string name="msgProblemGenerateWaudio">Out, something went wrong, back to the editor and try again!</string>
     <string name="lblCategory">CATEGORY</string>
     <string name="alert_title_permitions">Waudio Permissions</string>
     <string name="alert_continue">CONTINUE</string>
@@ -237,5 +231,8 @@
     <string name="main_activity_label" translatable="false">Waudio Music</string>
     <string name="lblGoHome">GO TO WAUDIOS</string>
     <string name="store_activity_label">Waudio Store</string>
+    <string name="msgNoMusic">REALLY DON\'T HAVE MUSIC?</string>
+    <string name="msgNoMusic2">IT SEEMS WHAT YOU STAYED\n...IN THE ROCK AGE!</string>
+    <string name="msgNoMusic3">Waudio Music, makes his magic only with musica\n the internet is full of it, or ask your friends, and come back!</string>
 
 </resources>

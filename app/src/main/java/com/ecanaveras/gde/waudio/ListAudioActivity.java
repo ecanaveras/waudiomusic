@@ -12,8 +12,6 @@ import android.content.Loader;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.MergeCursor;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -32,16 +30,16 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
+import com.ecanaveras.gde.waudio.adapters.MusicListAdapter;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.IOException;
@@ -62,7 +60,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
     private int count;
     private MediaPlayer mediaPlayer;
     private String filename;
-    private SimpleCursorAdapter mAdapter;
+    private MusicListAdapter mAdapter;
     private long back_pressed;
     private AudioManager audioManager;
     private SearchView mFilter;
@@ -72,6 +70,8 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
     //private boolean mWasGetContentIntent;
     private boolean mKeyboardStatus = false;
     private SearchView searchView;
+    private MainApp app;
+    private LinearLayout layoutNoMusic;
 
     private AdapterView.OnItemClickListener MusicGridListener = new AdapterView.OnItemClickListener() {
 
@@ -131,6 +131,8 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
 
         setContentView(R.layout.activity_list_audio);
 
+        app = (MainApp) getApplicationContext();
+
         //Maneja el audio en llamadas
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
@@ -140,6 +142,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
         listAudio = (ListView) findViewById(R.id.listAudio);
         btnNext = (Button) findViewById(R.id.btnNext);
         btnPause = (ImageButton) findViewById(R.id.btnPause);
+        layoutNoMusic = (LinearLayout) findViewById(R.id.layoutNoMusic);
         btnNext.setEnabled(false);
         btnPause.setEnabled(false);
 
@@ -171,7 +174,6 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
                     dismissKeyboard();
                 }
                 audioManager.abandonAudioFocus(ListAudioActivity.this);
-                MainApp app = (MainApp) getApplicationContext();
                 app.setFilename(filename);
                 Intent intent = new Intent(Intent.ACTION_EDIT, Uri.parse(filename));
                 intent.setClassName("com.ecanaveras.gde.waudio", "com.ecanaveras.gde.waudio.EditorActivity");
@@ -186,6 +188,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
             setupListView();
+            app.isFirstSearchMusic = true;
             findMusic(null);
             mFirebaseAnalytics.setUserProperty("open_list_audio", String.valueOf(true));
         } else {
@@ -230,6 +233,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
             MediaStore.Audio.Media._ID,
             MediaStore.Audio.Media.SIZE,
             MediaStore.Audio.Media.DATA,
+            MediaStore.Audio.Media.DURATION,
             MediaStore.Audio.Media.TITLE,
             MediaStore.Audio.Media.ARTIST,
             MediaStore.Audio.Media.ALBUM,
@@ -242,6 +246,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
             MediaStore.Audio.Media._ID,
             MediaStore.Audio.Media.SIZE,
             MediaStore.Audio.Media.DATA,
+            MediaStore.Audio.Media.DURATION,
             MediaStore.Audio.Media.TITLE,
             MediaStore.Audio.Media.ARTIST,
             MediaStore.Audio.Media.ALBUM,
@@ -304,13 +309,15 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
         }
 
         if (mExternalCursor != null) {
+            layoutNoMusic.setVisibility(View.GONE);
             Cursor mergeCursor = new MergeCursor(new Cursor[]{mExternalCursor});
             mAdapter.swapCursor(mergeCursor);
             if (runFirst) {
                 Toast.makeText(this, getResources().getString(R.string.msgChooseAudio), Toast.LENGTH_SHORT).show();
                 runFirst = false;
             }
-
+        } else if (app.isFirstSearchMusic) {
+            layoutNoMusic.setVisibility(View.VISIBLE);
         }
     }
 
@@ -321,7 +328,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
 
     private void setupListView() {
         try {
-            mAdapter = new SimpleCursorAdapter(
+            mAdapter = new MusicListAdapter(
                     this,
                     // Use a template that displays a text view
                     R.layout.media_select_row,
@@ -454,6 +461,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
         if (searchView != null) {
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 public boolean onQueryTextChange(String newText) {
+                    app.isFirstSearchMusic = false;
                     findMusic(newText);
                     return true;
                 }

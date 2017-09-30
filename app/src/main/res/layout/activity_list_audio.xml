@@ -31,6 +31,44 @@
         android:layout_alignStart="@+id/imgBg"
         android:layout_weight="1" /> <!--android:paddingTop="?android:attr/actionBarSize"-->
 
+    <!--NO MUSIC-->
+    <LinearLayout
+        android:id="@+id/layoutNoMusic"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_margin="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="3"
+            android:text="@string/msgNoMusic"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:typeface="monospace"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="3"
+            android:text="@string/msgNoMusic2"
+            android:textAlignment="center"
+            android:textColor="@color/colorTextSecondary"
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="3"
+            android:text="@string/msgNoMusic3"
+            android:textAlignment="center"
+            android:textColor="@color/colorTextThirdy" />
+
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

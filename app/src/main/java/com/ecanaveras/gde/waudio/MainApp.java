@@ -41,6 +41,7 @@ public class MainApp extends Application {
     private SharedPreferences preferences;
     SharedPreferences.Editor editor_pref;
     public boolean reloadWaudios = true;
+    public boolean isFirstSearchMusic = false;
 
     @Override
     public void onCreate() {

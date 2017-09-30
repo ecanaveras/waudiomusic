@@ -53,9 +53,6 @@
        -->
     <string name="context_menu_edit">Editar</string>
     <string name="context_menu_delete">Eliminar</string>
-    <string name="context_menu_contact">Asignar a contacto</string>
-    <string name="context_menu_default_ringtone">Por defecto</string>
-    <string name="context_menu_default_notification">Por defecto</string>
     <!--
        Cuadro Guardar archivo
        -->
@@ -179,4 +176,7 @@
     <string name="msgErrorDeleteWaudio">Problemas al eliminar el waudio, intentalo de nuevo</string>
     <string name="msgComingSoonStore">Pronto podrás descargar muchos estilos!</string>
     <string name="lblGoHome">IR A WAUDIOS</string>
+    <string name="msgNoMusic2">PARECE QUE TE QUEDASTE EN LA ERA DE ROCA!</string>
+    <string name="msgNoMusic3">Waudio Music, hace su magia solo con música\\n el internet está lleno de ella, o pidele a tus amigos, y vuelve!</string>
+    <string name="msgNoMusic">¿DE VERDAD NO TIENES MÚSICA?</string>
 </resources>
