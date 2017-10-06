@@ -76,6 +76,10 @@ public class WaudioController {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,
                                                     int whichButton) {
+                                    if(fileWaudio.getName().toUpperCase().contains("HEADSET")){
+                                        Toast.makeText(context, context.getResources().getString(R.string.msgDenegateTemplateDelete), Toast.LENGTH_SHORT).show();
+                                        return;
+                                    }
                                     if (fileWaudio.delete()) {
                                         context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(fileWaudio)));
                                         CompareWaudio cw = app.getCompareWaudioTmp();

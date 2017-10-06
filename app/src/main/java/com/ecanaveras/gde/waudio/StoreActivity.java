@@ -107,7 +107,6 @@ public class StoreActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 storeWaudioModelList.clear();
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    //System.out.println("OBJECT " + data.getValue());
                     WaudioModel wt = data.getValue(WaudioModel.class);
                     storeWaudioModelList.add(wt);
                 }

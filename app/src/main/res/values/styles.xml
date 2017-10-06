@@ -68,6 +68,10 @@
         <item name="android:background">@drawable/buttondefault</item>
     </style>
 
+    <style name="BkgndIndicator">
+        <item name="android:background">@drawable/bkgnd_indicator</item>
+    </style>
+
     <style name="WaudioButtonRed" parent="WaudioButton">
         <item name="android:background">@drawable/buttonred</item>
     </style>

@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ecanaveras.gde.waudio.LoadTemplates;
+import com.ecanaveras.gde.waudio.MainActivity;
 import com.ecanaveras.gde.waudio.MainApp;
 import com.ecanaveras.gde.waudio.R;
 import com.ecanaveras.gde.waudio.StoreActivity;
@@ -79,7 +80,7 @@ public class LibStylesFragment extends Fragment {
 
         app.reloadWaudios = true;
         prepareTemplates();
-        getNewItemsStore(5);
+        getNewItemsStore(10);
 
         return view;
     }
@@ -90,29 +91,25 @@ public class LibStylesFragment extends Fragment {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 storeWaudioModelList.clear();
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    System.out.println("OBJECT " + data.getValue());
                     WaudioModel wt = data.getValue(WaudioModel.class);
                     storeWaudioModelList.add(wt);
                 }
-                int resulok = 0; //max 3
-                for (WaudioModel sd : sdWaudioModelList) {
-                    for (WaudioModel store : storeWaudioModelList) {
-                        if (store.getSimpleName().equals(sd.getSimpleName())) {
+                List<WaudioModel> itemsShow = new ArrayList<WaudioModel>();
+                for (WaudioModel store : storeWaudioModelList) {
+                    for (WaudioModel sd : sdWaudioModelList) {
+                        //SI NO EXISTE EN LOS TEMPLATES SD
+                        if (!store.getSimpleName().equals(sd.getSimpleName())) {
+                            itemsShow.add(store);
+                        }else{
                             storeWaudioModelList.remove(store);
-                            break;
-                        } else {
-                            resulok++;
                         }
-                        if (resulok == 3) {
-                            break;
-                        }
+                        break;
                     }
-                    if (resulok == 3) {
+                    if (itemsShow.size() == 3) {
                         break;
                     }
                 }
-
-                setupViewItemsStore(storeWaudioModelList);
+                setupViewItemsStore(itemsShow);
             }
 
             @Override
@@ -143,7 +140,8 @@ public class LibStylesFragment extends Fragment {
             view.startAnimation(bounce);
         }
         ((LinearLayout) lyContentItemStore.getParent()).setVisibility(View.VISIBLE);
-
+        MainActivity activity = (MainActivity) getActivity();
+        activity.refreshNameTabs(list.size());
     }
 
     /**
@@ -185,7 +183,7 @@ public class LibStylesFragment extends Fragment {
         super.onResume();
         setHasOptionsMenu(isVisible());
         prepareTemplates();
-        getNewItemsStore(5);
+        //getNewItemsStore(5);
     }
 
     public void onGoStore(View view) {

@@ -24,10 +24,12 @@
 
         <ImageView
             android:id="@+id/thumbnail"
-            android:layout_width="120dp"
-            android:layout_height="80dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:scaleType="fitXY" />
+            android:scaleType="fitXY"
+            android:minWidth="100dp"
+            android:minHeight="70dp"/>
     </FrameLayout>
 
 

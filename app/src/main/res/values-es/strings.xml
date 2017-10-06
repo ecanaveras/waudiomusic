@@ -179,4 +179,6 @@
     <string name="msgNoMusic2">PARECE QUE TE QUEDASTE EN LA ERA DE ROCA!</string>
     <string name="msgNoMusic3">Waudio Music, hace su magia solo con música\\n el internet está lleno de ella, o pidele a tus amigos, y vuelve!</string>
     <string name="msgNoMusic">¿DE VERDAD NO TIENES MÚSICA?</string>
+    <string name="msgDenegateTemplateDelete">Mi amig@ este estilo hace parte de mi magia, no lo puedes borrar!</string>
+    <string name="msgIntroStore">WAUDIO STORE, UN MUNDO DE ESTILOS PARA CREAR WAUDIOS MARAVILLOSOS...</string>
 </resources>

@@ -234,5 +234,7 @@
     <string name="msgNoMusic">REALLY DON\'T HAVE MUSIC?</string>
     <string name="msgNoMusic2">IT SEEMS WHAT YOU STAYED\n...IN THE ROCK AGE!</string>
     <string name="msgNoMusic3">Waudio Music, makes his magic only with musica\n the internet is full of it, or ask your friends, and come back!</string>
+    <string name="msgDenegateTemplateDelete">Mi amig@ este estilo hace parte de mi magia, no lo puedes borrar!</string>
+    <string name="msgIntroStore">WAUDIO STORE, UN MUNDO DE ESTILOS PARA CREAR WAUDIOS MARAVILLOSOS...</string>
 
 </resources>

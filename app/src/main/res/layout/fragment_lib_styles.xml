@@ -71,7 +71,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:maxLines="2"
-                    android:text="WAUDIO STORE, UN MUNDO DE ESTILOS PARA CREAR WAUDIOS MARAVILLOSOS..."
+                    android:text="@string/msgIntroStore"
                     android:textColor="@color/playback_indicator"
                     android:textSize="9sp" />
 

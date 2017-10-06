@@ -126,6 +126,15 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void refreshNameTabs(int cantItems) {
+        List<String> titles = new ArrayList<>();
+        titles.add(getString(R.string.title_fragment_waudios));
+        titles.add(getString(R.string.title_fragment_styles) + (cantItems != 0 ? " (" + cantItems + ")" : ""));
+        adaptadorSecciones.setTitles(titles);
+        adaptadorSecciones.notifyDataSetChanged();
+        changeTabsFont();
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -174,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
     public class AdaptadorSecciones extends FragmentStatePagerAdapter {
 
         private final List<Fragment> fragments = new ArrayList<>();
-        private final List<String> titles = new ArrayList<>();
+        private List<String> titles = new ArrayList<>();
 
         public AdaptadorSecciones(FragmentManager fm) {
             super(fm);
@@ -199,5 +208,11 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             return titles.get(position);
         }
+
+        public void setTitles(List<String> titles) {
+            this.titles = titles;
+        }
+
+
     }
 }
