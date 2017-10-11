@@ -27,6 +27,7 @@ import com.ecanaveras.gde.waudio.R;
 import com.ecanaveras.gde.waudio.StoreActivity;
 import com.ecanaveras.gde.waudio.adapters.TemplateRecyclerAdapter;
 import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
+import com.ecanaveras.gde.waudio.listener.TemplatesFileObserver;
 import com.ecanaveras.gde.waudio.models.WaudioModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -52,6 +53,8 @@ public class LibStylesFragment extends Fragment {
     private List<WaudioModel> storeWaudioModelList = new ArrayList<>();
     private List<WaudioModel> sdWaudioModelList = new ArrayList<>();
     private MainApp app;
+    private TemplatesFileObserver observer;
+    public boolean refresh = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -82,11 +85,16 @@ public class LibStylesFragment extends Fragment {
         prepareTemplates();
         getNewItemsStore(10);
 
+        //Si cambian los templates, actualiza el listado
+        observer = new TemplatesFileObserver(getActivity().getExternalFilesDir(null).getAbsolutePath());
+        observer.setActivity(this);
+        observer.startWatching();
+
         return view;
     }
 
     public void getNewItemsStore(int limit) {
-        mRef.orderByKey().limitToLast(limit).addValueEventListener(new ValueEventListener() {
+        mRef.orderByKey().limitToFirst(limit).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 storeWaudioModelList.clear();
@@ -96,15 +104,16 @@ public class LibStylesFragment extends Fragment {
                 }
                 List<WaudioModel> itemsShow = new ArrayList<WaudioModel>();
                 for (WaudioModel store : storeWaudioModelList) {
+                    boolean downloaded = false;
                     for (WaudioModel sd : sdWaudioModelList) {
                         //SI NO EXISTE EN LOS TEMPLATES SD
-                        if (!store.getSimpleName().equals(sd.getSimpleName())) {
-                            itemsShow.add(store);
-                        }else{
-                            storeWaudioModelList.remove(store);
+                        if (store.getName().equals(sd.getName())) {
+                            downloaded = true;
+                            break;
                         }
-                        break;
                     }
+                    if (!downloaded)
+                        itemsShow.add(store);
                     if (itemsShow.size() == 3) {
                         break;
                     }
@@ -124,6 +133,7 @@ public class LibStylesFragment extends Fragment {
             ((LinearLayout) lyContentItemStore.getParent()).setVisibility(View.GONE);
             return;
         }
+        lyContentItemStore.removeAllViewsInLayout();
         LayoutInflater inflater = LayoutInflater.from(getActivity());
         Animation bounce = AnimationUtils.loadAnimation(getActivity().getApplicationContext(), R.anim.bounce);
         for (WaudioModel waudioModel : list) {
@@ -147,8 +157,8 @@ public class LibStylesFragment extends Fragment {
     /**
      * Templates para crear Waudios
      */
-    private void prepareTemplates() {
-        if (!app.reloadWaudios) {
+    public void prepareTemplates() {
+        if (!refresh) {
             return;
         }
         sdWaudioModelList.clear();
@@ -157,7 +167,7 @@ public class LibStylesFragment extends Fragment {
         templateRecyclerAdapter = new TemplateRecyclerAdapter(getActivity(), R.layout.media_style_card, sdWaudioModelList);
         recyclerView.setAdapter(templateRecyclerAdapter);
         templateRecyclerAdapter.notifyDataSetChanged();
-        app.reloadWaudios = false;
+        refresh = false;
     }
 
     @Override
@@ -173,6 +183,8 @@ public class LibStylesFragment extends Fragment {
                 //Snackbar.make(getView(), getResources().getString(R.string.msgComingSoonStore), Snackbar.LENGTH_SHORT).show();
                 onGoStore(null);
                 break;
+            //case R.id.action_update_store:
+
         }
         return true;
     }
@@ -182,13 +194,22 @@ public class LibStylesFragment extends Fragment {
     public void onResume() {
         super.onResume();
         setHasOptionsMenu(isVisible());
-        prepareTemplates();
-        //getNewItemsStore(5);
+        if (refresh) {
+            prepareTemplates();
+            getNewItemsStore(10);
+        }
     }
 
     public void onGoStore(View view) {
         mDataFirebaseHelper.incrementGotoStore();
         Intent intent = new Intent(getActivity(), StoreActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (observer != null)
+            observer.stopWatching();
     }
 }

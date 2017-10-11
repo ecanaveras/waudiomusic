@@ -47,7 +47,7 @@ public class LoadTemplates {
         WaudioModel waudioModel;
         if (dir.exists()) {
             for (String name : dir.list(new Mp4Filter(this.extension))) {
-                boolean category = name.split("\\s").length > 1;
+                //boolean category = name.split("\\s").length > 1;
                 String path = dir.getAbsolutePath() + "/" + name;
                 waudioModel = new WaudioModel(name, path);
                 sdWaudioModelList.add(waudioModel);
