@@ -82,11 +82,17 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
 
     private void checkWaudio() {
         Log.i("Checking W Generation", "CHECK");
+
         if (intent.getStringExtra("waudio") != null) {
             pathWaudio = intent.getStringExtra("waudio");
         }
         if (pathWaudio == null && app.getGeneratorWaudio() != null && app.getGeneratorWaudio().getOutFileWaudio() != null) {
             pathWaudio = app.getGeneratorWaudio().getOutFileWaudio().getAbsolutePath();
+        }
+
+        if (pathWaudio == null && app.getGeneratorWaudio() == null) {
+            onGoHome(null);
+            return;
         }
 
         if (pathWaudio == null) {
@@ -96,9 +102,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
                     checkWaudio();
                 }
             }, 1000);
-        }
-
-        if (pathWaudio != null) {
+        } else {
             templateUsed = intent.getStringExtra(TEMPLATE_USED);
             loadWaudio();
             lp.setVisibility(View.VISIBLE);
@@ -106,9 +110,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
             Log.i("Waudio in preview", pathWaudio);
             return;
         }
-        if (app.getGeneratorWaudio() == null) {
-            onGoHome(null);
-        }
+
     }
 
 
