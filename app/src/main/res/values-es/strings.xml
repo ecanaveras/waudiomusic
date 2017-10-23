@@ -175,10 +175,15 @@
     <string name="lblOrderbyTitle">Nombre</string>
     <string name="msgErrorDeleteWaudio">Problemas al eliminar el waudio, intentalo de nuevo</string>
     <string name="msgComingSoonStore">Pronto podrás descargar muchos estilos!</string>
-    <string name="lblGoHome">IR A WAUDIOS</string>
+    <string name="lblGoHome">VER WAUDIOS</string>
     <string name="msgNoMusic2">PARECE QUE TE QUEDASTE EN LA ERA DE ROCA!</string>
-    <string name="msgNoMusic3">Waudio Music, hace su magia solo con música\\n el internet está lleno de ella, o pidele a tus amigos, y vuelve!</string>
+    <string name="msgNoMusic3">Waudio Music, hace su magia solo con música\n el internet está lleno de ella, o pidele a tus amigos, y vuelve!</string>
     <string name="msgNoMusic">¿DE VERDAD NO TIENES MÚSICA?</string>
     <string name="msgDenegateTemplateDelete">Mi amig@ este estilo hace parte de mi magia, no lo puedes borrar!</string>
     <string name="msgIntroStore">WAUDIO STORE, UN MUNDO DE ESTILOS PARA CREAR WAUDIOS MARAVILLOSOS...</string>
+    <string name="msgItemsAvailable">NUEVOS ESTILOS DISPONIBLES</string>
+    <string name="msgRating">Te has divertido y nos encanta eso!!! \nCuantas estrellas le darías a</string>
+    <string name="alert_ok_new_styles">MUESTRAME</string>
+    <string name="alert_ok_rating">TE HARÉ FELIZ</string>
+    <string name="alert_cancel_rating">LUEGUITO</string>
 </resources>

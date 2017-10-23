@@ -290,6 +290,7 @@ public class GeneratorWaudio implements Serializable {
             mDataFirebaseHelper.incrementWaudioCreated();
             MainApp app = (MainApp) context.getApplicationContext();
             app.addNewWaudio(new CompareWaudio(getTitle().toString(), getPathTemplate(), getOutFileWaudio(), getEndTime()));
+            app.incrementCountWaudioCreated();
             scanWaudioVideos(outFileWaudio);
             Log.i("Waudio", outFileWaudio.getName() + " creado exitosamente");
         } catch (IOException e) {

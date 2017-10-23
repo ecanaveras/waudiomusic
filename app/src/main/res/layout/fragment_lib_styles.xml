@@ -54,6 +54,13 @@
                 android:padding="8dp"
                 android:visibility="gone">
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="NUEVOS ESTILOS DISPONIBLES..."
+                    android:textAlignment="center"
+                    android:textSize="14sp"/>
+
                 <LinearLayout
                     android:id="@+id/lyContentItemStore"
                     android:layout_width="wrap_content"
@@ -73,7 +80,7 @@
                     android:maxLines="2"
                     android:text="@string/msgIntroStore"
                     android:textColor="@color/playback_indicator"
-                    android:textSize="9sp" />
+                    android:textSize="10sp" />
 
             </LinearLayout>
 

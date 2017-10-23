@@ -2,8 +2,10 @@ package com.ecanaveras.gde.waudio.fragments;
 
 
 import android.app.Fragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -56,6 +58,7 @@ public class LibStylesFragment extends Fragment {
     private TemplatesFileObserver observer;
     public boolean refresh = true;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_lib_styles, container, false);
@@ -83,18 +86,19 @@ public class LibStylesFragment extends Fragment {
 
         app.reloadWaudios = true;
         prepareTemplates();
-        getNewItemsStore(10);
+        getNewItemsStore(20);
+        countItemsStore();
 
         //Si cambian los templates, actualiza el listado
         observer = new TemplatesFileObserver(getActivity().getExternalFilesDir(null).getAbsolutePath());
-        observer.setActivity(this);
+        observer.setFragment(this);
         observer.startWatching();
 
         return view;
     }
 
     public void getNewItemsStore(int limit) {
-        mRef.orderByKey().limitToFirst(limit).addValueEventListener(new ValueEventListener() {
+        mRef.orderByKey().limitToLast(limit).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 storeWaudioModelList.clear();
@@ -154,6 +158,33 @@ public class LibStylesFragment extends Fragment {
         activity.refreshNameTabs(list.size());
     }
 
+    private void countItemsStore() {
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.custom_dialog_new_items, null);
+        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (app.findNewItemStore(dataSnapshot.getChildrenCount()) > 0) {
+                    AlertDialog.Builder info = new AlertDialog.Builder(getActivity())
+                            .setView(dialogView)
+                            .setPositiveButton(getResources().getString(R.string.alert_ok_new_styles), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    onGoStore(null);
+                                }
+                            }).setNegativeButton("OK", null);
+                    info.show();
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     /**
      * Templates para crear Waudios
      */
@@ -196,7 +227,7 @@ public class LibStylesFragment extends Fragment {
         setHasOptionsMenu(isVisible());
         if (refresh) {
             prepareTemplates();
-            getNewItemsStore(10);
+            getNewItemsStore(20);
         }
     }
 

@@ -27,9 +27,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:scaleType="fitXY"
+            android:scaleType="centerCrop"
             android:minWidth="100dp"
-            android:minHeight="70dp"/>
+            android:minHeight="60dp"/>
     </FrameLayout>
 
 

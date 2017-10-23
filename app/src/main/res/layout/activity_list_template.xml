@@ -32,7 +32,7 @@
 
         </LinearLayout>
 
-        <!--LISTA-->
+        <!--CONTENT-->
         <LinearLayout
             android:id="@+id/layoutRecycler"
             android:layout_width="match_parent"
@@ -41,12 +41,75 @@
             android:orientation="vertical"
             android:visibility="visible">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycler_view"
+            <!--STYLE ON STORE-->
+            <LinearLayout
+                android:id="@+id/lyContentStore"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:scrollbars="vertical" />
+                android:background="@color/colorBgCard"
+                android:clickable="true"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="4dp"
+                android:visibility="gone"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="DESCARGAR ESTILOS..."
+                    android:textAlignment="center"
+                    android:textSize="14sp" />
+
+                <LinearLayout
+                    android:id="@+id/lyContentItemStore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:orientation="horizontal">
+
+                    <!--space item-->
+
+                </LinearLayout>
+
+                <!--<TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:maxLines="2"
+                    android:text="@string/msgIntroStore"
+                    android:textColor="@color/playback_indicator"
+                    android:textSize="10sp" />-->
+
+            </LinearLayout>
+
+            <!--LISTA SD CARD-->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="2dp"
+                    android:text="MIS ESTILOS"
+                    android:typeface="sans" />
+
+
+                <android.support.v7.widget.RecyclerView
+                    app:layout_scrollFlags="scroll|enterAlways"
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:scrollbars="vertical" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

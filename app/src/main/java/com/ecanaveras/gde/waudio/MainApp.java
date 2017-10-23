@@ -1,12 +1,8 @@
 package com.ecanaveras.gde.waudio;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -15,7 +11,6 @@ import com.ecanaveras.gde.waudio.editor.GeneratorWaudio;
 import com.ecanaveras.gde.waudio.util.FontsOverride;
 import com.ecanaveras.gde.waudio.util.Mp4Filter;
 import com.google.firebase.crash.FirebaseCrash;
-import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -155,6 +150,37 @@ public class MainApp extends Application {
             }
         }
         return false;
+    }
+
+    public long findNewItemStore(long cantItemStore) {
+        long lastItemOnline = preferences.getLong("countItemOnline", 0);
+        editor_pref.putLong("countItemOnline", cantItemStore);
+        editor_pref.commit();
+        return cantItemStore - lastItemOnline;
+    }
+
+    public int getCountWaudioCreated() {
+        return preferences.getInt("countWaudioCreated", 0);
+    }
+
+    public void incrementCountWaudioCreated() {
+        int cant = preferences.getInt("countWaudioCreated", 0);
+        editor_pref.putInt("countWaudioCreated", cant++);
+        editor_pref.commit();
+    }
+
+    public boolean getMyRating() {
+        if(preferences.getBoolean("raiting", false)){
+            return false; //No pedir calificación;
+        }
+        //Pedir calificación si ha realizado mas de 5 Waudios y no a calificado
+        int cant = getCountWaudioCreated();
+        return cant >= 5;
+    }
+
+    public void saveRating(){
+        editor_pref.putBoolean("raiting", true);
+        editor_pref.commit();
     }
 
     /**

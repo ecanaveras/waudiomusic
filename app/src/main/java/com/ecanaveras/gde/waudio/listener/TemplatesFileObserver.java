@@ -2,6 +2,7 @@ package com.ecanaveras.gde.waudio.listener;
 
 import android.os.FileObserver;
 
+import com.ecanaveras.gde.waudio.ListTemplateActivity;
 import com.ecanaveras.gde.waudio.fragments.LibStylesFragment;
 
 import java.io.File;
@@ -15,6 +16,7 @@ public class TemplatesFileObserver extends FileObserver {
     static final String TAG = "TemplatesFileObserver";
 
     private LibStylesFragment fragment;
+    private ListTemplateActivity activity;
     String rootPath;
 
     static final int mask = (FileObserver.CREATE |
@@ -46,7 +48,11 @@ public class TemplatesFileObserver extends FileObserver {
             case FileObserver.MOVED_FROM:
             case FileObserver.MOVED_TO:
             case FileObserver.MOVE_SELF:
-                fragment.refresh = true;
+                if (fragment != null)
+                    fragment.refresh = true;
+                if (activity != null)
+                    activity.refresh = true;
+
                 break;
             default:
                 // just ignore
@@ -54,7 +60,11 @@ public class TemplatesFileObserver extends FileObserver {
         }
     }
 
-    public void setActivity(LibStylesFragment fragment) {
+    public void setActivity(ListTemplateActivity activity) {
+        this.activity = activity;
+    }
+
+    public void setFragment(LibStylesFragment fragment) {
         this.fragment = fragment;
     }
 }

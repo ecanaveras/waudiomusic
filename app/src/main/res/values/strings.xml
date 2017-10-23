@@ -99,7 +99,7 @@
 
     <string name="ringtone_name_label">Name:</string>
 
-    <string name="artist_name">Waudio</string>
+    <string name="artist_name" translatable="false">Waudio</string>
 
     <!--
      Delete confirmation dialog
@@ -234,7 +234,12 @@
     <string name="msgNoMusic">REALLY DON\'T HAVE MUSIC?</string>
     <string name="msgNoMusic2">IT SEEMS WHAT YOU STAYED\n...IN THE ROCK AGE!</string>
     <string name="msgNoMusic3">Waudio Music, makes his magic only with musica\n the internet is full of it, or ask your friends, and come back!</string>
-    <string name="msgDenegateTemplateDelete">Mi amig@ este estilo hace parte de mi magia, no lo puedes borrar!</string>
-    <string name="msgIntroStore">WAUDIO STORE, UN MUNDO DE ESTILOS PARA CREAR WAUDIOS MARAVILLOSOS...</string>
+    <string name="msgDenegateTemplateDelete">My friend, this style is part of my magic, you can not delete it!</string>
+    <string name="msgIntroStore">WAUDIO STORE, A WORLD OF STYLES TO CREATE WONDERFUL WAUDIOS ...</string>
+    <string name="msgItemsAvailable">NEW STYLES AVAILABLE</string>
+    <string name="msgRating">You have fun and we love it!!! \nhow many stars would you give</string>
+    <string name="alert_ok_new_styles">MUESTRAME</string>
+    <string name="alert_ok_rating">SUPER</string>
+    <string name="alert_cancel_rating">LATER</string>
 
 </resources>
