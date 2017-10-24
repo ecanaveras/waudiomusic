@@ -181,9 +181,12 @@
     <string name="msgNoMusic">¿DE VERDAD NO TIENES MÚSICA?</string>
     <string name="msgDenegateTemplateDelete">Mi amig@ este estilo hace parte de mi magia, no lo puedes borrar!</string>
     <string name="msgIntroStore">WAUDIO STORE, UN MUNDO DE ESTILOS PARA CREAR WAUDIOS MARAVILLOSOS...</string>
-    <string name="msgItemsAvailable">NUEVOS ESTILOS DISPONIBLES</string>
+    <string name="msgItemsAvailable">NUEVOS ESTILOS</string>
     <string name="msgRating">Te has divertido y nos encanta eso!!! \nCuantas estrellas le darías a</string>
     <string name="alert_ok_new_styles">MUESTRAME</string>
-    <string name="alert_ok_rating">TE HARÉ FELIZ</string>
+    <string name="alert_ok_rating">CALIFICAR</string>
     <string name="alert_cancel_rating">LUEGUITO</string>
+    <string name="lblAvailable">DISPONIBLES</string>
+    <string name="msgDownloadNewStyles">DESCARGA NUEVOS ESTILOS</string>
+    <string name="msgNewStylesAvailable">NUEVOS ESTILOS DISPONIBLES...</string>
 </resources>

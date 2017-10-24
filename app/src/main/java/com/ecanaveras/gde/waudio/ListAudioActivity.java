@@ -312,12 +312,13 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
             layoutNoMusic.setVisibility(View.GONE);
             Cursor mergeCursor = new MergeCursor(new Cursor[]{mExternalCursor});
             mAdapter.swapCursor(mergeCursor);
-            if (runFirst) {
+            /*if (runFirst) {
                 Toast.makeText(this, getResources().getString(R.string.msgChooseAudio), Toast.LENGTH_SHORT).show();
                 runFirst = false;
+            }*/
+            if (app.isFirstSearchMusic && mExternalCursor.getCount() == 0) {
+                layoutNoMusic.setVisibility(View.VISIBLE);
             }
-        } else if (app.isFirstSearchMusic) {
-            layoutNoMusic.setVisibility(View.VISIBLE);
         }
     }
 

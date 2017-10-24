@@ -225,6 +225,8 @@ public class StoreActivity extends AppCompatActivity {
                     }
                     e.printStackTrace();
                     Toast.makeText(StoreActivity.this, downloadItemWaudio.getSimpleName() + " no se ha podido descargar, intenta mas tarde!", Toast.LENGTH_SHORT).show();
+                    if (mNotifyManager != null)
+                        mNotifyManager.cancel(1000);
                 }
             }).addOnProgressListener(new OnProgressListener<FileDownloadTask.TaskSnapshot>() {
                 @Override

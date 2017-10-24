@@ -10,7 +10,6 @@ import android.support.design.widget.CoordinatorLayout;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
 
@@ -52,7 +51,7 @@ public class DownloadDialogFragment extends BottomSheetDialogFragment implements
     @Override
     public void setupDialog(Dialog dialog, int style) {
         super.setupDialog(dialog, style);
-        View contentView = View.inflate(getContext(), R.layout.dialogfragment_download, null);
+        View contentView = View.inflate(getContext(), R.layout.custom_dialog_fragment_download, null);
         dialog.setContentView(contentView);
 
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) ((View) contentView.getParent()).getLayoutParams();

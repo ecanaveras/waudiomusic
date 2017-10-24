@@ -29,7 +29,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:scaleType="centerCrop"
             android:minWidth="100dp"
-            android:minHeight="60dp"/>
+            android:minHeight="70dp"/>
     </FrameLayout>
 
 

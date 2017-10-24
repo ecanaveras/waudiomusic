@@ -10,6 +10,7 @@
         <item name="android:textColor">@color/colorTextPrimary</item>
         <item name="android:typeface">monospace</item>
         <item name="actionBarStyle">@style/Theme.AppLib.ActionBar.Solid</item>
+        <item name="alertDialogTheme">@style/AlertDialogCustom</item>
         <item name="android:alertDialogTheme">@style/AlertDialogCustom</item>
         <item name="android:itemTextAppearance">@style/MyActionBar.MenuTextStyle</item>
     </style>
@@ -25,7 +26,14 @@
         <item name="android:windowNoTitle">false</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:textColor">@color/colorPrimary</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="buttonBarButtonStyle">@style/DialogButtonStyle</item>
+    </style>
+
+    <style name="DialogButtonStyle" parent="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
     <!--Action BAR-->

@@ -236,10 +236,13 @@
     <string name="msgNoMusic3">Waudio Music, makes his magic only with musica\n the internet is full of it, or ask your friends, and come back!</string>
     <string name="msgDenegateTemplateDelete">My friend, this style is part of my magic, you can not delete it!</string>
     <string name="msgIntroStore">WAUDIO STORE, A WORLD OF STYLES TO CREATE WONDERFUL WAUDIOS ...</string>
-    <string name="msgItemsAvailable">NEW STYLES AVAILABLE</string>
+    <string name="msgItemsAvailable">NEW STYLES</string>
     <string name="msgRating">You have fun and we love it!!! \nhow many stars would you give</string>
     <string name="alert_ok_new_styles">MUESTRAME</string>
     <string name="alert_ok_rating">SUPER</string>
     <string name="alert_cancel_rating">LATER</string>
+    <string name="lblAvailable">AVAILABLE</string>
+    <string name="msgDownloadNewStyles">DESCARGA NUEVOS ESTILOS</string>
+    <string name="msgNewStylesAvailable">NUEVOS ESTILOS DISPONIBLES...</string>
 
 </resources>

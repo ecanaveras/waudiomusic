@@ -1,118 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/album"
+    android:background="@drawable/bkgnd_gradient_templates"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <FrameLayout
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <!--LOADING-->
+        <!--STYLE ON STORE-->
         <LinearLayout
-            android:id="@+id/layoutWait"
-            android:layout_width="wrap_content"
+            android:id="@+id/lyContentStore"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:background="@color/colorBgCard"
+            android:clickable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:gravity="center"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:padding="8dp"
+            android:visibility="gone"
+            app:layout_scrollFlags="scroll|enterAlways">
 
-            <ProgressBar
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/msgNewStylesAvailable"
+                android:textAlignment="center"
+                android:textSize="14sp" />
+
+            <LinearLayout
+                android:id="@+id/lyContentItemStore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal" />
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <!--space item-->
+
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/msgTemplatesLoading" />
+                android:layout_marginTop="4dp"
+                android:maxLines="2"
+                android:text="@string/msgIntroStore"
+                android:textColor="@color/playback_indicator"
+                android:textSize="10sp" />
 
         </LinearLayout>
 
-        <!--CONTENT-->
-        <LinearLayout
-            android:id="@+id/layoutRecycler"
+    </android.support.design.widget.AppBarLayout>
+
+    <!--LISTA SD CARD-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="8dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:keepScreenOn="true"
-            android:orientation="vertical"
-            android:visibility="visible">
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:scrollbars="vertical" />
 
-            <!--STYLE ON STORE-->
-            <LinearLayout
-                android:id="@+id/lyContentStore"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorBgCard"
-                android:clickable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:padding="4dp"
-                android:visibility="gone"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="DESCARGAR ESTILOS..."
-                    android:textAlignment="center"
-                    android:textSize="14sp" />
-
-                <LinearLayout
-                    android:id="@+id/lyContentItemStore"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <!--space item-->
-
-                </LinearLayout>
-
-                <!--<TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:maxLines="2"
-                    android:text="@string/msgIntroStore"
-                    android:textColor="@color/playback_indicator"
-                    android:textSize="10sp" />-->
-
-            </LinearLayout>
-
-            <!--LISTA SD CARD-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginBottom="2dp"
-                    android:text="MIS ESTILOS"
-                    android:typeface="sans" />
+    </LinearLayout>
 
 
-                <android.support.v7.widget.RecyclerView
-                    app:layout_scrollFlags="scroll|enterAlways"
-                    android:id="@+id/recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:clipToPadding="false"
-                    android:scrollbars="vertical" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </FrameLayout>
-
-</RelativeLayout>
+</android.support.design.widget.CoordinatorLayout>

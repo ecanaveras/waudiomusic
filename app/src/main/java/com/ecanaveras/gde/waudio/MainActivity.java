@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (true) {
+        if (app.getMyRating()) {
             LayoutInflater inflater = this.getLayoutInflater();
             final View dialogView = inflater.inflate(R.layout.custom_dialog_rating, null);
             AlertDialog.Builder info = new AlertDialog.Builder(this)
@@ -194,7 +194,12 @@ public class MainActivity extends AppCompatActivity {
                             app.saveRating();
                             goToStore();
                         }
-                    }).setNegativeButton(getResources().getString(R.string.alert_cancel_rating), null);
+                    }).setNegativeButton(getResources().getString(R.string.alert_cancel_rating), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            app.decrementCountWaudioCreated();
+                        }
+                    });
             info.show();
         }
     }

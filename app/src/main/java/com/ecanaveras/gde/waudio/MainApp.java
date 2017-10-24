@@ -164,13 +164,18 @@ public class MainApp extends Application {
     }
 
     public void incrementCountWaudioCreated() {
-        int cant = preferences.getInt("countWaudioCreated", 0);
-        editor_pref.putInt("countWaudioCreated", cant++);
+        int cant = getCountWaudioCreated();
+        editor_pref.putInt("countWaudioCreated", ++cant);
+        editor_pref.commit();
+    }
+
+    public void decrementCountWaudioCreated() {
+        editor_pref.putInt("countWaudioCreated", 2);
         editor_pref.commit();
     }
 
     public boolean getMyRating() {
-        if(preferences.getBoolean("raiting", false)){
+        if (preferences.getBoolean("raiting", false)) {
             return false; //No pedir calificación;
         }
         //Pedir calificación si ha realizado mas de 5 Waudios y no a calificado
@@ -178,7 +183,7 @@ public class MainApp extends Application {
         return cant >= 5;
     }
 
-    public void saveRating(){
+    public void saveRating() {
         editor_pref.putBoolean("raiting", true);
         editor_pref.commit();
     }
