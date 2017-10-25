@@ -293,7 +293,6 @@ public class EditorActivity extends AppCompatActivity
             public void run() {
                 mStartMarker.requestFocus();
                 markerFocus(mStartMarker);
-
                 mWaveformView.setZoomLevel(saveZoomLevel);
                 mWaveformView.recomputeHeights(mDensity);
 
@@ -423,9 +422,6 @@ public class EditorActivity extends AppCompatActivity
             if (max30s && Double.valueOf(formatTime(mEndPos)) > end30s) {
                 mEndPos = mWaveformView.secondsToPixels(end30s);
             }
-
-
-            System.out.println("mEndPos " + mEndPos);
         }
 
         updateDisplay();
@@ -514,27 +510,6 @@ public class EditorActivity extends AppCompatActivity
                 updateDisplay();
             }
         }, 100);
-    }
-
-    //
-    // Static About dialog method, also called from RingdroidSelectActivity
-    //
-
-    public static void onAbout(final Activity activity) {
-        String versionName = "";
-        try {
-            PackageManager packageManager = activity.getPackageManager();
-            String packageName = activity.getPackageName();
-            versionName = packageManager.getPackageInfo(packageName, 0).versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            versionName = "unknown";
-        }
-        new AlertDialog.Builder(activity)
-                .setTitle(R.string.about_title)
-                .setMessage(activity.getString(R.string.about_text, versionName))
-                .setPositiveButton(R.string.alert_ok_button, null)
-                .setCancelable(false)
-                .show();
     }
 
     //

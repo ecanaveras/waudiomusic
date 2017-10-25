@@ -238,7 +238,7 @@
     <string name="msgIntroStore">WAUDIO STORE, A WORLD OF STYLES TO CREATE WONDERFUL WAUDIOS ...</string>
     <string name="msgItemsAvailable">NEW STYLES</string>
     <string name="msgRating">You have fun and we love it!!! \nhow many stars would you give</string>
-    <string name="alert_ok_new_styles">MUESTRAME</string>
+    <string name="alert_ok_new_styles">SHOW ME</string>
     <string name="alert_ok_rating">SUPER</string>
     <string name="alert_cancel_rating">LATER</string>
     <string name="lblAvailable">AVAILABLE</string>

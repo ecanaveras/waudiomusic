@@ -285,7 +285,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
             selection.append("  OR _DISPLAY_NAME LIKE ?");
             selection.append(")");
             selection.append("  AND _DATA NOT LIKE ? ");
-            selectionArgs.add(".mp3");
+            selectionArgs.add(filter);
             selectionArgs.add(filter);
             selectionArgs.add(filter);
             selectionArgs.add(filter);
