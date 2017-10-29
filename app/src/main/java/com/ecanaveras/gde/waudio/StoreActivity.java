@@ -40,6 +40,7 @@ import com.google.firebase.storage.StorageReference;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class StoreActivity extends AppCompatActivity {
@@ -92,7 +93,6 @@ public class StoreActivity extends AppCompatActivity {
         mDataFirebaseHelper = new DataFirebaseHelper();
         mRef = mDataFirebaseHelper.getDatabaseReference(DataFirebaseHelper.REF_WAUDIO_TEMPLATES);
 
-
         loadDataTemplates();
     }
 
@@ -108,7 +108,7 @@ public class StoreActivity extends AppCompatActivity {
 
 
     private void findFirebaseTemplate() {
-        mRef.orderByKey().addValueEventListener(new ValueEventListener() {
+        mRef.orderByChild("dateModified").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 storeWaudioModelList.clear();
@@ -139,45 +139,31 @@ public class StoreActivity extends AppCompatActivity {
         templates = null;
         thumbnail = null;
 
-        templates = mStorage.child("templates").child(name + ".mp4");
-        thumbnail = mStorage.child("thumbnails").child(name + ".png");
-        //dowloadUri.getActiveDownloadTasks()
+        mStorage = FirebaseStorage.getInstance().getReference();
+        templates = mStorage.child("templates").child(name.trim() + ".mp4");
+        thumbnail = mStorage.child("thumbnails").child(name.trim() + ".png");
+        //Buscar link thumbnail
         thumbnail.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
-                //picassoInstance.load(uri).into(imgTemplate);
-                if (waudioModel != null) {
-                    waudioModel.setUrlThumbnail(uri.toString());
-                } else {
-                    waudioModel = new WaudioModel();
-                    waudioModel.setUrlThumbnail(uri.toString());
-                }
-                //Picasso.with(StoreActivity.this).load(uri).into(imgTemplate);
-                saveTemplateFirebase();
+                waudioModel = new WaudioModel();
+                waudioModel.setUrlThumbnail(uri.toString());
+                //BUscar template y guardar
+                templates.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
+                    @Override
+                    public void onSuccess(StorageMetadata storageMetadata) {
+                        if (waudioModel != null) {
+                            waudioModel.setName(storageMetadata.getName());
+                            waudioModel.setSize(storageMetadata.getSizeBytes());
+                            waudioModel.setDateModified(new Date().getTime()); //Fecha de Subida
+                            waudioModel.setPathMp4(storageMetadata.getDownloadUrl().toString());
+                        }
+                        saveTemplateFirebase();
+                    }
+                });
             }
         });
-        templates.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                if (waudioModel != null) {
-                    waudioModel.setName(templates.getName());
-                    waudioModel.setPathMp4(uri.toString());
-                } else {
-                    waudioModel = new WaudioModel(templates.getName());
-                    waudioModel.setPathMp4(uri.toString());
-                }
-                saveTemplateFirebase();
-            }
-        });
-        templates.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
-            @Override
-            public void onSuccess(StorageMetadata storageMetadata) {
-                if (waudioModel != null) {
-                    waudioModel.setSize(storageMetadata.getSizeBytes());
-                }
-                saveTemplateFirebase();
-            }
-        });
+
     }
 
     private void saveTemplateFirebase() {

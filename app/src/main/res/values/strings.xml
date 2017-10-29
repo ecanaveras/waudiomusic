@@ -244,5 +244,7 @@
     <string name="lblAvailable">AVAILABLE</string>
     <string name="msgDownloadNewStyles">DESCARGA NUEVOS ESTILOS</string>
     <string name="msgNewStylesAvailable">NUEVOS ESTILOS DISPONIBLES...</string>
+    <string name="msgSelectStyle">Escoge un estilo para continuar...</string>
+    <string name="msgSelectStyleTip">puedes descargarlos desde Waudio Store</string>
 
 </resources>

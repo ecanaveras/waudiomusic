@@ -129,7 +129,7 @@ public class ListTemplateActivity extends AppCompatActivity {
     }
 
     public void getNewItemsStore(int limit) {
-        mRef.orderByKey().limitToLast(limit).addValueEventListener(new ValueEventListener() {
+        mRef.orderByKey().limitToFirst(limit).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 storeWaudioModelList.clear();

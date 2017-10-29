@@ -30,13 +30,17 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ecanaveras.gde.waudio.adapters.MusicListAdapter;
@@ -54,7 +58,6 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
 
     private ListView listAudio;
     private Button btnNext;
-    private ImageButton btnPause;
     private Cursor cursor;
     private int music_colum_idx, music_name_idx;
     private int count;
@@ -72,6 +75,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
     private SearchView searchView;
     private MainApp app;
     private LinearLayout layoutNoMusic;
+    private RelativeLayout layoutNext;
 
     private AdapterView.OnItemClickListener MusicGridListener = new AdapterView.OnItemClickListener() {
 
@@ -83,7 +87,6 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
             cursor.moveToPosition(i);
             filename = cursor.getString(music_colum_idx);
             btnNext.setEnabled(filename != null);
-            btnPause.setEnabled(filename != null);
 
             try {
                 if (mediaPlayer != null || mediaPlayer.isPlaying()) {
@@ -99,10 +102,14 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
                     Toast.makeText(ListAudioActivity.this, getResources().getString(R.string.tip_pause_music), Toast.LENGTH_SHORT).show();
                     showTips = false;
                 }
-                Snackbar snackbar = Snackbar.make(view, cursor.getString(music_name_idx).toUpperCase(), Snackbar.LENGTH_INDEFINITE)
+                /*Snackbar snackbar = Snackbar.make(view, cursor.getString(music_name_idx).toUpperCase(), Snackbar.LENGTH_INDEFINITE)
                         .setAction(getResources().getString(R.string.lblNext), onClickListener)
                         .setActionTextColor(ContextCompat.getColor(ListAudioActivity.this, R.color.playback_indicator));
-                snackbar.show();
+                snackbar.show();*/
+                Animation bounce = AnimationUtils.loadAnimation(ListAudioActivity.this, R.anim.bounce_1);
+                layoutNext.setVisibility(View.VISIBLE);
+                ((TextView) layoutNext.findViewById(R.id.btnNext)).setText(cursor.getString(music_name_idx));
+                layoutNext.startAnimation(bounce);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -141,20 +148,13 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
 
         listAudio = (ListView) findViewById(R.id.listAudio);
         btnNext = (Button) findViewById(R.id.btnNext);
-        btnPause = (ImageButton) findViewById(R.id.btnPause);
+        //btnPause = (ImageButton) findViewById(R.id.btnPause);
         layoutNoMusic = (LinearLayout) findViewById(R.id.layoutNoMusic);
+        layoutNext = (RelativeLayout) findViewById(R.id.layoutNext);
         btnNext.setEnabled(false);
-        btnPause.setEnabled(false);
 
-
+        layoutNext.setVisibility(View.GONE);
         btnNext.setOnClickListener(onClickListener);
-
-        btnPause.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mediaPlayer.pause();
-            }
-        });
 
         //setupListView();
         listAudio.setOnItemClickListener(MusicGridListener);

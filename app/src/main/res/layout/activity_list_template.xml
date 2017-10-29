@@ -65,12 +65,47 @@
         android:padding="8dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/msgSelectStyle"
+            android:textAlignment="center"
+            android:maxLines="2"
+            android:textSize="12sp"
+            android:textAllCaps="true"
+            android:shadowColor="@color/colorPrimaryDark"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="3"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/msgSelectStyleTip"
+            android:textAlignment="center"
+            android:maxLines="2"
+            android:textSize="10sp"
+            android:textAllCaps="true"
+            android:textColor="@color/colorTextSecondary"
+            android:layout_marginBottom="2dp"
+            android:shadowColor="@color/colorPrimaryDark"
+            android:shadowDx="2"
+            android:shadowDy="2"
+            android:shadowRadius="3"/>
+
+        <LinearLayout
+            style="@style/HorizontalDividerBottom"
+            android:layout_width="match_parent"
+            android:layout_marginRight="25dp"
+            android:layout_marginLeft="25dp"/>
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical"
+            android:layout_marginTop="4dp"/>
 
     </LinearLayout>
 

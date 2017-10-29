@@ -98,7 +98,7 @@ public class LibStylesFragment extends Fragment {
     }
 
     public void getNewItemsStore(int limit) {
-        mRef.orderByKey().limitToLast(limit).addValueEventListener(new ValueEventListener() {
+        mRef.orderByChild("dateModified").limitToLast(limit).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 storeWaudioModelList.clear();

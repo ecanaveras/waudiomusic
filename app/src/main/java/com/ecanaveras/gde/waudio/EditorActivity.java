@@ -215,11 +215,12 @@ public class EditorActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this, ListAudioActivity.class);
+        super.onBackPressed();
+        /*Intent intent = new Intent(this, ListAudioActivity.class);
         intent.addFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-        finishAffinity();
+        finishAffinity();*/
     }
 
     /**
@@ -531,10 +532,10 @@ public class EditorActivity extends AppCompatActivity
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         mDensity = metrics.density;
 
-        mMarkerLeftInset = (int) (46 * mDensity);
-        mMarkerRightInset = (int) (48 * mDensity);
-        mMarkerTopOffset = (int) (10 * mDensity);
-        mMarkerBottomOffset = (int) (10 * mDensity);
+        mMarkerLeftInset = (int) (31.5 * mDensity);
+        mMarkerRightInset = (int) (31.8 * mDensity);
+        mMarkerTopOffset = (int) (25 * mDensity);
+        mMarkerBottomOffset = (int) (25 * mDensity);
 
         mStartText = (TextView) findViewById(R.id.starttext);
         mStartText.addTextChangedListener(mTextWatcher);
@@ -824,17 +825,16 @@ public class EditorActivity extends AppCompatActivity
         mOffset = 0;
         mOffsetGoal = 0;
         mFlingVelocity = 0;
-        resetPositions();
+        //resetPositions();
         if (mEndPos > mMaxPos)
             mEndPos = mMaxPos;
 
-        mCaption =
-                mSoundFile.getFiletype() + ", " +
+        /*mCaption =                mSoundFile.getFiletype() + ", " +
                         mSoundFile.getSampleRate() + " Hz, " +
                         mSoundFile.getAvgBitrateKbps() + " kbps, " +
                         formatTime(mMaxPos) + " " +
                         getResources().getString(R.string.time_seconds);
-        mInfo.setText(mCaption);
+        mInfo.setText(mCaption);*/
 
         //UI Show/Hide
         le.setVisibility(View.VISIBLE);
@@ -850,6 +850,7 @@ public class EditorActivity extends AppCompatActivity
         mEndText.setEnabled(true);
 
         updateDisplay();
+        resetPositions();
 
 
         Toast toast = Toast.makeText(this, getResources().getString(R.string.msgChoose30seg), Toast.LENGTH_LONG);
@@ -1017,8 +1018,13 @@ public class EditorActivity extends AppCompatActivity
     }
 
     private void resetPositions() {
-        mStartPos = mWaveformView.secondsToPixels(0.0);
-        mEndPos = mWaveformView.secondsToPixels(30.0);
+        if(new Double(formatTime(mMaxPos))   <= 30) {
+            mStartPos = mWaveformView.secondsToPixels(0.0);
+            mEndPos = mWaveformView.secondsToPixels(30.0);
+        }else{
+            mStartPos = mWaveformView.secondsToPixels(10);
+            mEndPos = mWaveformView.secondsToPixels(40.0);
+        }
     }
 
     private int trap(int pos) {
