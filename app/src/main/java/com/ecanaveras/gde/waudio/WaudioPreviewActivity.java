@@ -54,11 +54,12 @@ public class WaudioPreviewActivity extends AppCompatActivity implements AudioMan
         layoutWaudioButtons = (RelativeLayout) findViewById(R.id.layoutWaudioButtons);
         layoutTemplateButtons = (LinearLayout) findViewById(R.id.layoutTemplateButtons);
 
+        //Maneja el audio en llamadas
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+
         Intent intent = getIntent();
         if (intent.getBooleanExtra(IS_WAUDIO, false)) {
-            //Maneja el audio en llamadas
-            audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-            audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
             layoutButtons.setVisibility(View.VISIBLE);
             layoutWaudioButtons.setVisibility(View.VISIBLE);
         }
@@ -137,7 +138,7 @@ public class WaudioPreviewActivity extends AppCompatActivity implements AudioMan
     @Override
     public void onAudioFocusChange(int focusChange) {
         switch (focusChange) {
-            case AudioManager.AUDIOFOCUS_GAIN:
+            case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT:
             case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
                 //mediaPlayer.start(); // Resume your media player here
                 break;

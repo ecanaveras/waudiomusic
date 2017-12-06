@@ -273,7 +273,10 @@ public class WaveformView extends View {
     }
 
     public int secondsToPixels(double seconds) {
-        double z = mZoomFactorByZoomLevel[mZoomLevel];
+        double z = 1;
+        if (mZoomFactorByZoomLevel != null) {
+            z = mZoomFactorByZoomLevel[mZoomLevel];
+        }
         return (int) (z * seconds * mSampleRate / mSamplesPerFrame + 0.5);
     }
 

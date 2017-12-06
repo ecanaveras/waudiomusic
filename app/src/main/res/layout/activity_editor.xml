@@ -15,347 +15,396 @@
  * limitations under the License.
  */
 -->
-
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/ToolbarBackground"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/lblTitleAudio"
+    <RelativeLayout
+        android:id="@+id/lyContentLoading"
+        style="@style/ToolbarBackground"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="4dp"
-        android:gravity="center"
-        android:maxLines="1"
-        android:textAllCaps="true"
-        android:textColor="@color/colorTextThirdy" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp">
 
-    <LinearLayout
-        style="@style/HorizontalDividerBottom"
-        android:layout_width="match_parent" />
+        <TextView
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/lblPercent"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="4dp"
+            android:maxLines="2"
+            android:text="@string/msgAudioLoading"
+            android:textAlignment="center"
+            android:textSize="18dp" />
 
-    <!--INFO-->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="6dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="6dp"
-        android:gravity="center"
-        android:orientation="horizontal">
-        <!--android:background="@color/waveform_unselected_bkgnd_overlay"-->
-
-        <!--TOGGLEBUTTONS-->
-        <LinearLayout
-            android:id="@+id/toogleButtons"
+        <TextView
+            android:id="@+id/lblPercent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="1%"
+            android:textColor="@color/colorTextSecondary"
+            android:textSize="45dp"
+            android:textAllCaps="true"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:text="@string/tip_cancel_editor"
+            android:textAlignment="center"
+            android:textColor="@color/colorTextThirdy"
+            android:textSize="14sp"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/lyContentEditor"
+        style="@style/ToolbarBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/lblTitleAudio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textAllCaps="true"
+            android:textColor="@color/colorTextThirdy" />
+
+        <LinearLayout
+            style="@style/HorizontalDividerBottom"
+            android:layout_width="match_parent" />
+
+        <!--INFO-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="6dp"
             android:gravity="center"
             android:orientation="horizontal">
+            <!--android:background="@color/waveform_unselected_bkgnd_overlay"-->
 
-            <RadioGroup
-                android:id="@+id/toggleGroup"
+            <!--TOGGLEBUTTONS-->
+            <LinearLayout
+                android:id="@+id/toogleButtons"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@null"
                 android:gravity="center"
                 android:orientation="horizontal">
 
-                <ToggleButton
-                    android:id="@+id/tBtnMax30s"
-                    style="@style/WaudioToggle"
-                    android:layout_width="55dp"
-                    android:layout_height="30dp"
-                    android:background="@drawable/customtoogle"
-                    android:checked="true"
-                    android:onClick="onToggle"
-                    android:textOff="Max 30s"
-                    android:textOn="Max 30s" />
-
-                <ToggleButton
-                    android:id="@+id/tBtnFree"
-                    style="@style/WaudioToggle"
-                    android:layout_width="55dp"
-                    android:layout_height="30dp"
-                    android:background="@drawable/customtoogle"
-                    android:checked="false"
-                    android:onClick="onToggle"
-                    android:textOff="Free"
-                    android:textOn="Free" />
-
-            </RadioGroup>
-
-        </LinearLayout>
-
-        <LinearLayout
-            style="@style/VerticalDividerForList"
-            android:layout_height="30dp"
-            android:layout_marginLeft="4dp" />
-
-        <!--INFO TIMERS-->
-        <LinearLayout
-            android:id="@+id/infoTimers"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:layout_weight="1"
-            android:paddingBottom="2dp"
-            android:paddingTop="2dp">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:minHeight="40dp"
-                android:orientation="vertical">
-
-                <TextView
+                <RadioGroup
+                    android:id="@+id/toggleGroup"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@null"
                     android:gravity="center"
-                    android:text="@string/lblStart"
-                    android:textSize="8sp" />
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/starttext"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="0sg"
-                    android:textColor="@color/colorTextThirdy"
-                    android:textSize="16sp" />
+                    <ToggleButton
+                        android:id="@+id/tBtnMax30s"
+                        style="@style/WaudioToggle"
+                        android:layout_width="55dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/customtoogle"
+                        android:checked="true"
+                        android:onClick="onToggle"
+                        android:textOff="Max 30s"
+                        android:textOn="Max 30s" />
 
+                    <ToggleButton
+                        android:id="@+id/tBtnFree"
+                        style="@style/WaudioToggle"
+                        android:layout_width="55dp"
+                        android:layout_height="30dp"
+                        android:background="@drawable/customtoogle"
+                        android:checked="false"
+                        android:onClick="onToggle"
+                        android:textOff="Free"
+                        android:textOn="Free" />
 
-            </LinearLayout>
+                </RadioGroup>
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:minHeight="40dp"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/lblEnd"
-                    android:textSize="8sp" />
-
-                <TextView
-                    android:id="@+id/endtext"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="0sg"
-                    android:textColor="@color/colorTextThirdy"
-                    android:textSize="16sp" />
             </LinearLayout>
 
             <LinearLayout
                 style="@style/VerticalDividerForList"
                 android:layout_height="30dp"
-                android:layout_gravity="center" />
+                android:layout_marginLeft="4dp" />
 
+            <!--INFO TIMERS-->
             <LinearLayout
+                android:id="@+id/infoTimers"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="35dp"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:minHeight="40dp"
-                android:orientation="vertical">
+                android:paddingBottom="2dp"
+                android:paddingTop="2dp">
 
-                <TextView
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/lblDuration"
-                    android:textSize="8sp" />
-
-                <TextView
-                    android:id="@+id/durationtext"
-                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="0sg"
-                    android:textColor="@color/playback_indicator"
-                    android:textSize="18sp" />
+                    android:minHeight="40dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/lblStart"
+                        android:textSize="8sp" />
+
+                    <TextView
+                        android:id="@+id/starttext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="0sg"
+                        android:textColor="@color/colorTextThirdy"
+                        android:textSize="16sp" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:minHeight="40dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/lblEnd"
+                        android:textSize="8sp" />
+
+                    <TextView
+                        android:id="@+id/endtext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="0sg"
+                        android:textColor="@color/colorTextThirdy"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    style="@style/VerticalDividerForList"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:minHeight="40dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/lblDuration"
+                        android:textSize="8sp" />
+
+                    <TextView
+                        android:id="@+id/durationtext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="0sg"
+                        android:textColor="@color/playback_indicator"
+                        android:textSize="18sp" />
+                </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        style="@style/HorizontalDividerBottom"
-        android:layout_width="match_parent" />
-
-
-    <LinearLayout
-        android:id="@+id/layoutEditor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="visible">
-
-        <!--WAVEFORM-->
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="0px"
-            android:layout_weight="1">
-
-            <!--ImageView
-             android:id="@+id/bkgnd"
-             android:layout_width="fill_parent"
-             android:layout_height="fill_parent"
-             android:scaleType="centerCrop"
-             android:src="@drawable/bkgnd"-->
-
-            <com.ecanaveras.gde.waudio.editor.WaveformView
-                android:id="@+id/waveform"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <com.ecanaveras.gde.waudio.editor.MarkerView
-                android:id="@+id/startmarker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/start_marker"
-                android:nextFocusDown="@+id/endmarker"
-                android:src="@drawable/marker_left"
-                android:visibility="gone" />
-
-            <com.ecanaveras.gde.waudio.editor.MarkerView
-                android:id="@+id/endmarker"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/end_marker"
-                android:nextFocusDown="@+id/info"
-                android:nextFocusUp="@+id/startmarker"
-                android:src="@drawable/marker_right"
-                android:visibility="gone" />
-
-        </RelativeLayout>
-
         <LinearLayout
             style="@style/HorizontalDividerBottom"
             android:layout_width="match_parent" />
 
+
         <LinearLayout
+            android:id="@+id/layoutEditor"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/info"
-                style="@style/AudioFileInfoOverlayText"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:gravity="center"
-                android:nextFocusDown="@+id/play"
-                android:nextFocusUp="@+id/endmarker"
-                tools:ignore="Suspicious0dp" />
-        </LinearLayout>
-
-        <!--TOOLBAR-->
-        <LinearLayout
-            style="@style/ToolbarBackground"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:gravity="center">
-
-            <ImageButton
-                android:id="@+id/back30"
-                style="@android:style/MediaButton"
-                android:layout_width="64dip"
-                android:layout_height="52dip"
-                android:layout_marginBottom="6dip"
-                android:layout_marginTop="6dip"
-                android:layout_weight="1"
-                android:contentDescription="@string/rewind"
-                android:src="@drawable/ic_replay_30" />
-
-            <ImageButton
-                android:id="@+id/rew"
-                style="@android:style/MediaButton"
-                android:layout_width="64dip"
-                android:layout_height="52dip"
-                android:layout_marginBottom="6dip"
-                android:layout_marginTop="6dip"
-                android:layout_weight="1"
-                android:contentDescription="@string/rewind"
-                android:src="@drawable/ic_skip_previous" />
-
-            <ImageButton
-                android:id="@+id/play"
-                style="@android:style/MediaButton"
-                android:layout_width="71dip"
-                android:layout_height="52dip"
-                android:layout_marginBottom="6dip"
-                android:layout_marginTop="6dip"
-                android:layout_weight="1"
-                android:contentDescription="@string/play"
-                android:src="@drawable/ic_play_arrow" />
-
-            <ImageButton
-                android:id="@+id/ffwd"
-                style="@android:style/MediaButton"
-                android:layout_width="64dip"
-                android:layout_height="52dip"
-                android:layout_marginBottom="6dip"
-                android:layout_marginTop="6dip"
-                android:layout_weight="1"
-                android:contentDescription="@string/ffwd"
-                android:src="@drawable/ic_skip_next" />
-
-            <ImageButton
-                android:id="@+id/next30"
-                style="@android:style/MediaButton"
-                android:layout_width="64dip"
-                android:layout_height="52dip"
-                android:layout_marginBottom="6dip"
-                android:layout_marginTop="6dip"
-                android:layout_weight="1"
-                android:contentDescription="@string/rewind"
-                android:src="@drawable/ic_forward_30" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            style="@style/HorizontalDividerTop"
-            android:layout_width="match_parent" />
-
-
-        <LinearLayout
-            style="@style/HorizontalDividerBottom"
-            android:layout_width="match_parent" />
-
-        <LinearLayout
-            style="@style/ToolbarBackground"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp">
+            android:orientation="vertical"
+            android:visibility="visible">
 
-            <Button
-                android:id="@+id/btnNext"
-                style="@style/WaudioButton"
+            <!--WAVEFORM-->
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="0px"
+                android:layout_weight="1">
+
+                <!--ImageView
+                 android:id="@+id/bkgnd"
+                 android:layout_width="fill_parent"
+                 android:layout_height="fill_parent"
+                 android:scaleType="centerCrop"
+                 android:src="@drawable/bkgnd"-->
+
+                <com.ecanaveras.gde.waudio.editor.WaveformView
+                    android:id="@+id/waveform"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <com.ecanaveras.gde.waudio.editor.MarkerView
+                    android:id="@+id/startmarker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/start_marker"
+                    android:nextFocusDown="@+id/endmarker"
+                    android:src="@drawable/marker_left"
+                    android:visibility="gone" />
+
+                <com.ecanaveras.gde.waudio.editor.MarkerView
+                    android:id="@+id/endmarker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:contentDescription="@string/end_marker"
+                    android:nextFocusDown="@+id/info"
+                    android:nextFocusUp="@+id/startmarker"
+                    android:src="@drawable/marker_right"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+
+            <LinearLayout
+                style="@style/HorizontalDividerBottom"
+                android:layout_width="match_parent" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/info"
+                    style="@style/AudioFileInfoOverlayText"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:gravity="center"
+                    android:nextFocusDown="@+id/play"
+                    android:nextFocusUp="@+id/endmarker"
+                    tools:ignore="Suspicious0dp" />
+            </LinearLayout>
+
+            <!--TOOLBAR-->
+            <LinearLayout
+                style="@style/ToolbarBackground"
                 android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_margin="12dp"
-                android:onClick="onNext"
-                android:text="@string/lblNext" />
-        </LinearLayout>
-    </LinearLayout>
+                android:layout_height="55dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:gravity="center">
 
-</LinearLayout>
+                <ImageButton
+                    android:id="@+id/back30"
+                    style="@android:style/MediaButton"
+                    android:layout_width="64dip"
+                    android:layout_height="52dip"
+                    android:layout_marginBottom="6dip"
+                    android:layout_marginTop="6dip"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/rewind"
+                    android:src="@drawable/ic_replay_30" />
+
+                <ImageButton
+                    android:id="@+id/rew"
+                    style="@android:style/MediaButton"
+                    android:layout_width="64dip"
+                    android:layout_height="52dip"
+                    android:layout_marginBottom="6dip"
+                    android:layout_marginTop="6dip"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/rewind"
+                    android:src="@drawable/ic_skip_previous" />
+
+                <ImageButton
+                    android:id="@+id/play"
+                    style="@android:style/MediaButton"
+                    android:layout_width="71dip"
+                    android:layout_height="52dip"
+                    android:layout_marginBottom="6dip"
+                    android:layout_marginTop="6dip"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/play"
+                    android:src="@drawable/ic_play_arrow" />
+
+                <ImageButton
+                    android:id="@+id/ffwd"
+                    style="@android:style/MediaButton"
+                    android:layout_width="64dip"
+                    android:layout_height="52dip"
+                    android:layout_marginBottom="6dip"
+                    android:layout_marginTop="6dip"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/ffwd"
+                    android:src="@drawable/ic_skip_next" />
+
+                <ImageButton
+                    android:id="@+id/next30"
+                    style="@android:style/MediaButton"
+                    android:layout_width="64dip"
+                    android:layout_height="52dip"
+                    android:layout_marginBottom="6dip"
+                    android:layout_marginTop="6dip"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/rewind"
+                    android:src="@drawable/ic_forward_30" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/HorizontalDividerTop"
+                android:layout_width="match_parent" />
+
+
+            <LinearLayout
+                style="@style/HorizontalDividerBottom"
+                android:layout_width="match_parent" />
+
+            <LinearLayout
+                style="@style/ToolbarBackground"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp">
+
+                <Button
+                    android:id="@+id/btnNext"
+                    style="@style/WaudioButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_margin="12dp"
+                    android:onClick="onNext"
+                    android:text="@string/lblNext" />
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</FrameLayout>

@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
 import com.ecanaveras.gde.waudio.fragments.LibStylesFragment;
 import com.ecanaveras.gde.waudio.fragments.LibWaudiosFragment;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private AdaptadorSecciones adaptadorSecciones;
     private MainApp app;
     private FloatingActionButton fab;
+    private DataFirebaseHelper mDataFirebaseHelper;
 
     private FirebaseAnalytics mFirebaseAnalytics;
 
@@ -58,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
 
         app = (MainApp) getApplicationContext();
 
+        mDataFirebaseHelper = new DataFirebaseHelper();
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
         mFirebaseAnalytics.setUserProperty("open_main_activity", String.valueOf(true));
 
@@ -83,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent mainIntent = new Intent(MainActivity.this, ListAudioActivity.class);
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(mainIntent);
             }
         });
@@ -192,6 +196,7 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             app.saveRating();
+                            mDataFirebaseHelper.incrementWaudioRating();
                             goToStore();
                         }
                     }).setNegativeButton(getResources().getString(R.string.alert_cancel_rating), new DialogInterface.OnClickListener() {

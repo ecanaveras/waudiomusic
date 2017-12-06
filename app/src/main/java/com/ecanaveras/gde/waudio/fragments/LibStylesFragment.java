@@ -5,6 +5,7 @@ import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -87,7 +88,6 @@ public class LibStylesFragment extends Fragment {
         app.reloadWaudios = true;
         prepareTemplates();
         getNewItemsStore(20);
-        countItemsStore();
 
         //Si cambian los templates, actualiza el listado
         observer = new TemplatesFileObserver(getActivity().getExternalFilesDir(null).getAbsolutePath());
@@ -95,6 +95,12 @@ public class LibStylesFragment extends Fragment {
         observer.startWatching();
 
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        countItemsStore();
     }
 
     public void getNewItemsStore(int limit) {

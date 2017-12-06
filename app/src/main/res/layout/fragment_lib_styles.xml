@@ -80,7 +80,8 @@
                     android:maxLines="2"
                     android:text="@string/msgIntroStore"
                     android:textColor="@color/playback_indicator"
-                    android:textSize="10sp" />
+                    android:textSize="10sp"
+                    android:textAlignment="center"/>
 
             </LinearLayout>
 

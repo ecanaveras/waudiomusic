@@ -93,7 +93,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
                     mediaPlayer.reset();
                 }
                 //Request del audio
-                audioManager.requestAudioFocus(ListAudioActivity.this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+                audioManager.requestAudioFocus(ListAudioActivity.this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
 
                 mediaPlayer.setDataSource(filename);
                 mediaPlayer.prepare();

@@ -61,12 +61,12 @@
 
     <!-- Image button descriptions for accessibility -->
 
-    <string name="start_marker">Start marker</string>
-    <string name="end_marker">End marker</string>
-    <string name="rewind">Rewind</string>
+    <string name="start_marker" translatable="false">Start marker</string>
+    <string name="end_marker" translatable="false">End marker</string>
+    <string name="rewind" translatable="false">Rewind</string>
     <string name="play">Play</string>
-    <string name="stop">Stop</string>
-    <string name="ffwd">Fast forward</string>
+    <string name="stop" translatable="false">Stop</string>
+    <string name="ffwd" translatable="false">Fast forward</string>
     <string name="zoom_in" translatable="false">Zoom In</string>
     <string name="zoom_out" translatable="false">Zoom Out</string>
 
@@ -171,6 +171,7 @@
     <string name="msgChoose30seg">Select 30 seconds of your song, then touch \'next\'</string>
     <string name="msgRestart">We must start again!</string>
     <string name="msgExit">Press again to exit</string>
+    <string name="msgCancelEditor">Press again to cancel</string>
     <string name="msgDeniedPermitions">Permissions denied</string>
     <string name="alert_title_choose_style">Choose another style ...</string>
     <string name="msgWarningStyle">Want to choose another style? Create a new Waudio with the style you choose!</string>
@@ -201,12 +202,13 @@
     <string name="msgStyleChoosed">You already created a Waudio, with this style, you want to see it?</string>
     <string name="alert_ok_preview">PREVIEW</string>
     <string name="title_activity_main" translatable="false">Waudio Music</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_settings" translatable="false">Settings</string>
     <string name="nameFragmentTracks">MUSIC</string>
     <string name="title_fragment_waudios">WAUDIOS</string>
     <string name="title_fragment_styles">STYLES</string>
     <string name="msgChooseAudio">Select an audio track ...</string>
     <string name="tip_pause_music">Tip: To pause, press \'back\'</string>
+    <string name="tip_cancel_editor">Tip: To cancel, press \'back\'</string>
 
     <string name="title_activity_waudio_fullscreen">Waudio Preview</string>
     <string name="formatContextMenuDeleteWaudio">Delete %1$d Waudio(s) selected?</string>
@@ -219,6 +221,7 @@
     <string name="msgWaudioGenerating">Generating Waudio ...</string>
     <string name="msgTemplatesLoading">Loading your styles ...</string>
     <string name="msgTracksLoading">Loading Music ...</string>
+    <string name="msgAudioLoading">Loading your audio...\nwait me ;)</string>
     <string name="msgWaudioLoading">Loading your Waudios ...</string>
     <string name="menu_action_order_by">Sort by...</string>
     <string name="menu_action_goto_store">Waudio Store</string>
@@ -230,7 +233,7 @@
     <string name="app_name" translatable="false">Waudio Music</string>
     <string name="main_activity_label" translatable="false">Waudio Music</string>
     <string name="lblGoHome">GO TO WAUDIOS</string>
-    <string name="store_activity_label">Waudio Store</string>
+    <string name="store_activity_label" translatable="false">Waudio Store</string>
     <string name="msgNoMusic">REALLY DON\'T HAVE MUSIC?</string>
     <string name="msgNoMusic2">IT SEEMS WHAT YOU STAYED\n...IN THE ROCK AGE!</string>
     <string name="msgNoMusic3">Waudio Music, makes his magic only with musica\n the internet is full of it, or ask your friends, and come back!</string>

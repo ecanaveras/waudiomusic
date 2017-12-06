@@ -36,7 +36,6 @@ public class SplashScreen extends AppCompatActivity {
                 solicitarPermisos();
             }
         }, SPLASH_TIME_OUT);
-
     }
 
     private void gotoActivity() {
@@ -62,9 +61,9 @@ public class SplashScreen extends AppCompatActivity {
             for (String name : dir.list(new Mp4Filter(".mp4"))) {
                 File vmp4 = new File(dir.getAbsolutePath() + "/" + name);
                 if (vmp4.exists()) {
+                    Log.i(SplashScreen.class.getSimpleName(), "Waudios found!");
                     return true;
                 }
-                Log.i(SplashScreen.class.getSimpleName(), "Waudios found!");
             }
         }
         return false;

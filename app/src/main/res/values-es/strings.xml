@@ -62,7 +62,6 @@
     <string name="ringtone_type_label">Tipo:</string>
     <string name="type_music">Música</string>
     <string name="ringtone_name_label">Nombre:</string>
-    <string name="artist_name">Waudio</string>
     <!--
        Cuadro confirmacion eliminacion
        -->
@@ -121,6 +120,7 @@
     <string name="msgChoose30seg">Selecciona 30 segundos de tu canción, y luego toca en \'siguiente\'</string>
     <string name="msgRestart">Debemos empezar de nuevo!</string>
     <string name="msgExit">Pulse de nuevo para salir</string>
+    <string name="msgCancelEditor">Pulse de nuevo para cancenlar</string>
     <string name="msgDeniedPermitions">Permisos denegados</string>
     <string name="alert_title_choose_style">Elegir otro estilo...</string>
     <string name="msgWarningStyle">Quieres elegir otro estilo?  Creará un nuevo Waudio con el estilo que elijas!</string>
@@ -191,4 +191,6 @@
     <string name="msgNewStylesAvailable">NUEVOS ESTILOS DISPONIBLES...</string>
     <string name="msgSelectStyle">Escoge un estilo para continuar...</string>
     <string name="msgSelectStyleTip">puedes descargarlos desde Waudio Store</string>
+    <string name="msgAudioLoading">Cargando audio...\nEsperame ;)</string>
+    <string name="tip_cancel_editor">Tip: Para cancenlar, presiona \'atrás\'</string>
 </resources>

@@ -57,7 +57,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
 
         //Maneja el audio en llamadas
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+        audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
 
         app = (MainApp) getApplicationContext();
         intent = getIntent();

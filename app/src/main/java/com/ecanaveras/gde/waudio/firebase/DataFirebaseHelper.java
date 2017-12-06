@@ -18,6 +18,7 @@ import java.util.List;
 
 public class DataFirebaseHelper {
 
+    public static final String REF_WAUDIO_PLAY = "waudio-play";
     public static final String REF_WAUDIO_STORE = "waudio-store";
     public static final String REF_WAUDIO_EVENTS = "waudio-events";
     public static final String REF_WAUDIO_TEMPLATES = "waudio-templates";
@@ -60,7 +61,7 @@ public class DataFirebaseHelper {
     }
 
     public void incrementGotoStore() {
-        incrementValue(REF_WAUDIO_STORE, "visitas");
+        incrementValue(REF_WAUDIO_STORE, "visits");
     }
 
     public void incrementItemDownload() {
@@ -68,19 +69,23 @@ public class DataFirebaseHelper {
     }
 
     public void incrementWaudioShared() {
-        incrementValue(REF_WAUDIO_EVENTS, "compartidos");
+        incrementValue(REF_WAUDIO_EVENTS, "shared");
     }
 
     public void incrementWaudioCreated() {
-        incrementValue(REF_WAUDIO_EVENTS, "creados");
+        incrementValue(REF_WAUDIO_EVENTS, "created");
     }
 
     public void incrementWaudioDeleted() {
-        incrementValue(REF_WAUDIO_EVENTS, "eliminados");
+        incrementValue(REF_WAUDIO_EVENTS, "deleted");
+    }
+
+    public void incrementWaudioRating() {
+        incrementValue(REF_WAUDIO_PLAY, "ratingme");
     }
 
     public void incrementWaudioDeleted(long cantDeletes) {
-        incrementValue(REF_WAUDIO_EVENTS, "eliminados", cantDeletes);
+        incrementValue(REF_WAUDIO_EVENTS, "deleted", cantDeletes);
     }
 
     public DatabaseReference getDatabaseReference(String nameRef) {
