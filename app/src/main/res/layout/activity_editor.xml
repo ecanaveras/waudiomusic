@@ -18,7 +18,9 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    android:keepScreenOn="true">
 
     <RelativeLayout
         android:id="@+id/lyContentLoading"
@@ -28,7 +30,29 @@
         android:orientation="vertical"
         android:padding="10dp">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/lblLoading"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_android_happy" />
+
         <TextView
+            android:id="@+id/lblLoading"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/lblTitleAudioLoading"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="4dp"
+            android:maxLines="1"
+            android:text="@string/msgAudioLoading"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textSize="18dp" />
+
+        <TextView
+            android:id="@+id/lblTitleAudioLoading"
             android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:layout_above="@+id/lblPercent"
@@ -36,9 +60,9 @@
             android:layout_alignParentRight="true"
             android:layout_marginBottom="4dp"
             android:maxLines="2"
-            android:text="@string/msgAudioLoading"
             android:textAlignment="center"
-            android:textSize="18dp" />
+            android:textAllCaps="true"
+            android:textColor="@color/colorTextThirdy" />
 
         <TextView
             android:id="@+id/lblPercent"
@@ -46,9 +70,9 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="1%"
+            android:textAllCaps="true"
             android:textColor="@color/colorTextSecondary"
-            android:textSize="45dp"
-            android:textAllCaps="true"/>
+            android:textSize="45dp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -59,7 +83,46 @@
             android:text="@string/tip_cancel_editor"
             android:textAlignment="center"
             android:textColor="@color/colorTextThirdy"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/lyContentLoading2"
+        style="@style/ToolbarBackground"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/lblLoading2"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_android_building" />
+
+        <TextView
+            android:id="@+id/lblLoading2"
+            android:layout_width="30dp"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/lblPercent2"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="4dp"
+            android:maxLines="2"
+            android:text="@string/msgAudioLoading2"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textSize="18dp" />
+
+        <ProgressBar
+            android:id="@+id/lblPercent2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true" />
+
 
     </RelativeLayout>
 

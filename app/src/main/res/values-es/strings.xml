@@ -31,7 +31,7 @@
     <!-- Etiquetas junto a los cuadros de hora de inicio y fin -->
     <string name="start_label">Inicio:</string>
     <string name="end_label">Fin:</string>
-    <string name="edit_intent">Editar</string>
+    <string name="edit_intent">Crear Waudio</string>
     <string name="time_seconds">segundos</string>
     <!-- Una vez guardada una notificacion o un tono de llamada y tienes mas opciones de configuracion-->
     <string name="what_to_do_with_ringtone">Guardado. ¿Quieres que sea el tono por defecto o para un contacto?</string>
@@ -191,6 +191,9 @@
     <string name="msgNewStylesAvailable">NUEVOS ESTILOS DISPONIBLES...</string>
     <string name="msgSelectStyle">Escoge un estilo para continuar...</string>
     <string name="msgSelectStyleTip">puedes descargarlos desde Waudio Store</string>
-    <string name="msgAudioLoading">Cargando audio...\nEsperame ;)</string>
+    <string name="msgAudioLoading">Cargando audio...\nEsperame!</string>
+    <string name="msgAudioLoading2">Ya casi termino...</string>
     <string name="tip_cancel_editor">Tip: Para cancenlar, presiona \'atrás\'</string>
+    <string name="msgUIPreparing">VOY...</string>
+    <string name="msgUIReady">Bingooo....</string>
 </resources>

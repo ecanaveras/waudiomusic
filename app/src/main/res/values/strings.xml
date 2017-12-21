@@ -42,7 +42,7 @@
     <string name="start_label">Start:</string>
     <string name="end_label">End:</string>
 
-    <string name="edit_intent">Edit</string>
+    <string name="edit_intent">New Waudio</string>
 
     <string name="time_seconds">seconds</string>
 
@@ -221,7 +221,8 @@
     <string name="msgWaudioGenerating">Generating Waudio ...</string>
     <string name="msgTemplatesLoading">Loading your styles ...</string>
     <string name="msgTracksLoading">Loading Music ...</string>
-    <string name="msgAudioLoading">Loading your audio...\nwait me ;)</string>
+    <string name="msgAudioLoading">Loading your audio...\nwait me</string>
+    <string name="msgAudioLoading2">I\'m almost done...</string>
     <string name="msgWaudioLoading">Loading your Waudios ...</string>
     <string name="menu_action_order_by">Sort by...</string>
     <string name="menu_action_goto_store">Waudio Store</string>
@@ -249,5 +250,7 @@
     <string name="msgNewStylesAvailable">NUEVOS ESTILOS DISPONIBLES...</string>
     <string name="msgSelectStyle">Escoge un estilo para continuar...</string>
     <string name="msgSelectStyleTip">puedes descargarlos desde Waudio Store</string>
+    <string name="msgUIPreparing">99.9 %</string>
+    <string name="msgUIReady">Bingooo....</string>
 
 </resources>

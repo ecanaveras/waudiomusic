@@ -161,7 +161,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
 
     public void onGoEditor(View view) {
         Intent intent = new Intent(Intent.ACTION_EDIT, Uri.parse(app.getFilename()));
-        //intent.putExtra("was_get_content_intent", mWasGetContentIntent);
+        intent.putExtra("continue_edition", true);
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.setClassName("com.ecanaveras.gde.waudio", "com.ecanaveras.gde.waudio.EditorActivity");
         //startActivityForResult(intent, REQUEST_CODE_EDIT);
@@ -211,7 +211,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
         intent.addFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
-        finishAffinity();
+        finish();
     }
 
     public void onFinish(View view) {

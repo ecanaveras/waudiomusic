@@ -1,12 +1,19 @@
 package com.ecanaveras.gde.waudio;
 
-import org.mp4parser.Container;
+/*import org.mp4parser.Container;
 import org.mp4parser.muxer.Movie;
 import org.mp4parser.muxer.Track;
 import org.mp4parser.muxer.builder.DefaultMp4Builder;
 import org.mp4parser.muxer.container.mp4.MovieCreator;
 import org.mp4parser.muxer.tracks.AppendTrack;
-import org.mp4parser.muxer.tracks.ClippedTrack;
+import org.mp4parser.muxer.tracks.ClippedTrack;*/
+
+import com.coremedia.iso.boxes.Container;
+import com.googlecode.mp4parser.authoring.Movie;
+import com.googlecode.mp4parser.authoring.Track;
+import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
+import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
+import com.googlecode.mp4parser.authoring.tracks.CroppedTrack;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -90,7 +97,7 @@ public class ShortenExample {
                 currentTime += (double) delta / (double) track.getTrackMetaData().getTimescale();
                 currentSample++;
             }
-            movie.addTrack(new AppendTrack(new ClippedTrack(track, startSample1, endSample1), new ClippedTrack(track, startSample2, endSample2)));
+            movie.addTrack(new CroppedTrack(track, startSample1, endSample1));//new AppendTrack(new ClippedTrack(track, startSample1, endSample1), new ClippedTrack(track, startSample2, endSample2)));
         }
         long start1 = System.currentTimeMillis();
         Container out = new DefaultMp4Builder().build(movie);

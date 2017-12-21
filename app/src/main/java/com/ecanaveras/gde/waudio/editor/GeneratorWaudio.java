@@ -10,18 +10,25 @@ import android.os.Environment;
 import android.os.Handler;
 import android.util.Log;
 
+import com.coremedia.iso.boxes.Container;
 import com.ecanaveras.gde.waudio.MainApp;
 import com.ecanaveras.gde.waudio.R;
 import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
+import com.googlecode.mp4parser.authoring.Movie;
+import com.googlecode.mp4parser.authoring.Track;
+import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
+import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
+import com.googlecode.mp4parser.authoring.tracks.AppendTrack;
+import com.googlecode.mp4parser.authoring.tracks.CroppedTrack;
 
-import org.mp4parser.Container;
+/*import org.mp4parser.Container;
 import org.mp4parser.muxer.Movie;
 import org.mp4parser.muxer.Track;
 import org.mp4parser.muxer.builder.DefaultMp4Builder;
 import org.mp4parser.muxer.container.mp4.MovieCreator;
 import org.mp4parser.muxer.tracks.AppendTrack;
 import org.mp4parser.muxer.tracks.ClippedTrack;
-
+*/
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -189,7 +196,7 @@ public class GeneratorWaudio implements Serializable {
                     //Eliminar Audio
                     if (outFile.exists()) {
                         outFile.delete();
-                        System.out.println("Sonido Eliminado...");
+                        System.out.println("Mp3 cortado, eliminado...");
                     }
                 } catch (final Exception e) {
                     //mProgressDialog.dismiss();
@@ -438,7 +445,7 @@ public class GeneratorWaudio implements Serializable {
                 currentTime += (double) delta / (double) track.getTrackMetaData().getTimescale();
                 currentSample++;
             }
-            movie.addTrack(new AppendTrack(new ClippedTrack(track, startSample1, endSample1)));//, new ClippedTrack(track, startSample2, endSample2)));
+            movie.addTrack(new CroppedTrack(track, startSample1, endSample1));//new AppendTrack(new ClippedTrack(track, startSample1, endSample1)));//, new ClippedTrack(track, startSample2, endSample2)));
         }
         return movie;
     }
