@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imgBG"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:src="@drawable/splash_screen" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/lblFrom"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:gravity="center"
+                android:text="@string/lblFrom"
+                android:textAllCaps="true"
+                android:textColor="@color/colorTextPrimary"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/lblPinillos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/lblFrom"
+                android:gravity="center"
+                android:text="@string/msgPinillos"
+                android:textAllCaps="true"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/lblForWorld"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/lblPinillos"
+                android:gravity="center"
+                android:text="@string/lblForWorld"
+                android:textAllCaps="true"
+                android:textColor="@color/colorTextPrimary"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/lblVersion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/msgReflection"
+                android:gravity="center"
+                android:textColor="@color/colorTextThirdy"
+                android:textSize="22sp" />
+
+            <TextView
+                android:id="@+id/msgReflection"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/msgCopyRights"
+                android:layout_margin="25dp"
+                android:gravity="center"
+                android:text="@string/msgReflection"
+                android:textAllCaps="true"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/msgCopyRights"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/msgCopyRights2"
+                android:gravity="center"
+                android:text="@string/msgCopyRights"
+                android:textColor="@color/colorTextThirdy"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/msgCopyRights2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="60dp"
+                android:gravity="center"
+                android:text="@string/msgCopyRights2"
+                android:textColor="@color/colorTextThirdy"
+                android:textSize="16sp" />
+        </RelativeLayout>
+
+    </FrameLayout>
+
+
+</LinearLayout>

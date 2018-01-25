@@ -161,7 +161,8 @@
     <string name="msgShareApp">Have you tried Waudio? The app that lets you share music in Whatsapp status</string>
     <string name="msgShareTo">Share Waudio...</string>
 
-    <string name="msgCopyRights" translatable="false">© 2017 ecanaveras.</string>
+    <string name="msgPinillos">Pinillos - Colombia</string>
+    <string name="msgReflection">Algunas cosas solo existen, si un día decides crearlas</string>
     <string name="msgCopyRights2" translatable="false">All rights reserved.</string>
     <string name="lblNext">NEXT</string>
     <string name="lblEnd">END</string>
@@ -252,5 +253,7 @@
     <string name="msgSelectStyleTip">puedes descargarlos desde Waudio Store</string>
     <string name="msgUIPreparing">99.9 %</string>
     <string name="msgUIReady">Bingooo....</string>
-
+    <string name="lblFrom">UNA IDEA DE</string>
+    <string name="lblForWorld">PARA EL MUNDO</string>
+    <string name="msgCopyRights" translatable="false">© 2017 ecanaveras.</string>
 </resources>

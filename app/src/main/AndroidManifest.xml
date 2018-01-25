@@ -11,7 +11,6 @@
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
-
     <supports-screens android:anyDensity="true" />
 
     <uses-feature
@@ -27,13 +26,13 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
             android:name=".SplashScreen"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -43,7 +42,6 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".ListAudioActivity"
             android:label="@string/main_activity_label"
@@ -79,34 +77,33 @@
                 <action android:name="android.intent.action.PICK" />
 
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="audio/*" />
             </intent-filter>
             <intent-filter android:label="@string/edit_intent">
                 <action android:name="android.intent.action.GET_CONTENT" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="audio/*" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ListTemplateActivity"
             android:label="@string/list_template_activity_label"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".WaudioFinalizedActivity"
             android:label="@string/preview_activity_label"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".WaudioPreviewActivity"
             android:configChanges="orientation|screenSize"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-
         <activity
             android:name=".StoreActivity"
             android:label="@string/store_activity_label"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
 
         <service android:name=".firebase.MyFirebaseMessagingService">
             <intent-filter>
@@ -123,6 +120,8 @@
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_noti" />
 
+        <activity android:name=".AboutActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>

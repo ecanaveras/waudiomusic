@@ -20,4 +20,10 @@
         android:title="@string/menu_share"
         app:showAsAction="collapseActionView" />
 
+    <item
+        android:id="@+id/action_about"
+        android:icon="@drawable/ic_action_share"
+        android:title="About of Waudio Music"
+        app:showAsAction="collapseActionView" />
+
 </menu>

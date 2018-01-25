@@ -169,6 +169,9 @@ public class MainActivity extends AppCompatActivity {
                 sendIntent.setType("text/plain");
                 startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.msgShareTo)));
                 break;
+            case R.id.action_about:
+                Intent intent = new Intent(this, AboutActivity.class);
+                startActivity(intent);
         }
         return super.onOptionsItemSelected(item);
     }

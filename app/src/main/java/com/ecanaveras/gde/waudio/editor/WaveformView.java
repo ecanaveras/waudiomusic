@@ -538,10 +538,10 @@ public class WaveformView extends View {
             heights[i] = value * value;
         }
 
-        mNumZoomLevels = 3;
-        mLenByZoomLevel = new int[3];
-        mZoomFactorByZoomLevel = new double[3];
-        mValuesByZoomLevel = new double[3][];
+        mNumZoomLevels = 5;
+        mLenByZoomLevel = new int[5];
+        mZoomFactorByZoomLevel = new double[5];
+        mValuesByZoomLevel = new double[5][];
 
         // Level 0 is doubled, with interpolated values
         mLenByZoomLevel[0] = numFrames * 2;
@@ -565,7 +565,7 @@ public class WaveformView extends View {
         }
 
         // 3 more levels are each halved
-        for (int j = 2; j < 3; j++) {
+        for (int j = 2; j < 5; j++) {
             mLenByZoomLevel[j] = mLenByZoomLevel[j - 1] / 2;
             mValuesByZoomLevel[j] = new double[mLenByZoomLevel[j]];
             mZoomFactorByZoomLevel[j] = mZoomFactorByZoomLevel[j - 1] / 2.0;
@@ -576,7 +576,9 @@ public class WaveformView extends View {
             }
         }
 
-        if (numFrames > 1000) {
+        if (numFrames > 5000) {
+            mZoomLevel = 3;
+        } else if (numFrames > 1000) {
             mZoomLevel = 2;
         } else if (numFrames > 300) {
             mZoomLevel = 1;

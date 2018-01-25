@@ -196,4 +196,6 @@
     <string name="tip_cancel_editor">Tip: Para cancenlar, presiona \'atrás\'</string>
     <string name="msgUIPreparing">VOY...</string>
     <string name="msgUIReady">Bingooo....</string>
+    <string name="lblFrom">UNA IDEA DE</string>
+    <string name="lblForWorld">PARA EL MUNDO</string>
 </resources>

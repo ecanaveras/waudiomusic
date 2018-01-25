@@ -52,6 +52,11 @@
         <item name="android:windowContentOverlay">@null</item>
     </style>
 
+    <style name = "NoActionBar" parent = "AppTheme">
+        <item name = "android:windowActionBar">false</item>
+        <item name = "android:windowNoTitle">true</item>
+    </style>
+
 
     <style name="Theme.AppLib.ActionBar.Solid" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
         <!--<item name="background">@drawable/cab_background_top</item>-->
