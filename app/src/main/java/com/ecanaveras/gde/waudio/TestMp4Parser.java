@@ -1,7 +1,7 @@
 package com.ecanaveras.gde.waudio;
 
 
-import org.mp4parser.Container;
+/*import org.mp4parser.Container;
 import org.mp4parser.IsoFile;
 import org.mp4parser.boxes.iso14496.part12.TrackBox;
 import org.mp4parser.boxes.iso14496.part15.AvcConfigurationBox;
@@ -16,7 +16,14 @@ import org.mp4parser.muxer.tracks.AppendTrack;
 import org.mp4parser.muxer.tracks.ChangeTimeScaleTrack;
 import org.mp4parser.muxer.tracks.ClippedTrack;
 import org.mp4parser.tools.IsoTypeReaderVariable;
-import org.mp4parser.tools.Path;
+import org.mp4parser.tools.Path;*/
+
+import com.coremedia.iso.boxes.Container;
+import com.googlecode.mp4parser.authoring.Movie;
+import com.googlecode.mp4parser.authoring.Track;
+import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
+import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
+import com.googlecode.mp4parser.authoring.tracks.CroppedTrack;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -144,7 +151,7 @@ public class TestMp4Parser {
                 currentTime += (double) delta / (double) track.getTrackMetaData().getTimescale();
                 currentSample++;
             }
-            movie.addTrack(new AppendTrack(new ClippedTrack(track, startSample1, endSample1)));//, new ClippedTrack(track, startSample2, endSample2)));
+            movie.addTrack(new CroppedTrack(track, startSample1, endSample1));//new AppendTrack(new ClippedTrack(track, startSample1, endSample1)));//, new ClippedTrack(track, startSample2, endSample2)));
         }
 
         return movie.getTracks();

@@ -17,14 +17,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ecanaveras.gde.waudio.MainActivity;
 import com.ecanaveras.gde.waudio.MainApp;
-import com.ecanaveras.gde.waudio.WaudioFinalizedActivity;
 import com.ecanaveras.gde.waudio.R;
+import com.ecanaveras.gde.waudio.StoreActivity;
+import com.ecanaveras.gde.waudio.WaudioFinalizedActivity;
 import com.ecanaveras.gde.waudio.WaudioPreviewActivity;
-import com.ecanaveras.gde.waudio.models.WaudioModel;
 import com.ecanaveras.gde.waudio.editor.CompareWaudio;
 import com.ecanaveras.gde.waudio.editor.GeneratorWaudio;
 import com.ecanaveras.gde.waudio.listener.ItemClickListener;
+import com.ecanaveras.gde.waudio.models.WaudioModel;
 import com.ecanaveras.gde.waudio.picasso.VideoRequestHandler;
 import com.squareup.picasso.Picasso;
 
@@ -42,6 +44,14 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
     private VideoRequestHandler videoRequestHandler;
     private Picasso picassoInstance;
     private int mLayout;
+    private boolean isRemote;
+
+    public TemplateRecyclerAdapter(Context context, int mLayout, List<WaudioModel> waudioModelList, boolean isRemote) {
+        this.mLayout = mLayout;
+        this.mContext = context;
+        this.waudioModelList = waudioModelList;
+        this.isRemote = isRemote;
+    }
 
     public TemplateRecyclerAdapter(Context context, int mLayout, List<WaudioModel> waudioModelList) {
         this.mLayout = mLayout;
@@ -76,10 +86,15 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
                     break;
                 case R.id.btnFavorite:
                     break;
-                default: //Vista previa
-                    intent = new Intent(mContext, WaudioPreviewActivity.class);
-                    intent.putExtra(WaudioPreviewActivity.PATH_WAUDIO, waudioModel.getPathMp4());
-                    mContext.startActivity(intent);
+                default: //Vista previa o Store
+                    if (isRemote) {
+                        showDownloadDialog(waudioModel);
+                    } else {
+                        intent = new Intent(mContext, WaudioPreviewActivity.class);
+                        intent.putExtra(WaudioPreviewActivity.PATH_WAUDIO, waudioModel.getPathMp4());
+                        intent.putExtra(WaudioPreviewActivity.IS_TEMPLATE, true);
+                        mContext.startActivity(intent);
+                    }
                     break;
             }
 
@@ -123,28 +138,17 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
     @Override
     public void onBindViewHolder(final TemplateRecyclerAdapter.MyViewHolder holder, int position) {
         WaudioModel waudioModel = waudioModelList.get(position);
-        holder.name.setText(waudioModel.getName());
+        holder.name.setText(waudioModel.getSimpleName());
         holder.category.setText(waudioModel.getCategory());
-        //holder.thumbnail.setImageBitmap(waudioModel.getImgThumbnail());
-        picassoInstance.load(VideoRequestHandler.SCHEME_VIDEO + ":" + waudioModel.getPathMp4()).into(holder.thumbnail);
+        if (isRemote) {
+            Picasso.with(mContext).load(waudioModel.getUrlThumbnail()).into(holder.thumbnail);
+        } else
+            picassoInstance.load(VideoRequestHandler.SCHEME_VIDEO + ":" + waudioModel.getPathMp4()).into(holder.thumbnail);
     }
 
     @Override
     public int getItemCount() {
         return waudioModelList.size();
-    }
-
-    public static Bitmap getThumbnail(ContentResolver cr, String path) {
-        Cursor ca = cr.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, new String[]{MediaStore.MediaColumns._ID}, MediaStore.MediaColumns.DATA + ".=?", new String[]{path}, null);
-        if (ca != null && ca.moveToFirst()) {
-            int id = ca.getInt(ca.getColumnIndex(MediaStore.MediaColumns._ID));
-            ca.close();
-            return MediaStore.Video.Thumbnails.getThumbnail(cr, id, MediaStore.Video.Thumbnails.MINI_KIND, null);
-        } else {
-            Log.d(TemplateRecyclerAdapter.class.getName(), "Thumbnail no found, path:" + path);
-        }
-        ca.close();
-        return null;
     }
 
     public WaudioModel getTemplate(int position) {
@@ -167,6 +171,11 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
                 .setNegativeButton("NO", null)
                 .setCancelable(true)
                 .show();
+    }
+
+    private void showDownloadDialog(WaudioModel model) {
+        StoreActivity activity = (StoreActivity) mContext;
+        activity.onClicDownloadItem(model);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

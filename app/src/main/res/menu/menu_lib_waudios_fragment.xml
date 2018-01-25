@@ -5,9 +5,14 @@
     tools:context="com.ecanaveras.gde.waudio.MainActivity">
 
     <item
-        android:id="@+id/action_orderby"
-        android:icon="@drawable/ic_action_orderby"
-        android:title="@string/menu_action_order_by"
-        app:showAsAction="always" />
+    android:id="@+id/action_orderby"
+    android:icon="@drawable/ic_action_orderby"
+    android:title="@string/menu_action_order_by"
+    app:showAsAction="always" />
+
+    <!--<item
+        android:id="@+id/action_update_store"
+        android:title="Update Store"
+        app:showAsAction="never" />-->
 
 </menu>

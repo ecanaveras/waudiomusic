@@ -10,16 +10,30 @@
         <item name="android:textColor">@color/colorTextPrimary</item>
         <item name="android:typeface">monospace</item>
         <item name="actionBarStyle">@style/Theme.AppLib.ActionBar.Solid</item>
+        <item name="alertDialogTheme">@style/AlertDialogCustom</item>
         <item name="android:alertDialogTheme">@style/AlertDialogCustom</item>
         <item name="android:itemTextAppearance">@style/MyActionBar.MenuTextStyle</item>
     </style>
 
     <!--Elder Style-->
+    <style name="AppTheme.ActionBar.Transparent" parent="AppTheme">
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="windowActionBarOverlay">true</item>
+        <item name="colorPrimary">@android:color/transparent</item>
+    </style>
+
     <style name="AlertDialogCustom" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="android:windowNoTitle">false</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:textColor">@color/colorPrimary</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="buttonBarButtonStyle">@style/DialogButtonStyle</item>
+    </style>
+
+    <style name="DialogButtonStyle" parent="@style/Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/colorPrimary</item>
     </style>
 
     <!--Action BAR-->
@@ -36,6 +50,11 @@
         <item name="windowActionBar">false</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowContentOverlay">@null</item>
+    </style>
+
+    <style name = "NoActionBar" parent = "AppTheme">
+        <item name = "android:windowActionBar">false</item>
+        <item name = "android:windowNoTitle">true</item>
     </style>
 
 
@@ -60,6 +79,10 @@
         <item name="android:textSize">16dp</item>
         <item name="android:textColor">#e4e4e4</item>
         <item name="android:background">@drawable/buttondefault</item>
+    </style>
+
+    <style name="BkgndIndicator">
+        <item name="android:background">@drawable/bkgnd_indicator</item>
     </style>
 
     <style name="WaudioButtonRed" parent="WaudioButton">

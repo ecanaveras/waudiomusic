@@ -31,7 +31,7 @@
     <!-- Etiquetas junto a los cuadros de hora de inicio y fin -->
     <string name="start_label">Inicio:</string>
     <string name="end_label">Fin:</string>
-    <string name="edit_intent">Editar</string>
+    <string name="edit_intent">Crear Waudio</string>
     <string name="time_seconds">segundos</string>
     <!-- Una vez guardada una notificacion o un tono de llamada y tienes mas opciones de configuracion-->
     <string name="what_to_do_with_ringtone">Guardado. ¿Quieres que sea el tono por defecto o para un contacto?</string>
@@ -53,9 +53,6 @@
        -->
     <string name="context_menu_edit">Editar</string>
     <string name="context_menu_delete">Eliminar</string>
-    <string name="context_menu_contact">Asignar a contacto</string>
-    <string name="context_menu_default_ringtone">Por defecto</string>
-    <string name="context_menu_default_notification">Por defecto</string>
     <!--
        Cuadro Guardar archivo
        -->
@@ -65,7 +62,6 @@
     <string name="ringtone_type_label">Tipo:</string>
     <string name="type_music">Música</string>
     <string name="ringtone_name_label">Nombre:</string>
-    <string name="artist_name">Waudio</string>
     <!--
        Cuadro confirmacion eliminacion
        -->
@@ -124,6 +120,7 @@
     <string name="msgChoose30seg">Selecciona 30 segundos de tu canción, y luego toca en \'siguiente\'</string>
     <string name="msgRestart">Debemos empezar de nuevo!</string>
     <string name="msgExit">Pulse de nuevo para salir</string>
+    <string name="msgCancelEditor">Pulse de nuevo para cancenlar</string>
     <string name="msgDeniedPermitions">Permisos denegados</string>
     <string name="alert_title_choose_style">Elegir otro estilo...</string>
     <string name="msgWarningStyle">Quieres elegir otro estilo?  Creará un nuevo Waudio con el estilo que elijas!</string>
@@ -140,6 +137,7 @@
     <string name="msgShareWith">Compartir Waudio con...</string>
     <string name="msgDeleteWaudio">Eliminar :(</string>
     <string name="msgConfirmDelete">¿Quieres eliminar el Waudio?</string>
+    <string name="msgConfirmTemplateDelete">¿Quieres eliminar el Estilo?</string>
     <string name="msgYesDelete">SI, ELIMINAR</string>
     <string name="alert_cancel">CANCELAR</string>
     <string name="msgOpenWith">Abrir Waudio con...</string>
@@ -177,5 +175,27 @@
     <string name="lblOrderbyTitle">Nombre</string>
     <string name="msgErrorDeleteWaudio">Problemas al eliminar el waudio, intentalo de nuevo</string>
     <string name="msgComingSoonStore">Pronto podrás descargar muchos estilos!</string>
-    <string name="lblGoHome">IR A WAUDIOS</string>
+    <string name="lblGoHome">VER WAUDIOS</string>
+    <string name="msgNoMusic2">PARECE QUE TE QUEDASTE EN LA ERA DE ROCA!</string>
+    <string name="msgNoMusic3">Waudio Music, hace su magia solo con música\n el internet está lleno de ella, o pidele a tus amigos, y vuelve!</string>
+    <string name="msgNoMusic">¿DE VERDAD NO TIENES MÚSICA?</string>
+    <string name="msgDenegateTemplateDelete">Mi amig@ este estilo hace parte de mi magia, no lo puedes borrar!</string>
+    <string name="msgIntroStore">WAUDIO STORE, UN MUNDO DE ESTILOS PARA CREAR WAUDIOS MARAVILLOSOS...</string>
+    <string name="msgItemsAvailable">NUEVOS ESTILOS</string>
+    <string name="msgRating">Te has divertido y nos encanta eso!!! \nCuantas estrellas le darías a</string>
+    <string name="alert_ok_new_styles">MUESTRAME</string>
+    <string name="alert_ok_rating">CALIFICAR</string>
+    <string name="alert_cancel_rating">LUEGUITO</string>
+    <string name="lblAvailable">DISPONIBLES</string>
+    <string name="msgDownloadNewStyles">DESCARGA NUEVOS ESTILOS</string>
+    <string name="msgNewStylesAvailable">NUEVOS ESTILOS DISPONIBLES...</string>
+    <string name="msgSelectStyle">Escoge un estilo para continuar...</string>
+    <string name="msgSelectStyleTip">puedes descargarlos desde Waudio Store</string>
+    <string name="msgAudioLoading">Cargando audio...\nEsperame!</string>
+    <string name="msgAudioLoading2">Ya casi termino...</string>
+    <string name="tip_cancel_editor">Tip: Para cancenlar, presiona \'atrás\'</string>
+    <string name="msgUIPreparing">VOY...</string>
+    <string name="msgUIReady">Bingooo....</string>
+    <string name="lblFrom">UNA IDEA DE</string>
+    <string name="lblForWorld">PARA EL MUNDO</string>
 </resources>

@@ -16,18 +16,19 @@
 
 package com.ecanaveras.gde.waudio;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.media.AudioManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
@@ -38,6 +39,8 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
@@ -58,6 +61,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.DecimalFormat;
 
 /**
  * The activity for the Ringdroid main editor_pref window.  Keeps track of
@@ -139,12 +143,16 @@ public class EditorActivity extends AppCompatActivity
      */
     public static final String EDIT = "com.ecanaveras.gde.waudio.action.EDIT";
     private LinearLayout le;
-    private TextView lblTitleAudio;
+    private TextView lblTitleAudio, lblTitleAudioLoading, lblPercent;
 
     private boolean max30s = true;
     private AudioManager audioManager;
     private ImageButton mBack30s;
     private ImageButton mNext30s;
+    private RelativeLayout lyContentLoading, lyContentLoading2;
+    private LinearLayout lyContentEditor;
+    private long back_pressed = 0;
+    private Thread mInfoThread;
 
     //
     // Public methods and protected overrides
@@ -160,6 +168,25 @@ public class EditorActivity extends AppCompatActivity
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
+        setupIntent(getIntent());
+
+        mFirebaseAnalytics.setUserProperty("open_editor", String.valueOf(true));
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        //cancelEdition();
+        Boolean edicion = intent.getBooleanExtra("continue_edition", false);
+        if (!edicion) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+            intent.setClassName("com.ecanaveras.gde.waudio", "com.ecanaveras.gde.waudio.EditorActivity");
+            //startActivityForResult(intent, REQUEST_CODE_EDIT);
+            startActivity(intent);
+            finish();
+        }
+    }
+
+    private void setupIntent(Intent intent) {
         //Maneja el audio en llamadas
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
 
@@ -173,21 +200,33 @@ public class EditorActivity extends AppCompatActivity
         mRecordAudioThread = null;
         mSaveSoundFileThread = null;
 
-        Intent intent = getIntent();
+        Intent receivedIntent = intent;
+        String receivedAction = receivedIntent.getAction();
+        String receivedType = receivedIntent.getType();
 
-        if (intent.getData() == null) {
-            onBackPressed();
-            Toast.makeText(this, getResources().getString(R.string.msgRestart), Toast.LENGTH_SHORT).show();
-        }
+        //if (receivedIntent.getData() == null) {
+            //onBackPressed();
+            //Toast.makeText(this, getResources().getString(R.string.msgRestart), Toast.LENGTH_SHORT).show();
+        //}
         // If the Ringdroid media select activity was launched via a
         // GET_CONTENT intent, then we shouldn't display a "saved"
         // message when the user saves, we should just return whatever
         // they create.
-        mWasGetContentIntent = intent.getBooleanExtra("was_get_content_intent", false);
+        mWasGetContentIntent = receivedIntent.getBooleanExtra("was_get_content_intent", false);
 
-        mFilename = intent.getData().toString().replaceFirst("file://", "").replaceAll("%20", " ");
+        if (receivedIntent != null) {
+            if (receivedAction.equals(Intent.ACTION_SEND) && receivedType.startsWith("audio/")) {
+                Uri receivedUri = (Uri) receivedIntent.getParcelableExtra(Intent.EXTRA_STREAM);
+                mFilename = getRealPathFromURI(receivedUri);
+            } else {
+                mFilename = receivedIntent.getData().toString().replaceFirst("file://", "").replaceAll("%20", " ");
+            }
+        }
+
         mSoundFile = null;
         mKeyDown = false;
+
+        System.out.println("FILE:" + mFilename);
 
         mHandler = new Handler();
 
@@ -200,8 +239,21 @@ public class EditorActivity extends AppCompatActivity
         } else {
             recordAudio();
         }
+    }
 
-        mFirebaseAnalytics.setUserProperty("open_editor", String.valueOf(true));
+
+    private String getRealPathFromURI(Uri contentURI) {
+        String result;
+        Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
+        if (cursor == null) { // Source is Dropbox or other similar local file path
+            result = contentURI.getPath();
+        } else {
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA);
+            result = cursor.getString(idx);
+            cursor.close();
+        }
+        return result;
     }
 
     private void closeThread(Thread thread) {
@@ -215,11 +267,14 @@ public class EditorActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(this, ListAudioActivity.class);
-        intent.addFlags(intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finishAffinity();
+        if (back_pressed + 2000 > System.currentTimeMillis()) {
+            cancelEdition();
+            super.onBackPressed();
+            this.finish();
+        } else
+            Toast.makeText(this, getResources().getString(R.string.msgCancelEditor), Toast.LENGTH_SHORT).show();
+        back_pressed = System.currentTimeMillis();
+
     }
 
     /**
@@ -228,12 +283,20 @@ public class EditorActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         Log.v("Waudio", "EditActivity OnDestroy");
+        cancelEdition();
 
+        super.onDestroy();
+    }
+
+    private void cancelEdition() {
+        lyContentLoading.setVisibility(View.GONE);
         mLoadingKeepGoing = false;
         mRecordingKeepGoing = false;
+        mHandler.removeCallbacks(mTimerRunnable);
         closeThread(mLoadSoundFileThread);
         closeThread(mRecordAudioThread);
         closeThread(mSaveSoundFileThread);
+        closeThread(mInfoThread);
         mLoadSoundFileThread = null;
         mRecordAudioThread = null;
         mSaveSoundFileThread = null;
@@ -254,9 +317,9 @@ public class EditorActivity extends AppCompatActivity
             mPlayer = null;
         }
 
-        audioManager.abandonAudioFocus(this);
+        if (audioManager != null)
+            audioManager.abandonAudioFocus(this);
 
-        super.onDestroy();
     }
 
     /**
@@ -293,7 +356,6 @@ public class EditorActivity extends AppCompatActivity
             public void run() {
                 mStartMarker.requestFocus();
                 markerFocus(mStartMarker);
-
                 mWaveformView.setZoomLevel(saveZoomLevel);
                 mWaveformView.recomputeHeights(mDensity);
 
@@ -423,9 +485,6 @@ public class EditorActivity extends AppCompatActivity
             if (max30s && Double.valueOf(formatTime(mEndPos)) > end30s) {
                 mEndPos = mWaveformView.secondsToPixels(end30s);
             }
-
-
-            System.out.println("mEndPos " + mEndPos);
         }
 
         updateDisplay();
@@ -517,27 +576,6 @@ public class EditorActivity extends AppCompatActivity
     }
 
     //
-    // Static About dialog method, also called from RingdroidSelectActivity
-    //
-
-    public static void onAbout(final Activity activity) {
-        String versionName = "";
-        try {
-            PackageManager packageManager = activity.getPackageManager();
-            String packageName = activity.getPackageName();
-            versionName = packageManager.getPackageInfo(packageName, 0).versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            versionName = "unknown";
-        }
-        new AlertDialog.Builder(activity)
-                .setTitle(R.string.about_title)
-                .setMessage(activity.getString(R.string.about_text, versionName))
-                .setPositiveButton(R.string.alert_ok_button, null)
-                .setCancelable(false)
-                .show();
-    }
-
-    //
     // Internal methods
     //
 
@@ -550,22 +588,32 @@ public class EditorActivity extends AppCompatActivity
         setContentView(R.layout.activity_editor);
 
         le = (LinearLayout) findViewById(R.id.layoutEditor);
+        lblTitleAudioLoading = (TextView) findViewById(R.id.lblTitleAudioLoading);
         lblTitleAudio = (TextView) findViewById(R.id.lblTitleAudio);
+        lblPercent = (TextView) findViewById(R.id.lblPercent);
 
         DisplayMetrics metrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         mDensity = metrics.density;
 
-        mMarkerLeftInset = (int) (46 * mDensity);
-        mMarkerRightInset = (int) (48 * mDensity);
-        mMarkerTopOffset = (int) (10 * mDensity);
-        mMarkerBottomOffset = (int) (10 * mDensity);
+        mMarkerLeftInset = (int) (31.5 * mDensity);
+        mMarkerRightInset = (int) (31.8 * mDensity);
+        mMarkerTopOffset = (int) (25 * mDensity);
+        mMarkerBottomOffset = (int) (25 * mDensity);
 
         mStartText = (TextView) findViewById(R.id.starttext);
         mStartText.addTextChangedListener(mTextWatcher);
         mEndText = (TextView) findViewById(R.id.endtext);
         mEndText.addTextChangedListener(mTextWatcher);
         mDurationText = (TextView) findViewById(R.id.durationtext);
+
+        lyContentLoading = (RelativeLayout) findViewById(R.id.lyContentLoading);
+        lyContentLoading2 = (RelativeLayout) findViewById(R.id.lyContentLoading2);
+        lyContentEditor = (LinearLayout) findViewById(R.id.lyContentEditor);
+
+        lyContentLoading.setVisibility(View.VISIBLE);
+        lyContentLoading.setVisibility(View.GONE);
+        lyContentEditor.setVisibility(View.GONE);
 
         ((RadioGroup) findViewById(R.id.toggleGroup)).setOnCheckedChangeListener(ToggleListener);
 
@@ -635,12 +683,16 @@ public class EditorActivity extends AppCompatActivity
             titleLabel += " - " + mArtist;
         }
         //setTitle(titleLabel);
+        lblTitleAudioLoading.setText(titleLabel);
         lblTitleAudio.setText(titleLabel);
 
         mLoadingLastUpdateTime = getCurrentTime();
         mLoadingKeepGoing = true;
         mFinishActivity = false;
-        mProgressDialog = new ProgressDialog(EditorActivity.this, R.style.AlertDialogCustom);
+
+        //Layout Loading
+        lyContentLoading.setVisibility(View.VISIBLE);
+        /*mProgressDialog = new ProgressDialog(EditorActivity.this, R.style.AlertDialogCustom);
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressDialog.setTitle(R.string.progress_dialog_loading);
         mProgressDialog.setCancelable(true);
@@ -651,16 +703,68 @@ public class EditorActivity extends AppCompatActivity
                         mFinishActivity = true;
                     }
                 });
-        mProgressDialog.show();
+        mProgressDialog.show();*/
         //lw.setVisibility(View.VISIBLE);
+
+        //Mantener al Usuario en espera
+        mInfoThread = new Thread() {
+
+            boolean closePercent = false;
+            int seconds = 0;
+
+            @Override
+            public void run() {
+                while (lyContentLoading.getVisibility() == View.VISIBLE) {
+                    try {
+                        Thread.sleep(1000);
+                        seconds++;
+                        final String info = lblPercent.getText().toString().replace("%", "").replace(",", ".");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (!lblPercent.getText().toString().startsWith("Bingo")) {
+                                    Double porc = Double.parseDouble(info);
+                                    if (porc.intValue() > 80 && porc < 99.9 && porc.equals(Double.parseDouble(info))) {
+                                        porc += 0.1;
+                                        lblPercent.setText(new DecimalFormat("##.#").format(porc) + "%");
+                                    } else if (porc >= 99.9 && !closePercent) {
+                                        closePercent = true;
+                                        Animation animationIn = AnimationUtils.loadAnimation(EditorActivity.this, R.anim.slide_in);
+                                        Animation animationOut = AnimationUtils.loadAnimation(EditorActivity.this, R.anim.slide_out);
+                                        lyContentLoading.startAnimation(animationOut);
+                                        lyContentLoading.setVisibility(View.GONE);
+                                        lyContentLoading2.startAnimation(animationIn);
+                                        lyContentLoading2.setVisibility(View.VISIBLE);
+                                    }
+                                    //System.out.println("Info:" + info + " PORCT:" + porc);
+                                }
+                            }
+                        });
+                        if (closePercent) {
+                            break;
+                        }
+                        //System.out.println("DEMORA: " + seconds);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        }
+
+        ;
+        mInfoThread.start();
 
         final SoundFile.ProgressListener listener =
                 new SoundFile.ProgressListener() {
                     public boolean reportProgress(double fractionComplete) {
                         long now = getCurrentTime();
+                        Double currentPercent = 1.0;
                         if (now - mLoadingLastUpdateTime > 100) {
-                            mProgressDialog.setProgress(
-                                    (int) (mProgressDialog.getMax() * fractionComplete));
+                            currentPercent *= fractionComplete;
+                            //System.out.println("PERCENT: " + currentPercent + "%");
+                            updatePercent(currentPercent);
+                            //mProgressDialog.setProgress((int) (mProgressDialog.getMax() * fractionComplete));
                             mLoadingLastUpdateTime = now;
                         }
                         return mLoadingKeepGoing;
@@ -668,66 +772,80 @@ public class EditorActivity extends AppCompatActivity
                 };
 
         // Load the sound file in a background thread
-        mLoadSoundFileThread = new Thread() {
-            public void run() {
-                try {
-                    mSoundFile = SoundFile.create(mFile.getAbsolutePath(), listener);
+        mLoadSoundFileThread = new
 
-                    if (mSoundFile == null) {
-                        mProgressDialog.dismiss();
-                        String name = mFile.getName().toLowerCase();
-                        String[] components = name.split("\\.");
-                        String err;
-                        if (components.length < 2) {
-                            err = getResources().getString(
-                                    R.string.no_extension_error);
-                        } else {
-                            err = getResources().getString(
-                                    R.string.bad_extension_error) + " " +
-                                    components[components.length - 1];
-                        }
-                        final String finalErr = err;
-                        Runnable runnable = new Runnable() {
-                            public void run() {
-                                showFinalAlert(new Exception(), finalErr);
+                Thread() {
+
+                    public void run() {
+                        try {
+                            mSoundFile = SoundFile.create(mFile.getAbsolutePath(), listener);
+                            if (mSoundFile == null) {
+                                String name = mFile.getName().toLowerCase();
+                                String[] components = name.split("\\.");
+                                String err;
+                                if (components.length < 2) {
+                                    err = getResources().getString(
+                                            R.string.no_extension_error);
+                                } else {
+                                    err = getResources().getString(
+                                            R.string.bad_extension_error) + " " +
+                                            components[components.length - 1];
+                                }
+                                final String finalErr = err;
+                                Runnable runnable = new Runnable() {
+                                    public void run() {
+                                        showFinalAlert(new Exception(), finalErr);
+                                    }
+                                };
+                                mHandler.post(runnable);
+                                return;
                             }
-                        };
-                        mHandler.post(runnable);
-                        return;
-                    }
-                    mPlayer = new SamplePlayer(mSoundFile);
-                } catch (final Exception e) {
-                    mProgressDialog.dismiss();
-                    e.printStackTrace();
-                    mInfoContent = e.toString();
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            mInfo.setText(mInfoContent);
-                        }
-                    });
+                            mPlayer = new SamplePlayer(mSoundFile);
+                        } catch (final Exception e) {
+                            //mProgressDialog.dismiss();
+                            e.printStackTrace();
+                            mInfoContent = e.toString();
+                            runOnUiThread(new Runnable() {
+                                public void run() {
+                                    mInfo.setText(mInfoContent);
+                                }
+                            });
 
-                    Runnable runnable = new Runnable() {
-                        public void run() {
-                            showFinalAlert(e, getResources().getText(R.string.read_error));
+                            Runnable runnable = new Runnable() {
+                                public void run() {
+                                    showFinalAlert(e, getResources().getText(R.string.read_error));
+                                }
+                            };
+                            mHandler.post(runnable);
+                            return;
                         }
-                    };
-                    mHandler.post(runnable);
-                    return;
-                }
-                mProgressDialog.dismiss();
-                if (mLoadingKeepGoing) {
-                    Runnable runnable = new Runnable() {
-                        public void run() {
-                            finishOpeningSoundFile();
+                        //mProgressDialog.dismiss();
+                        if (mLoadingKeepGoing) {
+                            Runnable runnable = new Runnable() {
+                                public void run() {
+                                    finishOpeningSoundFile();
+                                }
+                            };
+                            mHandler.post(runnable);
+                        } else if (mFinishActivity) {
+                            EditorActivity.this.finish();
                         }
-                    };
-                    mHandler.post(runnable);
-                } else if (mFinishActivity) {
-                    EditorActivity.this.finish();
+                    }
+
                 }
-            }
-        };
+
+        ;
         mLoadSoundFileThread.start();
+    }
+
+    private void updatePercent(final double percent) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                lblPercent.setText(new DecimalFormat("##.#%").format(percent));
+            }
+        });
+
     }
 
     private void recordAudio() {
@@ -837,6 +955,19 @@ public class EditorActivity extends AppCompatActivity
     }
 
     private void finishOpeningSoundFile() {
+        Animation animationIn = AnimationUtils.loadAnimation(this, R.anim.slide_in);
+        Animation animationOut = AnimationUtils.loadAnimation(this, R.anim.slide_out);
+        lyContentEditor.startAnimation(animationIn);
+        lyContentEditor.setVisibility(View.VISIBLE);
+        if (lyContentLoading.getVisibility() == View.VISIBLE) {
+            lyContentLoading.startAnimation(animationOut);
+            lyContentLoading.setVisibility(View.GONE);
+        }
+        if (lyContentLoading2.getVisibility() == View.VISIBLE) {
+            lyContentLoading2.startAnimation(animationOut);
+            lyContentLoading2.setVisibility(View.GONE);
+        }
+
         mWaveformView.setSoundFile(mSoundFile);
         mWaveformView.recomputeHeights(mDensity);
 
@@ -849,20 +980,21 @@ public class EditorActivity extends AppCompatActivity
         mOffset = 0;
         mOffsetGoal = 0;
         mFlingVelocity = 0;
-        resetPositions();
+        //resetPositions();
         if (mEndPos > mMaxPos)
             mEndPos = mMaxPos;
 
-        mCaption =
-                mSoundFile.getFiletype() + ", " +
+        /*mCaption =                mSoundFile.getFiletype() + ", " +
                         mSoundFile.getSampleRate() + " Hz, " +
                         mSoundFile.getAvgBitrateKbps() + " kbps, " +
                         formatTime(mMaxPos) + " " +
                         getResources().getString(R.string.time_seconds);
-        mInfo.setText(mCaption);
+        mInfo.setText(mCaption);*/
 
         //UI Show/Hide
-        le.setVisibility(View.VISIBLE);
+        //le.setVisibility(View.VISIBLE);
+
+
         mStartMarker.setVisibility(View.VISIBLE);
         mStartMarker.requestFocus();
         mEndMarker.setVisibility(View.VISIBLE);
@@ -875,6 +1007,7 @@ public class EditorActivity extends AppCompatActivity
         mEndText.setEnabled(true);
 
         updateDisplay();
+        resetPositions();
 
 
         Toast toast = Toast.makeText(this, getResources().getString(R.string.msgChoose30seg), Toast.LENGTH_LONG);
@@ -883,7 +1016,7 @@ public class EditorActivity extends AppCompatActivity
     }
 
     private synchronized void updateDisplay() {
-        if (mIsPlaying) {
+        if (mIsPlaying && mPlayer != null) {
             int now = mPlayer.getCurrentPosition();
             int frames = mWaveformView.millisecsToPixels(now);
             mWaveformView.setPlayback(frames);
@@ -1006,25 +1139,27 @@ public class EditorActivity extends AppCompatActivity
 
     private Runnable mTimerRunnable = new Runnable() {
         public void run() {
-            // Updating an EditText is slow on Android.  Make sure
-            // we only do the update if the text has actually changed.
-            if (mStartPos != mLastDisplayedStartPos &&
-                    !mStartText.hasFocus()) {
-                mStartText.setText(formatTime(mStartPos));
-                mLastDisplayedStartPos = mStartPos;
-            }
+            if (lyContentLoading.getVisibility() == View.GONE) {
+                // Updating an EditText is slow on Android.  Make sure
+                // we only do the update if the text has actually changed.
+                if (mStartPos != mLastDisplayedStartPos &&
+                        !mStartText.hasFocus()) {
+                    mStartText.setText(formatTime(mStartPos));
+                    mLastDisplayedStartPos = mStartPos;
+                }
 
-            if (mEndPos != mLastDisplayedEndPos &&
-                    !mEndText.hasFocus()) {
-                mEndText.setText(formatTime(mEndPos));
-                mLastDisplayedEndPos = mEndPos;
-            }
-            int duration = mEndPos - mStartPos;
-            mDurationText.setText(formatTime(duration));
-            if (duration > 0 && Double.valueOf(formatTime(duration)) > 31.0) {
-                mDurationText.setTextColor(ContextCompat.getColor(EditorActivity.this, R.color.colorTextSecondary));
-            } else {
-                mDurationText.setTextColor(ContextCompat.getColor(EditorActivity.this, R.color.playback_indicator));
+                if (mEndPos != mLastDisplayedEndPos &&
+                        !mEndText.hasFocus()) {
+                    mEndText.setText(formatTime(mEndPos));
+                    mLastDisplayedEndPos = mEndPos;
+                }
+                int duration = mEndPos - mStartPos;
+                mDurationText.setText(formatTime(duration));
+                if (duration > 0 && Double.valueOf(formatTime(duration)) > 31.0) {
+                    mDurationText.setTextColor(ContextCompat.getColor(EditorActivity.this, R.color.colorTextSecondary));
+                } else {
+                    mDurationText.setTextColor(ContextCompat.getColor(EditorActivity.this, R.color.playback_indicator));
+                }
             }
 
             mHandler.postDelayed(mTimerRunnable, 100);
@@ -1042,8 +1177,13 @@ public class EditorActivity extends AppCompatActivity
     }
 
     private void resetPositions() {
-        mStartPos = mWaveformView.secondsToPixels(0.0);
-        mEndPos = mWaveformView.secondsToPixels(30.0);
+        if (new Double(formatTime(mMaxPos)) <= 30) {
+            mStartPos = mWaveformView.secondsToPixels(0.0);
+            mEndPos = mWaveformView.secondsToPixels(Double.valueOf(formatTime(mMaxPos)));
+        } else {
+            mStartPos = mWaveformView.secondsToPixels(10);
+            mEndPos = mWaveformView.secondsToPixels(40.0);
+        }
     }
 
     private int trap(int pos) {
@@ -1152,7 +1292,7 @@ public class EditorActivity extends AppCompatActivity
             });
             mIsPlaying = true;
 
-            audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+            audioManager.requestAudioFocus(this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
             mPlayer.seekTo(mPlayStartMsec);
             mPlayer.start();
             updateDisplay();
@@ -1354,7 +1494,7 @@ public class EditorActivity extends AppCompatActivity
             Double dif = Double.parseDouble(formatTime(mEndPos)) - Double.parseDouble(formatTime(mStartPos));
             mStartPos = mWaveformView.secondsToPixels(posStart);
             Double posEnd = Double.parseDouble(formatTime(mEndPos)) - dif;
-            if(posStart==inicio){
+            if (posStart == inicio) {
                 posEnd = posStart + dif;
             }
             mEndPos = mWaveformView.secondsToPixels(posEnd);

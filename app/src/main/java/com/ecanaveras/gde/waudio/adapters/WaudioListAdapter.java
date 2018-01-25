@@ -1,7 +1,11 @@
 package com.ecanaveras.gde.waudio.adapters;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
@@ -17,6 +21,7 @@ import android.widget.TextView;
 import com.ecanaveras.gde.waudio.MainActivity;
 import com.ecanaveras.gde.waudio.R;
 import com.ecanaveras.gde.waudio.WaudioPreviewActivity;
+import com.ecanaveras.gde.waudio.controllers.WaudioController;
 import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
 import com.ecanaveras.gde.waudio.models.WaudioModel;
 import com.ecanaveras.gde.waudio.picasso.VideoRequestHandler;
@@ -26,6 +31,7 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by elcap on 29/08/2017.
@@ -42,6 +48,7 @@ public class WaudioListAdapter extends SimpleCursorAdapter implements View.OnCli
     private HashMap<Integer, Boolean> mSelection = new HashMap<Integer, Boolean>();
     private VideoRequestHandler videoRequestHandler;
     private Picasso picassoInstance;
+    private WaudioController waudioController;
 
     @Override
     public void onClick(View v) {
@@ -102,7 +109,7 @@ public class WaudioListAdapter extends SimpleCursorAdapter implements View.OnCli
         WaudioModel waudio = new WaudioModel(cursor.getString(columnName), cursor.getString(columnPath), cursor.getLong(columnDate), cursor.getLong(columnSize));
         viewHolder.waudioName.setText(waudio.getName().replace("WAUDIO-", ""));
         picassoInstance.load(VideoRequestHandler.SCHEME_VIDEO + ":" + waudio.getPathMp4()).into(viewHolder.thumbnail);
-        viewHolder.date.setText(new SimpleDateFormat("dd/MM/yyyy").format(waudio.getDateModified()));
+        viewHolder.date.setText(new SimpleDateFormat("dd/MM/yyyy").format(waudio.getDate()));
         viewHolder.size.setText(waudio.getSizeFormat());
         viewHolder.btnShare.setTag(cursor.getPosition());
     }
@@ -115,7 +122,7 @@ public class WaudioListAdapter extends SimpleCursorAdapter implements View.OnCli
         String pathWaudio = cursor.getString(columnPath);
         Intent goIntent = new Intent(mContext, WaudioPreviewActivity.class);
         goIntent.putExtra(WaudioPreviewActivity.PATH_WAUDIO, pathWaudio);
-        goIntent.getBooleanExtra(WaudioPreviewActivity.IS_WAUDIO, true);
+        goIntent.putExtra(WaudioPreviewActivity.IS_WAUDIO, true);
         mContext.startActivity(goIntent);
     }
 
@@ -125,17 +132,11 @@ public class WaudioListAdapter extends SimpleCursorAdapter implements View.OnCli
         int columnName = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.TITLE);
         int columnPath = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
         WaudioModel waudio = new WaudioModel(cursor.getString(columnName), cursor.getString(columnPath));
-        ;
+
         if (waudio != null) {
-            mFirebaseAnalytics.setUserProperty("share", String.valueOf(true));
-            mDataFirebaseHelper.incrementWaudioShared();
-            Intent sendIntent = new Intent();
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.parse(waudio.getPathMp4()));
-            sendIntent.putExtra(Intent.EXTRA_TEXT, mContext.getResources().getString(R.string.hastag));
-            sendIntent.setAction(Intent.ACTION_SEND);
-            sendIntent.setType("video/mp4");
-            mContext.startActivity(Intent.createChooser(sendIntent, mContext.getResources().getString(R.string.msgShareWith)));
+            File w = new File(waudio.getPathMp4());
+            waudioController = new WaudioController(mContext, w);
+            waudioController.onShare();
         }
     }
 

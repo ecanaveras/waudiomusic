@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    style="@style/ToolbarBackground"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:orientation="vertical"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+    android:orientation="vertical">
 
 
-    <!--<TextView
+    <!--<TextView style="@style/ToolbarBackground"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -18,37 +15,102 @@
         android:textAllCaps="true"
         android:textColor="@color/colorTextSecondary" />-->
 
-    <ListView
-        android:id="@+id/listAudio"
+    <ImageView
+        android:id="@+id/imgBg"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" />
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg1" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/listAudio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/imgBg"
+            android:layout_alignStart="@+id/imgBg"
+            android:layout_weight="1" /> <!--android:paddingTop="?android:attr/actionBarSize"-->
+
+
+        <RelativeLayout
+            android:id="@+id/layoutNext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:minHeight="60dp"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/lblNameTrack"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:layout_marginTop="2dp"
+                android:maxLines="1"
+                android:shadowColor="@color/colorPrimaryDark"
+                android:shadowDx="2"
+                android:shadowDy="2"
+                android:shadowRadius="3"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textSize="10sp" android:visibility="gone" />
+
+            <Button
+                android:id="@+id/btnNext"
+                style="@style/WaudioButton"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_below="@+id/lblNameTrack"
+                android:text="@string/lblNext"
+                android:textAllCaps="true"/>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <!--NO MUSIC-->
+    <LinearLayout
+        android:id="@+id/layoutNoMusic"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="16dp"
+        android:gravity="center"
+        android:orientation="vertical"
         android:visibility="gone">
 
-        <ImageButton
-            android:id="@+id/btnPause"
-            style="@style/WaudioButtonBlank"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:layout_marginBottom="12dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginTop="12dp"
-            android:src="@drawable/ic_action_pause" />
-
-        <Button
-            android:id="@+id/btnNext"
-            style="@style/WaudioButton"
+        <TextView
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_margin="12dp"
-            android:layout_weight="1"
-            android:text="@string/lblNext" />
+            android:layout_height="wrap_content"
+            android:maxLines="3"
+            android:text="@string/msgNoMusic"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:typeface="monospace" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="3"
+            android:text="@string/msgNoMusic2"
+            android:textAlignment="center"
+            android:textColor="@color/colorTextSecondary"
+            android:textSize="18sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="3"
+            android:text="@string/msgNoMusic3"
+            android:textAlignment="center"
+            android:textColor="@color/colorTextThirdy" />
 
     </LinearLayout>
 
 
-</LinearLayout>
+</FrameLayout>

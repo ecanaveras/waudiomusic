@@ -84,7 +84,7 @@ public class SoundFile {
 
     // TODO(nfaralli): what is the real list of supported extensions? Is it device dependent?
     public static String[] getSupportedExtensions() {
-        return new String[]{"mp3", "wav"};//, "3gpp", "3gp", "amr", "aac", "m4a", "ogg"};
+        return new String[]{"mp3", "wav", "aac", "m4a", "amr"};//, "3gpp", "3gp", "amr", "aac", "m4a", "ogg"};
     }
 
     public static boolean isFilenameSupported(String filename) {

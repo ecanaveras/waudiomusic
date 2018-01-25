@@ -30,21 +30,24 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ecanaveras.gde.waudio.adapters.MusicListAdapter;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class ListAudioActivity extends AppCompatActivity implements AudioManager.OnAudioFocusChangeListener, LoaderManager.LoaderCallbacks<Cursor> {
@@ -55,13 +58,12 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
 
     private ListView listAudio;
     private Button btnNext;
-    private ImageButton btnPause;
     private Cursor cursor;
     private int music_colum_idx, music_name_idx;
     private int count;
     private MediaPlayer mediaPlayer;
     private String filename;
-    private SimpleCursorAdapter mAdapter;
+    private MusicListAdapter mAdapter;
     private long back_pressed;
     private AudioManager audioManager;
     private SearchView mFilter;
@@ -71,6 +73,9 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
     //private boolean mWasGetContentIntent;
     private boolean mKeyboardStatus = false;
     private SearchView searchView;
+    private MainApp app;
+    private LinearLayout layoutNoMusic;
+    private RelativeLayout layoutNext;
 
     private AdapterView.OnItemClickListener MusicGridListener = new AdapterView.OnItemClickListener() {
 
@@ -82,14 +87,13 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
             cursor.moveToPosition(i);
             filename = cursor.getString(music_colum_idx);
             btnNext.setEnabled(filename != null);
-            btnPause.setEnabled(filename != null);
 
             try {
                 if (mediaPlayer != null || mediaPlayer.isPlaying()) {
                     mediaPlayer.reset();
                 }
                 //Request del audio
-                audioManager.requestAudioFocus(ListAudioActivity.this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN);
+                audioManager.requestAudioFocus(ListAudioActivity.this, AudioManager.STREAM_MUSIC, AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
 
                 mediaPlayer.setDataSource(filename);
                 mediaPlayer.prepare();
@@ -98,10 +102,14 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
                     Toast.makeText(ListAudioActivity.this, getResources().getString(R.string.tip_pause_music), Toast.LENGTH_SHORT).show();
                     showTips = false;
                 }
-                Snackbar snackbar = Snackbar.make(view, cursor.getString(music_name_idx).toUpperCase(), Snackbar.LENGTH_INDEFINITE)
+                /*Snackbar snackbar = Snackbar.make(view, cursor.getString(music_name_idx).toUpperCase(), Snackbar.LENGTH_INDEFINITE)
                         .setAction(getResources().getString(R.string.lblNext), onClickListener)
                         .setActionTextColor(ContextCompat.getColor(ListAudioActivity.this, R.color.playback_indicator));
-                snackbar.show();
+                snackbar.show();*/
+                Animation bounce = AnimationUtils.loadAnimation(ListAudioActivity.this, R.anim.bounce_1);
+                layoutNext.setVisibility(View.VISIBLE);
+                ((TextView) layoutNext.findViewById(R.id.btnNext)).setText(cursor.getString(music_name_idx));
+                layoutNext.startAnimation(bounce);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -112,11 +120,25 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        /*requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        / *
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }* /
+        // make it fullscreen and stable
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);*/
+
 
         // Obtain the FirebaseAnalytics instance.
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
         setContentView(R.layout.activity_list_audio);
+
+        app = (MainApp) getApplicationContext();
 
         //Maneja el audio en llamadas
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -126,19 +148,13 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
 
         listAudio = (ListView) findViewById(R.id.listAudio);
         btnNext = (Button) findViewById(R.id.btnNext);
-        btnPause = (ImageButton) findViewById(R.id.btnPause);
+        //btnPause = (ImageButton) findViewById(R.id.btnPause);
+        layoutNoMusic = (LinearLayout) findViewById(R.id.layoutNoMusic);
+        layoutNext = (RelativeLayout) findViewById(R.id.layoutNext);
         btnNext.setEnabled(false);
-        btnPause.setEnabled(false);
 
-
+        layoutNext.setVisibility(View.GONE);
         btnNext.setOnClickListener(onClickListener);
-
-        btnPause.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mediaPlayer.pause();
-            }
-        });
 
         //setupListView();
         listAudio.setOnItemClickListener(MusicGridListener);
@@ -158,7 +174,6 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
                     dismissKeyboard();
                 }
                 audioManager.abandonAudioFocus(ListAudioActivity.this);
-                MainApp app = (MainApp) getApplicationContext();
                 app.setFilename(filename);
                 Intent intent = new Intent(Intent.ACTION_EDIT, Uri.parse(filename));
                 intent.setClassName("com.ecanaveras.gde.waudio", "com.ecanaveras.gde.waudio.EditorActivity");
@@ -173,6 +188,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
             setupListView();
+            app.isFirstSearchMusic = true;
             findMusic(null);
             mFirebaseAnalytics.setUserProperty("open_list_audio", String.valueOf(true));
         } else {
@@ -217,6 +233,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
             MediaStore.Audio.Media._ID,
             MediaStore.Audio.Media.SIZE,
             MediaStore.Audio.Media.DATA,
+            MediaStore.Audio.Media.DURATION,
             MediaStore.Audio.Media.TITLE,
             MediaStore.Audio.Media.ARTIST,
             MediaStore.Audio.Media.ALBUM,
@@ -229,6 +246,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
             MediaStore.Audio.Media._ID,
             MediaStore.Audio.Media.SIZE,
             MediaStore.Audio.Media.DATA,
+            MediaStore.Audio.Media.DURATION,
             MediaStore.Audio.Media.TITLE,
             MediaStore.Audio.Media.ARTIST,
             MediaStore.Audio.Media.ALBUM,
@@ -267,7 +285,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
             selection.append("  OR _DISPLAY_NAME LIKE ?");
             selection.append(")");
             selection.append("  AND _DATA NOT LIKE ? ");
-            selectionArgs.add(".mp3");
+            selectionArgs.add(filter);
             selectionArgs.add(filter);
             selectionArgs.add(filter);
             selectionArgs.add(filter);
@@ -291,13 +309,16 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
         }
 
         if (mExternalCursor != null) {
+            layoutNoMusic.setVisibility(View.GONE);
             Cursor mergeCursor = new MergeCursor(new Cursor[]{mExternalCursor});
             mAdapter.swapCursor(mergeCursor);
-            if (runFirst) {
+            /*if (runFirst) {
                 Toast.makeText(this, getResources().getString(R.string.msgChooseAudio), Toast.LENGTH_SHORT).show();
                 runFirst = false;
+            }*/
+            if (app.isFirstSearchMusic && mExternalCursor.getCount() == 0) {
+                layoutNoMusic.setVisibility(View.VISIBLE);
             }
-
         }
     }
 
@@ -308,7 +329,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
 
     private void setupListView() {
         try {
-            mAdapter = new SimpleCursorAdapter(
+            mAdapter = new MusicListAdapter(
                     this,
                     // Use a template that displays a text view
                     R.layout.media_select_row,
@@ -441,6 +462,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
         if (searchView != null) {
             searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
                 public boolean onQueryTextChange(String newText) {
+                    app.isFirstSearchMusic = false;
                     findMusic(newText);
                     return true;
                 }
@@ -515,6 +537,13 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
                 break;
         }
         */
+    }
+
+    public static String readableFileSize(long size) {
+        if (size <= 0) return "0";
+        final String[] units = new String[]{"B", "KB", "MB", "GB", "TB"};
+        int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
+        return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
     }
 
 }
