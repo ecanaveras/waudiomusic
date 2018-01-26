@@ -219,7 +219,9 @@ public class EditorActivity extends AppCompatActivity
                 Uri receivedUri = (Uri) receivedIntent.getParcelableExtra(Intent.EXTRA_STREAM);
                 mFilename = getRealPathFromURI(receivedUri);
             } else {
-                mFilename = receivedIntent.getData().toString().replaceFirst("file://", "").replaceAll("%20", " ").replaceAll("%2C", ",");
+                Uri receivedUri = (Uri) receivedIntent.getData();
+                mFilename = getRealPathFromURI(receivedUri);
+                //mFilename = receivedIntent.getData().toString().replaceFirst("file://", "").replaceAll("%20", " ").replaceAll("%2C", ",").replaceAll("%E2%80%93", "–");
             }
         }
 
@@ -249,7 +251,7 @@ public class EditorActivity extends AppCompatActivity
             result = contentURI.getPath();
         } else {
             cursor.moveToFirst();
-            int idx = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA);
+            int idx = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
             result = cursor.getString(idx);
             cursor.close();
         }
