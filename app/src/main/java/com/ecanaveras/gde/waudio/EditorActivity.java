@@ -205,8 +205,8 @@ public class EditorActivity extends AppCompatActivity
         String receivedType = receivedIntent.getType();
 
         //if (receivedIntent.getData() == null) {
-            //onBackPressed();
-            //Toast.makeText(this, getResources().getString(R.string.msgRestart), Toast.LENGTH_SHORT).show();
+        //onBackPressed();
+        //Toast.makeText(this, getResources().getString(R.string.msgRestart), Toast.LENGTH_SHORT).show();
         //}
         // If the Ringdroid media select activity was launched via a
         // GET_CONTENT intent, then we shouldn't display a "saved"
@@ -219,7 +219,7 @@ public class EditorActivity extends AppCompatActivity
                 Uri receivedUri = (Uri) receivedIntent.getParcelableExtra(Intent.EXTRA_STREAM);
                 mFilename = getRealPathFromURI(receivedUri);
             } else {
-                mFilename = receivedIntent.getData().toString().replaceFirst("file://", "").replaceAll("%20", " ");
+                mFilename = receivedIntent.getData().toString().replaceFirst("file://", "").replaceAll("%20", " ").replaceAll("%2C", ",");
             }
         }
 
