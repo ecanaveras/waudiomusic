@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,17 +14,24 @@ import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ecanaveras.gde.waudio.adapters.TemplateRecyclerAdapter;
 import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
 import com.ecanaveras.gde.waudio.fragments.DownloadDialogFragment;
 import com.ecanaveras.gde.waudio.models.WaudioModel;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.reward.RewardItem;
+import com.google.android.gms.ads.reward.RewardedVideoAd;
+import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -43,7 +51,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class StoreActivity extends AppCompatActivity {
+public class StoreActivity extends AppCompatActivity implements RewardedVideoAdListener {
 
 
     private List<WaudioModel> storeWaudioModelList = new ArrayList<WaudioModel>();
@@ -66,12 +74,27 @@ public class StoreActivity extends AppCompatActivity {
     private StorageReference thumbnail;
     private NotificationManager mNotifyManager;
     private NotificationCompat.Builder mBuilder;
+    private SharedPreferences preferences;
+    private SharedPreferences.Editor editor_pref;
+    private Menu menuStore;
+    private int points;
+    private MainApp app;
+
+    private RewardedVideoAd mRewardedVideoAd;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_store);
+
+        app = (MainApp) getApplicationContext();
+
+        //AdMods
+        MobileAds.initialize(this, MainApp.ADMOB_APP_ID);
+
+        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
+        mRewardedVideoAd.setRewardedVideoAdListener(this);
 
         // Obtain the FirebaseAnalytics instance.
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
@@ -93,7 +116,16 @@ public class StoreActivity extends AppCompatActivity {
         mDataFirebaseHelper = new DataFirebaseHelper();
         mRef = mDataFirebaseHelper.getDatabaseReference(DataFirebaseHelper.REF_WAUDIO_TEMPLATES);
 
+        updatePoints(0, false);
+
         loadDataTemplates();
+
+        loadRewardedVideoAd();
+    }
+
+    private void loadRewardedVideoAd() {
+        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+                new AdRequest.Builder().build());
     }
 
     private void loadDataTemplates() {
@@ -184,6 +216,10 @@ public class StoreActivity extends AppCompatActivity {
     }
 
     public void onDownload(View v) {
+        if (downloadItemWaudio.getValue() > points) {
+            showInfoPoints();
+            return;
+        }
         mNotifyManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mBuilder = new NotificationCompat.Builder(StoreActivity.this);
@@ -201,6 +237,7 @@ public class StoreActivity extends AppCompatActivity {
                     MainApp app = (MainApp) getApplicationContext();
                     loadDataTemplates();
                     Toast.makeText(StoreActivity.this, downloadItemWaudio.getSimpleName() + " descargado!", Toast.LENGTH_SHORT).show();
+                    updatePoints(downloadItemWaudio.getValue(), false);
                     mDataFirebaseHelper.incrementItemDownload();
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -234,16 +271,87 @@ public class StoreActivity extends AppCompatActivity {
         }
     }
 
+    private void updatePoints(int valor, boolean increment) {
+        points = app.updatePoints(valor, increment);
+        updateViewPoints();
+    }
+
+    private void updatePointsAdmob(int valor, boolean increment, boolean isAdmob) {
+        points = app.updatePoints(valor, increment, isAdmob);
+        updateViewPoints();
+    }
+
+    private void showInfoPoints() {
+        mDataFirebaseHelper.incrementWaudioViewPoinst();
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.custom_dialog_points, null);
+        TextView textPoints = (TextView) dialogView.findViewById(R.id.lblPoints);
+        textPoints.setText(points + getResources().getString(R.string.lblPoints));
+        android.support.v7.app.AlertDialog.Builder info = new android.support.v7.app.AlertDialog.Builder(this)
+                .setView(dialogView)
+                .setPositiveButton(getResources().getString(R.string.alert_ok_points), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (mRewardedVideoAd.isLoaded()) {
+                            mRewardedVideoAd.show();
+                        }
+                    }
+                }).setNegativeButton(getResources().getString(R.string.alert_cancel_points), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+        info.show();
+    }
+
     public void onPreview(View v) {
 
+    }
+
+    private void updateViewPoints() {
+        if (menuStore != null) {
+            MenuItem ac_points = menuStore.findItem(R.id.action_points);
+            if (ac_points != null) {
+                ac_points.setTitle("" + points + " P");
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        mRewardedVideoAd.resume(this);
+        updateViewPoints();
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        mRewardedVideoAd.pause(this);
+        super.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        mRewardedVideoAd.destroy(this);
+        super.onDestroy();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        if (BuildConfig.DEBUG)
-            getMenuInflater().inflate(R.menu.menu_store, menu);
-        return BuildConfig.DEBUG;
+        getMenuInflater().inflate(R.menu.menu_store, menu);
+
+        this.menuStore = menu;
+
+        if (!BuildConfig.DEBUG) {
+            MenuItem updateStore = menu.findItem(R.id.action_update_store);
+            if (updateStore != null) {
+                updateStore.setVisible(false);
+            }
+        }
+
+        updateViewPoints();
+        return true;
     }
 
     @Override
@@ -269,8 +377,46 @@ public class StoreActivity extends AppCompatActivity {
                         .show();
 
                 break;
+            case R.id.action_points:
+                showInfoPoints();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onRewardedVideoAdLoaded() {
+
+    }
+
+    @Override
+    public void onRewardedVideoAdOpened() {
+        mDataFirebaseHelper.incrementWaudioViewVideos();
+    }
+
+    @Override
+    public void onRewardedVideoStarted() {
+
+    }
+
+    @Override
+    public void onRewardedVideoAdClosed() {
+
+    }
+
+    @Override
+    public void onRewarded(RewardItem rewardItem) {
+        updatePointsAdmob(100, true, true);
+        Toast.makeText(StoreActivity.this, String.format(getResources().getString(R.string.msgWindPoints), 100), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onRewardedVideoAdLeftApplication() {
+
+    }
+
+    @Override
+    public void onRewardedVideoAdFailedToLoad(int i) {
+
+    }
 }

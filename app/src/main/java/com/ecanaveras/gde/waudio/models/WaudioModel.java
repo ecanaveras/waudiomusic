@@ -21,6 +21,7 @@ public class WaudioModel {
     private Date date;
     private String sizeFormat;
     private String extension;
+    private Integer value;
 
     public WaudioModel() {
     }
@@ -109,6 +110,17 @@ public class WaudioModel {
             return name.split("\\.")[1];
         }
         return null;
+    }
+
+    public Integer getValue() {
+        if (value == null) {
+            value = 100;
+        }
+        return value;
+    }
+
+    public void setValue(Integer value) {
+        this.value = value;
     }
 
     public void setExtension(String extension) {

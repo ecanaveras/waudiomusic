@@ -25,16 +25,19 @@ import java.io.File;
 
 public class WaudioController {
 
+    private static final int SHARE_WAUDIO_REQUEST = 1;
     private FirebaseAnalytics mFirebaseAnalytics;
     private DataFirebaseHelper mDataFirebaseHelper;
 
     private WaudioModel waudioModel;
     private File fileWaudio;
     private Context context;
+    private MainApp app;
 
     public WaudioController(Context context, File fileWaudio) {
         this.fileWaudio = fileWaudio;
         this.context = context;
+        app = (MainApp) context.getApplicationContext();
         initFirebase();
     }
 
@@ -42,6 +45,7 @@ public class WaudioController {
         this.waudioModel = waudioModel;
         this.context = context;
         this.fileWaudio = new File(waudioModel.getPathMp4());
+        app = (MainApp) context.getApplicationContext();
         initFirebase();
     }
 
@@ -66,7 +70,6 @@ public class WaudioController {
         if (isTemplate) {
             msg = context.getResources().getString(R.string.msgConfirmTemplateDelete);
         }
-        final MainApp app = (MainApp) context.getApplicationContext();
         if (fileWaudio.exists()) {
             new AlertDialog.Builder(context, R.style.AlertDialogCustom)
                     .setTitle(context.getResources().getString(R.string.msgDeleteWaudio))
@@ -76,7 +79,7 @@ public class WaudioController {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,
                                                     int whichButton) {
-                                    if(fileWaudio.getName().toUpperCase().contains("HEADSET")){
+                                    if (fileWaudio.getName().toUpperCase().contains("HEADSET")) {
                                         Toast.makeText(context, context.getResources().getString(R.string.msgDenegateTemplateDelete), Toast.LENGTH_SHORT).show();
                                         return;
                                     }
@@ -102,7 +105,7 @@ public class WaudioController {
     }
 
 
-    public void onShare() {
+    public void onShare(Activity activity) {
         if (fileWaudio == null) {
             return;
         }
@@ -110,11 +113,19 @@ public class WaudioController {
         sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(fileWaudio));
         sendIntent.putExtra(Intent.EXTRA_TEXT, context.getResources().getString(R.string.hastag));
         sendIntent.setType("video/*");
-        context.startActivity(Intent.createChooser(sendIntent, context.getResources().getString(R.string.msgShareWith)));
+        if (activity != null) {
+            activity.startActivityForResult(Intent.createChooser(sendIntent, context.getResources().getString(R.string.msgShareWith)), SHARE_WAUDIO_REQUEST);
+        } else {
+            ((Activity) context).startActivityForResult(Intent.createChooser(sendIntent, context.getResources().getString(R.string.msgShareWith)), SHARE_WAUDIO_REQUEST);
+        }
+    }
 
-        mFirebaseAnalytics.setUserProperty("shared", String.valueOf(true));
-        mDataFirebaseHelper.incrementWaudioShared();
-
+    public void addPoints(int points) {
+        //Sumar puntos
+        if (app != null) {
+            app.updatePoints(points, true);
+            Toast.makeText(context, "+" + points + " " + context.getResources().getString(R.string.lblPoints), Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void onGoEditor() {
@@ -138,4 +149,6 @@ public class WaudioController {
         intent.setDataAndType(uri, "video/*");
         context.startActivity(Intent.createChooser(intent, context.getResources().getString(R.string.msgOpenWith)));
     }
+
+
 }

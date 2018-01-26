@@ -136,7 +136,7 @@ public class WaudioListAdapter extends SimpleCursorAdapter implements View.OnCli
         if (waudio != null) {
             File w = new File(waudio.getPathMp4());
             waudioController = new WaudioController(mContext, w);
-            waudioController.onShare();
+            waudioController.onShare(null);
         }
     }
 

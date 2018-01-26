@@ -77,7 +77,7 @@ public class ListTemplateActivity extends AppCompatActivity {
 
 
         prepareTemplates();
-        getNewItemsStore(20);
+        getNewItemsStore(3);
 
         lyContentItemStore = (LinearLayout) findViewById(R.id.lyContentItemStore);
         LinearLayout lyContentStore = (LinearLayout) findViewById(R.id.lyContentStore);
@@ -122,7 +122,7 @@ public class ListTemplateActivity extends AppCompatActivity {
         super.onResume();
         if (refresh) {
             prepareTemplates();
-            getNewItemsStore(20);
+            getNewItemsStore(3);
         }
         /*if (templateRecyclerAdapter != null)
             templateRecyclerAdapter.notifyDataSetChanged();*/
@@ -137,7 +137,7 @@ public class ListTemplateActivity extends AppCompatActivity {
                     WaudioModel wt = data.getValue(WaudioModel.class);
                     storeWaudioModelList.add(wt);
                 }
-                List<WaudioModel> itemsShow = new ArrayList<WaudioModel>();
+                /*List<WaudioModel> itemsShow = new ArrayList<WaudioModel>();
                 for (WaudioModel store : storeWaudioModelList) {
                     boolean downloaded = false;
                     for (WaudioModel sd : sdWaudioModelList) {
@@ -154,6 +154,8 @@ public class ListTemplateActivity extends AppCompatActivity {
                     }
                 }
                 setupViewItemsStore(itemsShow);
+                */
+                setupViewItemsStore(storeWaudioModelList);
             }
 
             @Override

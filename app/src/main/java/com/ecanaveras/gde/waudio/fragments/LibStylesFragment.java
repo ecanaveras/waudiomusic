@@ -87,7 +87,7 @@ public class LibStylesFragment extends Fragment {
 
         app.reloadWaudios = true;
         prepareTemplates();
-        getNewItemsStore(20);
+        getNewItemsStore(3);
 
         //Si cambian los templates, actualiza el listado
         observer = new TemplatesFileObserver(getActivity().getExternalFilesDir(null).getAbsolutePath());
@@ -112,7 +112,7 @@ public class LibStylesFragment extends Fragment {
                     WaudioModel wt = data.getValue(WaudioModel.class);
                     storeWaudioModelList.add(wt);
                 }
-                List<WaudioModel> itemsShow = new ArrayList<WaudioModel>();
+                /*List<WaudioModel> itemsShow = new ArrayList<WaudioModel>();
                 for (WaudioModel store : storeWaudioModelList) {
                     boolean downloaded = false;
                     for (WaudioModel sd : sdWaudioModelList) {
@@ -129,6 +129,8 @@ public class LibStylesFragment extends Fragment {
                     }
                 }
                 setupViewItemsStore(itemsShow);
+                */
+                setupViewItemsStore(storeWaudioModelList);
             }
 
             @Override
@@ -233,7 +235,7 @@ public class LibStylesFragment extends Fragment {
         setHasOptionsMenu(isVisible());
         if (refresh) {
             prepareTemplates();
-            getNewItemsStore(20);
+            getNewItemsStore(3);
         }
     }
 

@@ -59,6 +59,7 @@ public class DownloadDialogFragment extends BottomSheetDialogFragment implements
 
         imgThumbnail = (ImageView) contentView.findViewById(R.id.thumbnail);
         TextView txtSizeWaudio = (TextView) contentView.findViewById(R.id.txtSizeWaudio);
+        TextView txtCostPoints = (TextView) contentView.findViewById(R.id.txtCostPoints);
         TextView txtTitle = (TextView) contentView.findViewById(R.id.title);
         TextView txtCategory = (TextView) contentView.findViewById(R.id.category);
         ImageButton btnPreview = (ImageButton) contentView.findViewById(R.id.btnPreview);
@@ -69,6 +70,10 @@ public class DownloadDialogFragment extends BottomSheetDialogFragment implements
         txtCategory.setText(waudioModel.getCategory());
         Picasso.with(getContext()).load(waudioModel.getUrlThumbnail()).into(imgThumbnail);
         txtSizeWaudio.setText(waudioModel.getSizeFormat());
+        if (waudioModel.getValue() == null || waudioModel.getValue() == 0) {
+            txtCostPoints.setText(getResources().getString(R.string.lblFree));
+        } else
+            txtCostPoints.setText("$: " + waudioModel.getValue() + "P");
 
         btnPreview.setOnClickListener(this);
         if (behavior != null && behavior instanceof BottomSheetBehavior) {

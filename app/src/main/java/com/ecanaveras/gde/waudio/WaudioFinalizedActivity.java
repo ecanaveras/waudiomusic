@@ -1,5 +1,6 @@
 package com.ecanaveras.gde.waudio;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -27,6 +28,8 @@ import java.io.File;
 import java.util.Random;
 
 public class WaudioFinalizedActivity extends AppCompatActivity implements AudioManager.OnAudioFocusChangeListener {
+
+    private static final int SHARE_WAUDIO_REQUEST = 1;
 
     public static final String TEMPLATE_USED = "template_used";
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -140,6 +143,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
                         audioManager.abandonAudioFocus(WaudioFinalizedActivity.this);
                     }
                 });
+                waudioController.addPoints(50);
                 //lblPathWaudio.setText(f.getPath().replace(f.getName(), ""));
                 //lblTitleWaudio.setText(f.getName());
             } else {
@@ -155,7 +159,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
             if (videoView.isPlaying()) {
                 videoView.pause();
             }
-            waudioController.onShare();
+            waudioController.onShare(this);
         }
     }
 
@@ -212,6 +216,16 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SHARE_WAUDIO_REQUEST && resultCode == Activity.RESULT_OK && waudioController != null) {
+            waudioController.addPoints(25);
+            mFirebaseAnalytics.setUserProperty("shared", String.valueOf(true));
+            mDataFirebaseHelper.incrementWaudioShared();
+        }
     }
 
     public void onFinish(View view) {

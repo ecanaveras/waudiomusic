@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.ecanaveras.gde.waudio.editor.CompareWaudio;
 import com.ecanaveras.gde.waudio.editor.GeneratorWaudio;
+import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
 import com.ecanaveras.gde.waudio.util.FontsOverride;
 import com.ecanaveras.gde.waudio.util.Mp4Filter;
 import com.google.firebase.crash.FirebaseCrash;
@@ -27,7 +28,9 @@ import java.util.List;
 
 public class MainApp extends Application {
 
+    public static final String ADMOB_APP_ID = "ca-app-pub-4587362379324712~6454573814";
     public static final String PATH_VIDEOS = "/Waudio/Media/Waudio Videos/";
+    public static final String POINTS = "points";
 
     private GeneratorWaudio generatorWaudio;
     private List<CompareWaudio> compareWaudios = new ArrayList<CompareWaudio>();
@@ -37,18 +40,21 @@ public class MainApp extends Application {
     SharedPreferences.Editor editor_pref;
     public boolean reloadWaudios = true;
     public boolean isFirstSearchMusic = false;
+    private DataFirebaseHelper mDataFirebaseHelper;
 
     @Override
     public void onCreate() {
         super.onCreate();
         //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
         FirebaseCrash.setCrashCollectionEnabled(!BuildConfig.DEBUG);
+        mDataFirebaseHelper = new DataFirebaseHelper();
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor_pref = preferences.edit();
         setupFonts();
-        if (preferences.getBoolean("is_version_old", true)) {
-            removeAssetsOld();
+        if (preferences.getBoolean("new_instance", true)) {
+            //removeAssetsOld();
             copyAssets();
+            setupPoints();
         }
     }
 
@@ -57,6 +63,12 @@ public class MainApp extends Application {
         FontsOverride.setDefaultFont(this, "MONOSPACE", "fonts/Dosis-Regular.ttf");
         FontsOverride.setDefaultFont(this, "SANS_SERIF", "fonts/Dosis-Medium.ttf");
         FontsOverride.setDefaultFont(this, "DEFAULT_BOLD", "fonts/Dosis-Bold.ttf");
+    }
+
+    private void setupPoints() {
+        editor_pref.putInt(POINTS, 500);
+        editor_pref.commit();
+        Log.d("POINTS SETUP", "OK");
     }
 
     private void copyAssets() {
@@ -100,7 +112,7 @@ public class MainApp extends Application {
             }
         }
         //Guardar data
-        editor_pref.putBoolean("is_version_old", false);
+        editor_pref.putBoolean("new_instance", false);
         editor_pref.commit();
     }
 
@@ -188,34 +200,30 @@ public class MainApp extends Application {
         editor_pref.commit();
     }
 
-    /**
-     * @return Application's version code from the {@code PackageManager}.
-     */
-    public static int getAppVersionCode() {
-        return BuildConfig.VERSION_CODE;
-        /*try {
-            PackageInfo packageInfo = context.getPackageManager()
-                    .getPackageInfo(context.getPackageName(), 0);
-            return packageInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            // should never happen
-            throw new RuntimeException("Could not get package name: " + e);
-        }*/
+    public int updatePoints(int valor, boolean increment) {
+        return updatePoints(valor, increment, false);
     }
 
-    /**
-     * @return Application's version code from the {@code PackageManager}.
-     */
-    public static String getAppVersionName() {
-        return BuildConfig.VERSION_NAME;
-        /*try {
-            PackageInfo packageInfo = context.getPackageManager()
-                    .getPackageInfo(context.getPackageName(), 0);
-            return packageInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            // should never happen
-            throw new RuntimeException("Could not get package name: " + e);
-        }*/
+    public int updatePoints(int valor, boolean increment, boolean isAdmod) {
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        editor_pref = preferences.edit();
+
+        int point = preferences.getInt(MainApp.POINTS, 0);
+        if (increment) {
+            point += valor;
+            if (isAdmod) {
+                mDataFirebaseHelper.incrementWaudioPointsAdmob(valor);
+            } else {
+                mDataFirebaseHelper.incrementWaudioPoints(valor);
+            }
+        } else {
+            point = point - valor;
+            if (valor > 0)
+                mDataFirebaseHelper.incrementWaudioPointsConsumed(valor);
+        }
+        editor_pref.putInt(MainApp.POINTS, point);
+        editor_pref.commit();
+        return point;
     }
 
     public CompareWaudio getCompareWaudioTmp() {

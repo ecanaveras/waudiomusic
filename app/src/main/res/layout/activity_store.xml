@@ -12,11 +12,6 @@
         android:orientation="vertical"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <!--<ImageView
-            android:id="@+id/imgTemplate"
-            android:layout_width="match_parent"
-            <android:layout_height="wrap_content" />-->
-
         <!--LISTA-->
         <LinearLayout
             android:id="@+id/layoutRecycler"
@@ -24,6 +19,12 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:visibility="visible">
+
+            <!--<ImageView
+                android:id="@+id/imgTemplate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_android_building"/>-->
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view"

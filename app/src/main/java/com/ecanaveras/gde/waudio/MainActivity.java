@@ -1,5 +1,6 @@
 package com.ecanaveras.gde.waudio;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.ActivityNotFoundException;
@@ -32,6 +33,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final int SHARE_WAUDIO_REQUEST = 1;
 
     private LibWaudiosFragment libWaudiosFragment;
     private LibStylesFragment libStylesFragment;
@@ -186,6 +189,16 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SHARE_WAUDIO_REQUEST && resultCode == Activity.RESULT_OK) {
+            app.updatePoints(25, true);
+            Toast.makeText(this, "+" + 25 + " " + getResources().getString(R.string.lblPoints), Toast.LENGTH_SHORT).show();
+            mFirebaseAnalytics.setUserProperty("shared", String.valueOf(true));
+            mDataFirebaseHelper.incrementWaudioShared();
+        }
+    }
 
     @Override
     protected void onResume() {

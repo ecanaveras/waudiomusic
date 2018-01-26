@@ -22,6 +22,7 @@ public class DataFirebaseHelper {
     public static final String REF_WAUDIO_STORE = "waudio-store";
     public static final String REF_WAUDIO_EVENTS = "waudio-events";
     public static final String REF_WAUDIO_TEMPLATES = "waudio-templates";
+    public static final String REF_WAUDIO_POINTS = "waudio-points";
 
     private DatabaseReference mDatabase;
     private DatabaseReference mRef;
@@ -92,5 +93,24 @@ public class DataFirebaseHelper {
         return mDatabase.child(nameRef);
     }
 
+    public void incrementWaudioViewPoinst() {
+        incrementValue(REF_WAUDIO_POINTS, "viewpoints");
+    }
+
+    public void incrementWaudioViewVideos() {
+        incrementValue(REF_WAUDIO_POINTS, "viewvideos");
+    }
+
+    public void incrementWaudioPointsAdmob(int rewards) {
+        incrementValue(REF_WAUDIO_POINTS, "admodpoints", new Long(rewards));
+    }
+
+    public void incrementWaudioPoints(int points) {
+        incrementValue(REF_WAUDIO_POINTS, "waudiopoints", new Long(points));
+    }
+
+    public void incrementWaudioPointsConsumed(int points) {
+        incrementValue(REF_WAUDIO_POINTS, "consumedpoints", new Long(points));
+    }
 
 }

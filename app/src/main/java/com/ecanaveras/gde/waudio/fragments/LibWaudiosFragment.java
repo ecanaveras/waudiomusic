@@ -135,6 +135,7 @@ public class LibWaudiosFragment extends Fragment implements LoaderManager.Loader
                 findWaudios(orderBy);
                 //Guardar la preferencia
                 editor_pref.putString(PREF_ORDERBY, orderBy);
+                editor_pref.commit();
                 Snackbar.make(getView(), String.format(getResources().getString(R.string.formatOrderby), lblOrder), Snackbar.LENGTH_SHORT).show();
                 break;
         }

@@ -104,7 +104,6 @@
     <string name="hastag">#HechoConWaudio\u0020</string>
     <string name="update_tracks">Actualizar</string>
     <string name="menu_qualify">Calificar Waudio</string>
-    <string name="urlPlayStore">https://play.google.com/store/apps/details?id=com.ecanaveras.gde.waudio</string>
     <string name="button_options">Opciones</string>
     <string name="play">Play</string>
     <string name="menu_share">Compartir Waudio Music</string>
@@ -198,4 +197,11 @@
     <string name="msgUIReady">Bingooo....</string>
     <string name="lblFrom">UNA IDEA DE</string>
     <string name="lblForWorld">PARA EL MUNDO</string>
+    <string name="alert_ok_points">VER VIDEOS</string>
+    <string name="alert_cancel_points">ENTENDIDO</string>
+    <string name="msgRewardPoints">GANA PUNTOS:\n-Víendo Videos (100P)\n-Creando Waudios (50P)\n-Compartiendolos (25P)</string>
+    <string name="lblHavePoints">TIENES</string>
+    <string name="lblPoints">\tPUNTOS</string>
+    <string name="lblFree">GRATIS</string>
+    <string name="msgWindPoints" formatted="false">Has ganado %1$d puntos</string>
 </resources>
