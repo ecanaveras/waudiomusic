@@ -21,6 +21,7 @@ import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.File;
+import java.util.Map;
 
 public class WaudioPreviewActivity extends AppCompatActivity implements AudioManager.OnAudioFocusChangeListener {
 
@@ -165,7 +166,7 @@ public class WaudioPreviewActivity extends AppCompatActivity implements AudioMan
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SHARE_WAUDIO_REQUEST && resultCode == Activity.RESULT_OK && waudioController != null) {
-            waudioController.addPoints(25);
+            waudioController.addPoints(MainApp.POINTS_WAUDIO_SHARED);
             mFirebaseAnalytics.setUserProperty("shared", String.valueOf(true));
             mDataFirebaseHelper.incrementWaudioShared();
         }

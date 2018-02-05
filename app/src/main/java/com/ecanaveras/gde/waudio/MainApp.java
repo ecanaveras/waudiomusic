@@ -31,6 +31,9 @@ public class MainApp extends Application {
     public static final String ADMOB_APP_ID = "ca-app-pub-4587362379324712~6454573814";
     public static final String PATH_VIDEOS = "/Waudio/Media/Waudio Videos/";
     public static final String POINTS = "points";
+    public static final Integer POINTS_WAUDIO_CREATED = 10;
+    public static final Integer POINTS_WAUDIO_SHARED = 25;
+    public static final Integer POINTS_VIDEO_VIEW = 100;
 
     private GeneratorWaudio generatorWaudio;
     private List<CompareWaudio> compareWaudios = new ArrayList<CompareWaudio>();

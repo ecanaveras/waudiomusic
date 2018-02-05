@@ -27,7 +27,9 @@ import com.ecanaveras.gde.waudio.adapters.TemplateRecyclerAdapter;
 import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
 import com.ecanaveras.gde.waudio.fragments.DownloadDialogFragment;
 import com.ecanaveras.gde.waudio.models.WaudioModel;
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
@@ -81,6 +83,8 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
     private MainApp app;
 
     private RewardedVideoAd mRewardedVideoAd;
+    private InterstitialAd mInterstitialAd;
+    private boolean adsView;
 
 
     @Override
@@ -93,6 +97,22 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
         //AdMods
         MobileAds.initialize(this, MainApp.ADMOB_APP_ID);
 
+        //Interticial
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("ca-app-pub-4587362379324712/5089093626");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+
+        mInterstitialAd.setAdListener(new AdListener() {
+            @Override
+            public void onAdClosed() {
+                // Load the next interstitial.
+                adsView = true;
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+
+        });
+
+        //Video Ads
         mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
         mRewardedVideoAd.setRewardedVideoAdListener(this);
 
@@ -328,6 +348,16 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
     public void onPause() {
         mRewardedVideoAd.pause(this);
         super.onPause();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (!adsView && mInterstitialAd.isLoaded()) {
+            mInterstitialAd.show();
+            adsView = true;
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override

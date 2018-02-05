@@ -143,7 +143,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
                         audioManager.abandonAudioFocus(WaudioFinalizedActivity.this);
                     }
                 });
-                waudioController.addPoints(50);
+                waudioController.addPoints(MainApp.POINTS_WAUDIO_CREATED);
                 //lblPathWaudio.setText(f.getPath().replace(f.getName(), ""));
                 //lblTitleWaudio.setText(f.getName());
             } else {
@@ -222,7 +222,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SHARE_WAUDIO_REQUEST && resultCode == Activity.RESULT_OK && waudioController != null) {
-            waudioController.addPoints(25);
+            waudioController.addPoints(MainApp.POINTS_WAUDIO_SHARED);
             mFirebaseAnalytics.setUserProperty("shared", String.valueOf(true));
             mDataFirebaseHelper.incrementWaudioShared();
         }

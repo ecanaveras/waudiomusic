@@ -153,6 +153,7 @@ public class EditorActivity extends AppCompatActivity
     private LinearLayout lyContentEditor;
     private long back_pressed = 0;
     private Thread mInfoThread;
+    private MainApp app;
 
     //
     // Public methods and protected overrides
@@ -168,6 +169,7 @@ public class EditorActivity extends AppCompatActivity
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
+        app = (MainApp) getApplicationContext();
         setupIntent(getIntent());
 
         mFirebaseAnalytics.setUserProperty("open_editor", String.valueOf(true));
@@ -673,6 +675,7 @@ public class EditorActivity extends AppCompatActivity
     }
 
     private void loadFromFile() {
+        app.setFilename(mFilename);
         mFile = new File(mFilename);
 
         SongMetadataReader metadataReader = new SongMetadataReader(
@@ -1381,7 +1384,6 @@ public class EditorActivity extends AppCompatActivity
         double endTime = mWaveformView.pixelsToSeconds(mEndPos);
         int startFrame = mWaveformView.secondsToFrames(startTime);
         int endFrame = mWaveformView.secondsToFrames(endTime);
-        MainApp app = (MainApp) getApplicationContext();
         GeneratorWaudio waudio = new GeneratorWaudio(getApplicationContext(), mSoundFile, mTitle, startTime, endTime, startFrame, endFrame);
         app.setGeneratorWaudio(waudio);
         Intent intent = new Intent(EditorActivity.this, ListTemplateActivity.class);

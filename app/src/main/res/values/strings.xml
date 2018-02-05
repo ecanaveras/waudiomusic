@@ -258,7 +258,7 @@
     <string name="msgCopyRights" translatable="false">© 2017 ecanaveras.</string>
     <string name="alert_ok_points">VER VIDEOS</string>
     <string name="alert_cancel_points">ENTENDIDO</string>
-    <string name="msgRewardPoints">WIN POINTS:\n-Watching Videos (100P)\n-Creating Waudios (50P)\n-Sharing (25P)</string>
+    <string name="msgRewardPoints">WIN POINTS:\n-Watching Videos ( 100P )\n-Sharing Waudios ( 25P )\n-Creating Waudios ( 10P )</string>
     <string name="lblHavePoints">YOU HAVE</string>
     <string name="lblPoints">\tPOINTS</string>
     <string name="lblFree">FREE</string>
