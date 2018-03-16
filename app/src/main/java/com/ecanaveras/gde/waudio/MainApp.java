@@ -54,10 +54,12 @@ public class MainApp extends Application {
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor_pref = preferences.edit();
         setupFonts();
-        if (preferences.getBoolean("new_instance", true)) {
+        if (!preferences.getString("version_name", "0").equals(BuildConfig.VERSION_NAME)) {
             //removeAssetsOld();
             copyAssets();
-            setupPoints();
+            if (preferences.getInt(POINTS, 0) == 0) {
+                setupPoints();
+            }
         }
     }
 
@@ -115,7 +117,7 @@ public class MainApp extends Application {
             }
         }
         //Guardar data
-        editor_pref.putBoolean("new_instance", false);
+        editor_pref.putString("version_name", BuildConfig.VERSION_NAME);
         editor_pref.commit();
     }
 

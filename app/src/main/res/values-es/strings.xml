@@ -81,7 +81,6 @@
     <string name="alert_ok_button">Aceptar</string>
     <string name="alert_yes_button">Sí, por favor.</string>
     <string name="alert_no_button">No, gracias.</string>
-    <string name="default_ringtone_success_message">Tono por defecto cambiado</string>
     <string name="play_error">Imposible reproducir este archivo multimedia</string>
     <string name="no_unique_filename">Imposible encontrar un nombre de archivo único</string>
     <string name="record_error">Error recording audio</string>
@@ -90,7 +89,7 @@
     <string name="read_error">Error al leer archivo</string>
     <string name="no_space_error">La tarjeta SD está llena, no hay espacio para guardar este archivo.</string>
     <string name="bad_extension_error">Waudio aún no puede editar este tipo de archivos.</string>
-    <string name="no_extension_error">Waudio no puede editar un archivo si no tiene extensión .mp3 o .wav.</string>
+    <string name="no_extension_error">Waudio no puede editar un archivo si no tiene extensión .mp3 .m4a .aac ,amr o .wav.</string>
     <!--
        Elegir actividad de contacto
        -->
@@ -106,7 +105,7 @@
     <string name="menu_qualify">Calificar Waudio</string>
     <string name="button_options">Opciones</string>
     <string name="play">Play</string>
-    <string name="menu_share">Compartir Waudio Music</string>
+    <string name="menu_share">Compartir Waudio</string>
     <string name="msgShareApp">¿Ya probaste Waudio? La app que permite compartir música en los estados de Whatsapp</string>
     <string name="msgShareTo">Recomendar Waudio...</string>
     <string name="lblNext">SIGUIENTE</string>
@@ -119,7 +118,7 @@
     <string name="msgChoose30seg">Selecciona 30 segundos de tu canción, y luego toca en \'siguiente\'</string>
     <string name="msgRestart">Debemos empezar de nuevo!</string>
     <string name="msgExit">Pulse de nuevo para salir</string>
-    <string name="msgCancelEditor">Pulse de nuevo para cancenlar</string>
+    <string name="msgCancelEditor">Pulse de nuevo para cancelar</string>
     <string name="msgDeniedPermitions">Permisos denegados</string>
     <string name="alert_title_choose_style">Elegir otro estilo...</string>
     <string name="msgWarningStyle">Quieres elegir otro estilo?  Creará un nuevo Waudio con el estilo que elijas!</string>
@@ -162,7 +161,7 @@
     <string name="msgProblemGenerateWaudio">Out, algo salió mal, vuelve al editor e intenta de nuevo!</string>
     <string name="lblCategory">CATEGORIA</string>
     <string name="alert_title_permitions">Permisos para Waudio</string>
-    <string name="alert_continue">CONTINUE</string>
+    <string name="alert_continue">CONTINUAR</string>
     <string name="msgWaudioGenerating">Generando Waudio...</string>
     <string name="msgTemplatesLoading">Cargando tus estilos...</string>
     <string name="msgTracksLoading">Cargando Música...</string>
@@ -197,7 +196,7 @@
     <string name="msgUIReady">Bingooo....</string>
     <string name="lblFrom">UNA IDEA DE</string>
     <string name="lblForWorld">PARA EL MUNDO</string>
-    <string name="alert_ok_points">VER VIDEOS</string>
+    <string name="alert_ok_points">GANAR PUNTOS</string>
     <string name="alert_cancel_points">ENTENDIDO</string>
     <string name="msgRewardPoints">GANA PUNTOS:\n-Víendo Videos ( 100P )\n-Compartiendo Waudios ( 25P )\n-Creando Waudios ( 10P )</string>
     <string name="lblHavePoints">TIENES</string>

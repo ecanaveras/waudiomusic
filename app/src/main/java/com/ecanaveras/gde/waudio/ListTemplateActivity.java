@@ -29,9 +29,13 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
+import static com.google.android.gms.internal.zzagr.runOnUiThread;
 
 public class ListTemplateActivity extends AppCompatActivity {
 
+    private static Random random = new Random();
     private FirebaseAnalytics mFirebaseAnalytics;
 
     private RecyclerView recyclerView;
@@ -128,41 +132,28 @@ public class ListTemplateActivity extends AppCompatActivity {
             templateRecyclerAdapter.notifyDataSetChanged();*/
     }
 
-    public void getNewItemsStore(int limit) {
-        mRef.orderByKey().limitToFirst(limit).addValueEventListener(new ValueEventListener() {
+    public void getNewItemsStore(final int limit) {
+        new Thread() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                //
                 storeWaudioModelList.clear();
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    WaudioModel wt = data.getValue(WaudioModel.class);
-                    storeWaudioModelList.add(wt);
+                for (int i = 0; i < limit; i++) {
+                    storeWaudioModelList.add(getRandomBanner(getListBannerWS()));
                 }
-                /*List<WaudioModel> itemsShow = new ArrayList<WaudioModel>();
-                for (WaudioModel store : storeWaudioModelList) {
-                    boolean downloaded = false;
-                    for (WaudioModel sd : sdWaudioModelList) {
-                        //SI NO EXISTE EN LOS TEMPLATES SD
-                        if (store.getName().equals(sd.getName())) {
-                            downloaded = true;
-                            break;
-                        }
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        setupViewItemsStore(storeWaudioModelList);
                     }
-                    if (!downloaded)
-                        itemsShow.add(store);
-                    if (itemsShow.size() == 3) {
-                        break;
-                    }
-                }
-                setupViewItemsStore(itemsShow);
-                */
-                setupViewItemsStore(storeWaudioModelList);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                });
 
             }
-        });
+        }.start();
     }
 
     private void setupViewItemsStore(List<WaudioModel> list) {
@@ -180,13 +171,63 @@ public class ListTemplateActivity extends AppCompatActivity {
             TextView title = (TextView) view.findViewById(R.id.title);
             //TextView category = (TextView) view.findViewById(R.id.category);
 
-            Picasso.with(this).load(waudioModel.getUrlThumbnail()).resize(160, 140).into(img);
+            Picasso.with(this).load(waudioModel.getResourceId()).resize(160, 140).into(img);
             title.setText(waudioModel.getSimpleName());
             //category.setText(waudioModel.getCategory());
             lyContentItemStore.addView(view);
             view.startAnimation(bounce);
         }
         ((LinearLayout) lyContentItemStore.getParent()).setVisibility(View.VISIBLE);
+    }
+
+    private List<WaudioModel> getListBannerWS() {
+        ArrayList<WaudioModel> list = new ArrayList<>();
+        WaudioModel w1 = new WaudioModel("Atardecer Romance", R.drawable.banner1);
+        WaudioModel w2 = new WaudioModel("Ella People", R.drawable.banner2);
+        WaudioModel w3 = new WaudioModel("Electric Guitar Rock", R.drawable.banner3);
+
+        WaudioModel w4 = new WaudioModel("Dani Aventure", R.drawable.banner4);
+        WaudioModel w5 = new WaudioModel("Indira Anime", R.drawable.banner5);
+        WaudioModel w6 = new WaudioModel("Inglaterra mundo", R.drawable.banner6);
+
+        WaudioModel w7 = new WaudioModel("Johan Urbano", R.drawable.banner7);
+        WaudioModel w8 = new WaudioModel("Kary Amistad", R.drawable.banner8);
+        WaudioModel w9 = new WaudioModel("Kelly Romance", R.drawable.banner9);
+
+        WaudioModel w10 = new WaudioModel("Kenya Libertad", R.drawable.banner10);
+        WaudioModel w11 = new WaudioModel("Kley General", R.drawable.banner11);
+        WaudioModel w12 = new WaudioModel("Motorcycle Aventure", R.drawable.banner12);
+
+        WaudioModel w13 = new WaudioModel("Paz Romance", R.drawable.banner13);
+        WaudioModel w14 = new WaudioModel("Saxo General", R.drawable.banner14);
+        WaudioModel w15 = new WaudioModel("Tu Y Yo Amor", R.drawable.banner15);
+
+        WaudioModel w16 = new WaudioModel("Vallenato Colombia", R.drawable.banner16);
+
+
+        list.add(w1);
+        list.add(w2);
+        list.add(w3);
+        list.add(w4);
+        list.add(w5);
+        list.add(w6);
+        list.add(w7);
+        list.add(w8);
+        list.add(w9);
+        list.add(w10);
+        list.add(w11);
+        list.add(w12);
+        list.add(w13);
+        list.add(w14);
+        list.add(w15);
+        list.add(w16);
+
+        return list;
+    }
+
+    public static WaudioModel getRandomBanner(List<WaudioModel> array) {
+        int rnd = random.nextInt(array.size());
+        return array.get(rnd);
     }
 
     public void onGoStore(View view) {

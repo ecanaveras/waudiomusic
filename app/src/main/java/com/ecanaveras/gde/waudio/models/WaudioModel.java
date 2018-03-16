@@ -22,6 +22,7 @@ public class WaudioModel {
     private String sizeFormat;
     private String extension;
     private Integer value;
+    private int resourceId;
 
     public WaudioModel() {
     }
@@ -48,15 +49,21 @@ public class WaudioModel {
         this.category = category;
     }
 
+    public WaudioModel(String name, Bitmap thumbail) {
+        this.name = name;
+        this.imgThumbnail = thumbail;
+    }
+
+    public WaudioModel(String name, int thumbnail) {
+        this.name = name;
+        this.resourceId = thumbnail;
+    }
+
     public static String readableFileSize(long size) {
         if (size <= 0) return "0";
         final String[] units = new String[]{"B", "KB", "MB", "GB", "TB"};
         int digitGroups = (int) (Math.log10(size) / Math.log10(1024));
         return new DecimalFormat("#,##0.#").format(size / Math.pow(1024, digitGroups)) + " " + units[digitGroups];
-    }
-
-    public WaudioModel(String name, int thumbnail) {
-        this.name = name;
     }
 
     public String getName() {
@@ -157,5 +164,13 @@ public class WaudioModel {
 
     public void setImgThumbnail(Bitmap imgThumbnail) {
         this.imgThumbnail = imgThumbnail;
+    }
+
+    public int getResourceId() {
+        return resourceId;
+    }
+
+    public void setResourceId(int resourceId) {
+        this.resourceId = resourceId;
     }
 }
