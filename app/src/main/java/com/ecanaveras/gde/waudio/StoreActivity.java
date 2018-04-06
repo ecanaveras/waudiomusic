@@ -2,8 +2,10 @@ package com.ecanaveras.gde.waudio;
 
 import android.app.AlertDialog;
 import android.app.NotificationManager;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +20,9 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -37,6 +42,7 @@ import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -79,6 +85,7 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor_pref;
     private Menu menuStore;
+    private Button btnPoints;
     private int points;
     private MainApp app;
 
@@ -124,6 +131,8 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         View bottomSheet = findViewById(R.id.bottom_sheet);
 
+        btnPoints = (Button) findViewById(R.id.btnPoints);
+
         mBottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
         mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
@@ -144,18 +153,33 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
     }
 
     private void loadRewardedVideoAd() {
-        mRewardedVideoAd.loadAd("ca-app-pub-3940256099942544/5224354917",
+        mRewardedVideoAd.loadAd("ca-app-pub-4587362379324712/4320075509",
                 new AdRequest.Builder().build());
     }
 
     private void loadDataTemplates() {
         sdWaudioModelList.clear();
         storeWaudioModelList.clear();
+
         //TODO realizar tarea en un hilo
         loadTemplates = new LoadTemplates(".mp4", getExternalFilesDir(null).getAbsolutePath());
         sdWaudioModelList = loadTemplates.getSdWaudioModelList();
 
         findFirebaseTemplate();
+    }
+
+    private void updateDataTemplates(WaudioModel download) {
+        if (download != null) {
+            //Remove Style Downloaded
+            for (WaudioModel store : storeWaudioModelList) {
+                if (download.getName().equals(store.getName())) {
+                    storeWaudioModelList.remove(store);
+                    break;
+                }
+            }
+        }
+        if (templateRecyclerAdapter != null)
+            templateRecyclerAdapter.notifyDataSetChanged();
     }
 
 
@@ -231,13 +255,13 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
 
     public void onClicDownloadItem(WaudioModel item) {
         downloadItemWaudio = item;
-        bottomSheetDialogFragment = new DownloadDialogFragment(item);
+        bottomSheetDialogFragment = DownloadDialogFragment.newInstance(item);
         bottomSheetDialogFragment.show(getSupportFragmentManager(), bottomSheetDialogFragment.getTag());
     }
 
     public void onDownload(View v) {
         if (downloadItemWaudio.getValue() > points) {
-            showInfoPoints();
+            showInfoPoints(null);
             return;
         }
         mNotifyManager =
@@ -254,8 +278,9 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
                 public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
                     localFile.renameTo(new File(getExternalFilesDir(null).getAbsolutePath() + "/" + downloadItemWaudio.getName()));
                     bottomSheetDialogFragment.dismiss();
-                    MainApp app = (MainApp) getApplicationContext();
-                    loadDataTemplates();
+                    //loadDataTemplates();
+                    //Remove Template from Store
+                    updateDataTemplates(downloadItemWaudio);
                     Toast.makeText(StoreActivity.this, downloadItemWaudio.getSimpleName() + " descargado!", Toast.LENGTH_SHORT).show();
                     updatePoints(downloadItemWaudio.getValue(), false);
                     mDataFirebaseHelper.incrementItemDownload();
@@ -266,7 +291,7 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
                     if (localFile.exists()) {
                         localFile.delete();
                     }
-                    e.printStackTrace();
+                    FirebaseCrash.report(e);
                     Toast.makeText(StoreActivity.this, downloadItemWaudio.getSimpleName() + " no se ha podido descargar, intenta mas tarde!", Toast.LENGTH_SHORT).show();
                     if (mNotifyManager != null)
                         mNotifyManager.cancel(1000);
@@ -287,7 +312,7 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
                 }
             });
         } catch (IOException e) {
-            e.printStackTrace();
+            FirebaseCrash.report(e);
         }
     }
 
@@ -301,7 +326,7 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
         updateViewPoints();
     }
 
-    private void showInfoPoints() {
+    public void showInfoPoints(View v) {
         mDataFirebaseHelper.incrementWaudioViewPoinst();
         LayoutInflater inflater = this.getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.custom_dialog_points, null);
@@ -335,6 +360,10 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
                 ac_points.setTitle("" + points + " P");
             }
         }
+        btnPoints.setText(String.format(getResources().getString(R.string.lblBtnPoints), points));
+        Animation bounce = AnimationUtils.loadAnimation(this, R.anim.bounce);
+        btnPoints.setAnimation(bounce);
+        bounce.start();
     }
 
     @Override
@@ -408,7 +437,16 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
 
                 break;
             case R.id.action_points:
-                showInfoPoints();
+                showInfoPoints(null);
+                break;
+            case R.id.action_qualify:
+                Uri uri = Uri.parse("market://details?id=" + this.getApplicationContext().getPackageName());
+                Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
+                try {
+                    startActivity(goToMarket);
+                } catch (ActivityNotFoundException e) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.urlPlayStore))));
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -422,6 +460,7 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
     @Override
     public void onRewardedVideoAdOpened() {
         mDataFirebaseHelper.incrementWaudioViewVideos();
+        loadRewardedVideoAd();
     }
 
     @Override
@@ -431,7 +470,7 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
 
     @Override
     public void onRewardedVideoAdClosed() {
-
+        loadRewardedVideoAd();
     }
 
     @Override
@@ -442,11 +481,11 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
 
     @Override
     public void onRewardedVideoAdLeftApplication() {
-
+        loadRewardedVideoAd();
     }
 
     @Override
     public void onRewardedVideoAdFailedToLoad(int i) {
-
+        loadRewardedVideoAd();
     }
 }

@@ -104,6 +104,10 @@
             android:name=".StoreActivity"
             android:label="@string/store_activity_label"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".AboutActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:screenOrientation="portrait"/>
 
         <service android:name=".firebase.MyFirebaseMessagingService">
             <intent-filter>
@@ -116,12 +120,19 @@
             </intent-filter>
         </service>
 
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
+        </provider>
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_noti" />
-
-        <activity android:name=".AboutActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"></activity>
     </application>
 
 </manifest>

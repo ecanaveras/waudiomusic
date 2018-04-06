@@ -100,7 +100,6 @@
     <string name="about_text"><![CDATA[Usa Waudio para editar archivos de sonido MP3, OGG, WAV, AAC y AMR y crear tonos, alarmas y notificaciones.\n\nTruco: copia archivos de sonido en la tarjeta SD con un cable USB.\n\nTruco: para eliminar un archivo de sonido, púlsalo durante unos segundos en la pantalla principal. Más…\n\nTruco: toca en cualquier parte de la onda para empezar a reproducir desde ese punto.\n\nTruco: durante la reproducción, toca la palabra Inicio o Fin para definir rápidamente los marcadores de inicio y fin.\n\nTruco: usa el botón para ajustes más precisos.\n\nVersión %s\n\nDesarrollador: Dominic Mazzoni, Nicolas Faralli\nGráficos: Joseph Wain\nSoporte y textos: Eugene Koh\n\nWaudio es software gratuito distribuido con la licencia Apache 2.0. El código fuente está en github.com/google/Waudio\n]]></string>
     <string name="list_template_activity_label">Waudio - Estilos</string>
     <string name="preview_activity_label">Waudio - Vista Previa</string>
-    <string name="hastag">#HechoConWaudio\u0020</string>
     <string name="update_tracks">Actualizar</string>
     <string name="menu_qualify">Calificar Waudio</string>
     <string name="button_options">Opciones</string>
@@ -203,4 +202,5 @@
     <string name="lblPoints">\tPUNTOS</string>
     <string name="lblFree">GRATIS</string>
     <string name="msgWindPoints" formatted="false">Has ganado %1$d puntos</string>
+    <string name="lblBtnPoints" formatted="false">TIENES %1$d PUNTOS</string>
 </resources>

@@ -2,6 +2,7 @@ package com.ecanaveras.gde.waudio.fragments;
 
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -92,7 +93,7 @@ public class LibStylesFragment extends Fragment {
 
         app.reloadWaudios = true;
         prepareTemplates();
-        getNewItemsStore(3);
+        getNewItemsStore();
 
         //Si cambian los templates, actualiza el listado
         observer = new TemplatesFileObserver(getActivity().getExternalFilesDir(null).getAbsolutePath());
@@ -108,7 +109,7 @@ public class LibStylesFragment extends Fragment {
         countItemsStore();
     }
 
-    public void getNewItemsStore(final int limit) {
+    public void getNewItemsStore() {
         new Thread() {
             @Override
             public void run() {
@@ -119,8 +120,21 @@ public class LibStylesFragment extends Fragment {
                 }
                 //
                 storeWaudioModelList.clear();
-                for (int i = 0; i < limit; i++) {
-                    storeWaudioModelList.add(getRandomBanner(getListBannerWS()));
+                int cantBanner = 0;
+                while (cantBanner < 3) {
+                    boolean add = true;
+                    WaudioModel wTmp = getRandomBanner(MainApp.getListBannerWS());
+                    for (WaudioModel w : storeWaudioModelList) {
+                        if (w.getName().equals(wTmp.getName())) {
+                            add = false;
+                            break;
+                        }
+                    }
+                    if (add) {
+                        storeWaudioModelList.add(wTmp);
+                        cantBanner++;
+                    }
+
                 }
                 runOnUiThread(new Runnable() {
                     public void run() {
@@ -159,22 +173,24 @@ public class LibStylesFragment extends Fragment {
     }
 
     private void countItemsStore() {
+        final Context mContext = getActivity();
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.custom_dialog_new_items, null);
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (app.findNewItemStore(dataSnapshot.getChildrenCount()) > 0) {
-                    AlertDialog.Builder info = new AlertDialog.Builder(getActivity())
-                            .setView(dialogView)
-                            .setPositiveButton(getResources().getString(R.string.alert_ok_new_styles), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    onGoStore(null);
-                                }
-                            }).setNegativeButton("OK", null);
-                    info.show();
-
+                if (dataSnapshot != null) {
+                    if (app.findNewItemStore(dataSnapshot.getChildrenCount()) > 0) {
+                        AlertDialog.Builder info = new AlertDialog.Builder(mContext)
+                                .setView(dialogView)
+                                .setPositiveButton(getResources().getString(R.string.alert_ok_new_styles), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        onGoStore(null);
+                                    }
+                                }).setNegativeButton("OK", null);
+                        info.show();
+                    }
                 }
             }
 
@@ -201,50 +217,6 @@ public class LibStylesFragment extends Fragment {
         refresh = false;
     }
 
-    private List<WaudioModel> getListBannerWS() {
-        ArrayList<WaudioModel> list = new ArrayList<>();
-        WaudioModel w1 = new WaudioModel("Atardecer Romance", R.drawable.banner1);
-        WaudioModel w2 = new WaudioModel("Ella People", R.drawable.banner2);
-        WaudioModel w3 = new WaudioModel("Electric Guitar Rock", R.drawable.banner3);
-
-        WaudioModel w4 = new WaudioModel("Dani Aventure", R.drawable.banner4);
-        WaudioModel w5 = new WaudioModel("Indira Anime", R.drawable.banner5);
-        WaudioModel w6 = new WaudioModel("Inglaterra mundo", R.drawable.banner6);
-
-        WaudioModel w7 = new WaudioModel("Johan Urbano", R.drawable.banner7);
-        WaudioModel w8 = new WaudioModel("Kary Amistad", R.drawable.banner8);
-        WaudioModel w9 = new WaudioModel("Kelly Romance", R.drawable.banner9);
-
-        WaudioModel w10 = new WaudioModel("Kenya Libertad", R.drawable.banner10);
-        WaudioModel w11 = new WaudioModel("Kley General", R.drawable.banner11);
-        WaudioModel w12 = new WaudioModel("Motorcycle Aventure", R.drawable.banner12);
-
-        WaudioModel w13 = new WaudioModel("Paz Romance", R.drawable.banner13);
-        WaudioModel w14 = new WaudioModel("Saxo General", R.drawable.banner14);
-        WaudioModel w15 = new WaudioModel("Tu Y Yo Amor", R.drawable.banner15);
-
-        WaudioModel w16 = new WaudioModel("Vallenato Colombia", R.drawable.banner16);
-
-
-        list.add(w1);
-        list.add(w2);
-        list.add(w3);
-        list.add(w4);
-        list.add(w5);
-        list.add(w6);
-        list.add(w7);
-        list.add(w8);
-        list.add(w9);
-        list.add(w10);
-        list.add(w11);
-        list.add(w12);
-        list.add(w13);
-        list.add(w14);
-        list.add(w15);
-        list.add(w16);
-
-        return list;
-    }
 
     public static WaudioModel getRandomBanner(List<WaudioModel> array) {
         int rnd = random.nextInt(array.size());
@@ -277,7 +249,7 @@ public class LibStylesFragment extends Fragment {
         setHasOptionsMenu(isVisible());
         if (refresh) {
             prepareTemplates();
-            getNewItemsStore(3);
+            getNewItemsStore();
         }
     }
 

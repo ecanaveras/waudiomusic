@@ -25,6 +25,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -32,6 +33,7 @@ import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -57,11 +59,19 @@ import com.ecanaveras.gde.waudio.util.FileSaveDialog;
 import com.ecanaveras.gde.waudio.util.SamplePlayer;
 import com.ecanaveras.gde.waudio.util.SongMetadataReader;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crash.FirebaseCrash;
+
+import org.apache.commons.io.IOUtils;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
+
 
 /**
  * The activity for the Ringdroid main editor_pref window.  Keeps track of
@@ -142,6 +152,7 @@ public class EditorActivity extends AppCompatActivity
      * This is a special intent action that means "edit a sound file".
      */
     public static final String EDIT = "com.ecanaveras.gde.waudio.action.EDIT";
+    private static final String PATH_MEDIA = "/Waudio/Media/";
     private LinearLayout le;
     private TextView lblTitleAudio, lblTitleAudioLoading, lblPercent;
 
@@ -247,18 +258,51 @@ public class EditorActivity extends AppCompatActivity
 
 
     private String getRealPathFromURI(Uri contentURI) {
-        String result;
+        String result = null;
         Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
         if (cursor == null) { // Source is Dropbox or other similar local file path
             result = contentURI.getPath();
         } else {
-            cursor.moveToFirst();
-            int idx = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
-            result = cursor.getString(idx);
-            cursor.close();
+            try {
+                cursor.moveToFirst();
+                int idx = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
+                result = cursor.getString(idx);
+                cursor.close();
+            } catch (IllegalArgumentException e) {
+                FirebaseCrash.report(e);
+                FirebaseCrash.log("contentURI: " + contentURI);
+                FirebaseCrash.log("contentURI Path: " + contentURI.getPath());
+                Toast.makeText(this, "Hay un problema con tu canción... No es posible leer el medio!", Toast.LENGTH_LONG).show();
+            }
         }
         return result;
     }
+
+    /* REVISION PENDIENTE
+    public static String getFileName(Uri uri) {
+        if (uri == null) return null;
+        String fileName = null;
+        String path = uri.getPath();
+        int cut = path.lastIndexOf('/');
+        if (cut != -1) {
+            fileName = path.substring(cut + 1);
+        }
+        return fileName;
+    }
+
+    public static void copyFileTemp(Context context, Uri srcUri, File dstFile) {
+        try {
+            InputStream inputStream = context.getContentResolver().openInputStream(srcUri);
+            if (inputStream == null) return;
+            OutputStream outputStream = new FileOutputStream(dstFile);
+            IOUtils.copy(inputStream, outputStream);
+            inputStream.close();
+            outputStream.close();
+        } catch (IOException e) {
+            FirebaseCrash.report(e);
+        }
+    }
+    */
 
     private void closeThread(Thread thread) {
         if (thread != null && thread.isAlive()) {

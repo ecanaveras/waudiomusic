@@ -6,9 +6,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
+import android.support.v4.content.FileProvider;
 import android.view.View;
 import android.widget.Toast;
 
+import com.ecanaveras.gde.waudio.BuildConfig;
 import com.ecanaveras.gde.waudio.MainApp;
 import com.ecanaveras.gde.waudio.R;
 import com.ecanaveras.gde.waudio.WaudioFinalizedActivity;
@@ -110,7 +113,13 @@ public class WaudioController {
             return;
         }
         Intent sendIntent = new Intent(Intent.ACTION_SEND);
-        sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(fileWaudio));
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.N) { //Menor que ANdroid 7
+            sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(fileWaudio));
+        }else{
+            //Android 7 o superior
+            sendIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            sendIntent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", fileWaudio));
+        }
         sendIntent.putExtra(Intent.EXTRA_TEXT, context.getResources().getString(R.string.hastag));
         sendIntent.setType("video/*");
         if (activity != null) {

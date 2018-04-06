@@ -3,6 +3,7 @@ package com.ecanaveras.gde.waudio.fragments;
 import android.app.Dialog;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.BottomSheetDialogFragment;
@@ -27,11 +28,10 @@ public class DownloadDialogFragment extends BottomSheetDialogFragment implements
     private ImageView imgThumbnail;
     private VideoView videoView;
 
-    public DownloadDialogFragment() {
-    }
-
-    public DownloadDialogFragment(WaudioModel model) {
-        this.waudioModel = model;
+    public static DownloadDialogFragment newInstance(WaudioModel model) {
+        DownloadDialogFragment fragment = new DownloadDialogFragment();
+        fragment.setWaudioModel(model);
+        return fragment;
     }
 
     private BottomSheetBehavior.BottomSheetCallback mBottomSheetCallback = new BottomSheetBehavior.BottomSheetCallback() {
@@ -103,6 +103,10 @@ public class DownloadDialogFragment extends BottomSheetDialogFragment implements
             });
             videoView.start();
         }
+    }
+
+    public void setWaudioModel(WaudioModel waudioModel) {
+        this.waudioModel = waudioModel;
     }
 }
 

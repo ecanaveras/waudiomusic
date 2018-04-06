@@ -152,7 +152,7 @@
     <string name="message_permissions">We need some permissions to read your audios</string>
     <string name="list_template_activity_label">Waudio - Styles</string>
     <string name="preview_activity_label">Waudio - Preview</string>
-    <string name="hastag">#MadeWithWaudio\u0020</string>
+    <string name="hastag" translatable="false">#WaudioMusic</string>
     <string name="update_tracks">Refresh Tracks</string>
     <string name="menu_qualify">Rate Waudio</string>
     <string name="urlPlayStore" translatable="false">https://play.google.com/store/apps/details?id=com.ecanaveras.gde.waudio</string>
@@ -262,4 +262,5 @@
     <string name="lblPoints">\tPOINTS</string>
     <string name="lblFree">FREE</string>
     <string name="msgWindPoints" formatted="false">You won %1$d points</string>
+    <string name="lblBtnPoints" formatted="false">YOU HAVE %1$d POINTS</string>
 </resources>

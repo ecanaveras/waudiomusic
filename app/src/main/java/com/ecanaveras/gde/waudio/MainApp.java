@@ -9,6 +9,7 @@ import android.util.Log;
 import com.ecanaveras.gde.waudio.editor.CompareWaudio;
 import com.ecanaveras.gde.waudio.editor.GeneratorWaudio;
 import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
+import com.ecanaveras.gde.waudio.models.WaudioModel;
 import com.ecanaveras.gde.waudio.util.FontsOverride;
 import com.ecanaveras.gde.waudio.util.Mp4Filter;
 import com.google.firebase.crash.FirebaseCrash;
@@ -229,6 +230,61 @@ public class MainApp extends Application {
         editor_pref.putInt(MainApp.POINTS, point);
         editor_pref.commit();
         return point;
+    }
+
+    //Banners
+    public static List<WaudioModel> getListBannerWS() {
+        ArrayList<WaudioModel> list = new ArrayList<>();
+        WaudioModel w1 = new WaudioModel("Atardecer Romance", R.drawable.banner1);
+        WaudioModel w2 = new WaudioModel("Ella People", R.drawable.banner2);
+        WaudioModel w3 = new WaudioModel("Electric Guitar Rock", R.drawable.banner3);
+
+        WaudioModel w4 = new WaudioModel("Dani Aventure", R.drawable.banner4);
+        WaudioModel w5 = new WaudioModel("Indira Anime", R.drawable.banner5);
+        WaudioModel w6 = new WaudioModel("Inglaterra mundo", R.drawable.banner6);
+
+        WaudioModel w7 = new WaudioModel("Johan Urbano", R.drawable.banner7);
+        WaudioModel w8 = new WaudioModel("Kary Amistad", R.drawable.banner8);
+        WaudioModel w9 = new WaudioModel("Kelly Romance", R.drawable.banner9);
+
+        WaudioModel w10 = new WaudioModel("Kenya Libertad", R.drawable.banner10);
+        WaudioModel w11 = new WaudioModel("Kley General", R.drawable.banner11);
+        WaudioModel w12 = new WaudioModel("Motorcycle Aventure", R.drawable.banner12);
+
+        WaudioModel w13 = new WaudioModel("Paz Romance", R.drawable.banner13);
+        WaudioModel w14 = new WaudioModel("Saxo General", R.drawable.banner14);
+        WaudioModel w15 = new WaudioModel("Tu Y Yo Amor", R.drawable.banner15);
+
+        WaudioModel w16 = new WaudioModel("Vallenato Colombia", R.drawable.banner16);
+        WaudioModel w17 = new WaudioModel("Inolvidable Romance", R.drawable.banner17);
+        WaudioModel w18 = new WaudioModel("Jenny General", R.drawable.banner18);
+
+        WaudioModel w19 = new WaudioModel("Kriss Urbano", R.drawable.banner19);
+        WaudioModel w20 = new WaudioModel("Lina Urbano", R.drawable.banner20);
+
+
+        list.add(w1);
+        list.add(w2);
+        list.add(w3);
+        list.add(w4);
+        list.add(w5);
+        list.add(w6);
+        list.add(w7);
+        list.add(w8);
+        list.add(w9);
+        list.add(w10);
+        list.add(w11);
+        list.add(w12);
+        list.add(w13);
+        list.add(w14);
+        list.add(w15);
+        list.add(w16);
+        list.add(w17);
+        list.add(w18);
+        list.add(w19);
+        list.add(w20);
+
+        return list;
     }
 
     public CompareWaudio getCompareWaudioTmp() {
