@@ -12,7 +12,6 @@ import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
 import com.ecanaveras.gde.waudio.models.WaudioModel;
 import com.ecanaveras.gde.waudio.util.FontsOverride;
 import com.ecanaveras.gde.waudio.util.Mp4Filter;
-import com.google.firebase.crash.FirebaseCrash;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -50,7 +49,6 @@ public class MainApp extends Application {
     public void onCreate() {
         super.onCreate();
         //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-        FirebaseCrash.setCrashCollectionEnabled(!BuildConfig.DEBUG);
         mDataFirebaseHelper = new DataFirebaseHelper();
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor_pref = preferences.edit();

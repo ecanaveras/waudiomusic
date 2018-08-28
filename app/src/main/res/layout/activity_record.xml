@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".RecordActivity">
+
+    <com.cleveroad.audiovisualization.GLAudioVisualizationView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/visualizer_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:av_bubblesSize="@dimen/bubble_size"
+        app:av_bubblesRandomizeSizes="true"
+        app:av_wavesHeight="@dimen/wave_height"
+        app:av_wavesFooterHeight="@dimen/footer_height"
+        app:av_wavesCount="7"
+        app:av_layersCount="4"
+        app:av_backgroundColor="@color/av_color_bg"
+        app:av_bubblesPerLayer="16"
+        />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_fileName="json/voice.json"/>
+
+</android.support.constraint.ConstraintLayout>

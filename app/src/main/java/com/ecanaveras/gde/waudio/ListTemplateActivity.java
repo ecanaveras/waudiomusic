@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static com.google.android.gms.internal.zzagr.runOnUiThread;
+//import static com.google.android.gms.internal.zzagr.runOnUiThread;
 
 public class ListTemplateActivity extends AppCompatActivity {
 

@@ -48,10 +48,12 @@ public class MainActivity extends AppCompatActivity {
     private Menu mainMenu;
     private AdaptadorSecciones adaptadorSecciones;
     private MainApp app;
-    private FloatingActionButton fab;
+    private FloatingActionButton newMusicW;
+    private FloatingActionButton newRecordW;
     private DataFirebaseHelper mDataFirebaseHelper;
 
     private FirebaseAnalytics mFirebaseAnalytics;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,11 +86,21 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
         changeTabsFont();
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        newMusicW = (FloatingActionButton) findViewById(R.id.newMusicW);
+        newMusicW.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent mainIntent = new Intent(MainActivity.this, ListAudioActivity.class);
+                mainIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                startActivity(mainIntent);
+            }
+        });
+
+        newRecordW = findViewById(R.id.newRecordW);
+        newRecordW.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent mainIntent = new Intent(MainActivity.this, RecordActivity.class);
                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(mainIntent);
             }
@@ -111,9 +123,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 if (position != 0) {
-                    fab.setVisibility(View.GONE);
+                    newMusicW.setVisibility(View.GONE);
+                    newRecordW.setVisibility(View.GONE);
                 } else {
-                    fab.setVisibility(View.VISIBLE);
+                    newMusicW.setVisibility(View.VISIBLE);
+                    newRecordW.setVisibility(View.VISIBLE);
                 }
             }
 

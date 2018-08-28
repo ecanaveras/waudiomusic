@@ -11,8 +11,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.NotificationCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,9 +25,11 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.ecanaveras.gde.waudio.adapters.TemplateRecyclerAdapter;
 import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
 import com.ecanaveras.gde.waudio.fragments.DownloadDialogFragment;
@@ -42,7 +44,6 @@ import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.crash.FirebaseCrash;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -81,7 +82,6 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
     private StorageReference templates;
     private StorageReference thumbnail;
     private NotificationManager mNotifyManager;
-    private NotificationCompat.Builder mBuilder;
     private SharedPreferences preferences;
     private SharedPreferences.Editor editor_pref;
     private Menu menuStore;
@@ -92,12 +92,15 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
     private RewardedVideoAd mRewardedVideoAd;
     private InterstitialAd mInterstitialAd;
     private boolean adsView;
+    private String channel;
+    private NotificationCompat.Builder mBuilder;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_store);
+        channel = "StoreActivity";
 
         app = (MainApp) getApplicationContext();
 
@@ -210,20 +213,22 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
         });
     }
 
-    private void uploadInfoTemplate(String name) {
+    private void uploadInfoTemplate(String name, final String urlThumbnail) {
         waudioModel = null;
         templates = null;
         thumbnail = null;
 
         mStorage = FirebaseStorage.getInstance().getReference();
         templates = mStorage.child("templates").child(name.trim() + ".mp4");
-        thumbnail = mStorage.child("thumbnails").child(name.trim() + ".png");
+        //thumbnail = mStorage.child("thumbnails").child(name.trim() + ".png");
         //Buscar link thumbnail
-        thumbnail.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        templates.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 waudioModel = new WaudioModel();
-                waudioModel.setUrlThumbnail(uri.toString());
+                waudioModel.setUrlThumbnail(urlThumbnail);
+                waudioModel.setPathMp4(uri.toString());
+                System.out.println("Ruta de descarga: " + uri.toString());
                 //BUscar template y guardar
                 templates.getMetadata().addOnSuccessListener(new OnSuccessListener<StorageMetadata>() {
                     @Override
@@ -232,7 +237,7 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
                             waudioModel.setName(storageMetadata.getName());
                             waudioModel.setSize(storageMetadata.getSizeBytes());
                             waudioModel.setDateModified(new Date().getTime()); //Fecha de Subida
-                            waudioModel.setPathMp4(storageMetadata.getDownloadUrl().toString());
+                            //waudioModel.setPathMp4(storageMetadata.getDownloadUrl().toString());
                         }
                         saveTemplateFirebase();
                     }
@@ -241,6 +246,7 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
         });
 
     }
+
 
     private void saveTemplateFirebase() {
         //Subir la imagen, y el video
@@ -252,6 +258,7 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
         final String wtId = mRef.push().getKey();//WaudioTemplateId
         mRef.child(wtId).setValue(waudioModel);
     }
+
 
     public void onClicDownloadItem(WaudioModel item) {
         downloadItemWaudio = item;
@@ -266,7 +273,7 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
         }
         mNotifyManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mBuilder = new NotificationCompat.Builder(StoreActivity.this);
+        mBuilder = new NotificationCompat.Builder(StoreActivity.this, channel);
         mBuilder.setContentTitle("Waudio Store")
                 .setContentText("Download in progress")
                 .setSmallIcon(R.drawable.ic_noti);
@@ -291,7 +298,7 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
                     if (localFile.exists()) {
                         localFile.delete();
                     }
-                    FirebaseCrash.report(e);
+                    Crashlytics.logException(e);
                     Toast.makeText(StoreActivity.this, downloadItemWaudio.getSimpleName() + " no se ha podido descargar, intenta mas tarde!", Toast.LENGTH_SHORT).show();
                     if (mNotifyManager != null)
                         mNotifyManager.cancel(1000);
@@ -312,7 +319,7 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
                 }
             });
         } catch (IOException e) {
-            FirebaseCrash.report(e);
+            Crashlytics.logException(e);
         }
     }
 
@@ -418,15 +425,24 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
         switch (item.getItemId()) {
             case R.id.action_update_store:
                 final EditText nameTemplate = new EditText(this);
+                final EditText urlTemplate = new EditText(this);
+                LinearLayout linearLayout = new LinearLayout(this);
+                linearLayout.setOrientation(LinearLayout.VERTICAL);
+
                 nameTemplate.setHint("Headset general");
+                urlTemplate.setHint("Url Dropbox");
+
+                linearLayout.addView(nameTemplate);
+                linearLayout.addView(urlTemplate);
                 new AlertDialog.Builder(this)
                         .setTitle("Update Store")
                         .setMessage("")
-                        .setView(nameTemplate)
+                        .setView(linearLayout)
                         .setPositiveButton("Enviar", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                String url = nameTemplate.getText().toString();
-                                uploadInfoTemplate(url);
+                                String name = nameTemplate.getText().toString();
+                                String url = urlTemplate.getText().toString();
+                                uploadInfoTemplate(name, (url != null ? url : "https://dl.dropboxusercontent.com/s/"));
                             }
                         })
                         .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -487,5 +503,10 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
     @Override
     public void onRewardedVideoAdFailedToLoad(int i) {
         loadRewardedVideoAd();
+    }
+
+    @Override
+    public void onRewardedVideoCompleted() {
+
     }
 }

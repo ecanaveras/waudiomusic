@@ -5,8 +5,12 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
@@ -39,12 +43,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import static com.google.android.gms.internal.zzagr.runOnUiThread;
+//import static com.google.android.gms.internal.zzagr.runOnUiThread;
 
 /**
  * Created by ecanaveras on 28/08/2017.
@@ -115,32 +120,40 @@ public class LibStylesFragment extends Fragment {
             public void run() {
                 try {
                     Thread.sleep(1000);
+                    //
+                    storeWaudioModelList.clear();
+                    int cantBanner = 0;
+                    while (cantBanner < 3) {
+                        boolean add = true;
+                        WaudioModel wTmp = getRandomBanner(MainApp.getListBannerWS());
+                        for (WaudioModel w : storeWaudioModelList) {
+                            if (w.getName().equals(wTmp.getName())) {
+                                add = false;
+                                break;
+                            }
+                        }
+                        if (add) {
+                            storeWaudioModelList.add(wTmp);
+                            cantBanner++;
+                        }
+
+                    }
+                    /*runOnUiThread(new Runnable() {
+                        public void run() {
+                            setupViewItemsStore(storeWaudioModelList);
+                        }
+                    });*/
+                    Handler uiHandler = new Handler(Looper.getMainLooper());
+                    uiHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            setupViewItemsStore(storeWaudioModelList);
+                        }
+                    });
+
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                //
-                storeWaudioModelList.clear();
-                int cantBanner = 0;
-                while (cantBanner < 3) {
-                    boolean add = true;
-                    WaudioModel wTmp = getRandomBanner(MainApp.getListBannerWS());
-                    for (WaudioModel w : storeWaudioModelList) {
-                        if (w.getName().equals(wTmp.getName())) {
-                            add = false;
-                            break;
-                        }
-                    }
-                    if (add) {
-                        storeWaudioModelList.add(wTmp);
-                        cantBanner++;
-                    }
-
-                }
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        setupViewItemsStore(storeWaudioModelList);
-                    }
-                });
 
             }
         }.start();
@@ -157,10 +170,9 @@ public class LibStylesFragment extends Fragment {
         for (WaudioModel waudioModel : list) {
             CardView view = (CardView) inflater.inflate(R.layout.store_item_new, null);
 
-            ImageView img = (ImageView) view.findViewById(R.id.thumbnail);
+            final ImageView img = (ImageView) view.findViewById(R.id.thumbnail);
             TextView title = (TextView) view.findViewById(R.id.title);
             //TextView category = (TextView) view.findViewById(R.id.category);
-
             Picasso.with(getActivity()).load(waudioModel.getResourceId()).resize(160, 140).into(img);
             title.setText(waudioModel.getSimpleName());
             //category.setText(waudioModel.getCategory());

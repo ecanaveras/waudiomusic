@@ -51,6 +51,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.crashlytics.android.Crashlytics;
 import com.ecanaveras.gde.waudio.editor.GeneratorWaudio;
 import com.ecanaveras.gde.waudio.editor.MarkerView;
 import com.ecanaveras.gde.waudio.editor.SoundFile;
@@ -59,7 +60,6 @@ import com.ecanaveras.gde.waudio.util.FileSaveDialog;
 import com.ecanaveras.gde.waudio.util.SamplePlayer;
 import com.ecanaveras.gde.waudio.util.SongMetadataReader;
 import com.google.firebase.analytics.FirebaseAnalytics;
-import com.google.firebase.crash.FirebaseCrash;
 
 import org.apache.commons.io.IOUtils;
 
@@ -269,9 +269,9 @@ public class EditorActivity extends AppCompatActivity
                 result = cursor.getString(idx);
                 cursor.close();
             } catch (IllegalArgumentException e) {
-                FirebaseCrash.report(e);
-                FirebaseCrash.log("contentURI: " + contentURI);
-                FirebaseCrash.log("contentURI Path: " + contentURI.getPath());
+                Crashlytics.logException(e);
+                Crashlytics.log("contentURI: " + contentURI);
+                Crashlytics.log("contentURI Path: " + contentURI.getPath());
                 Toast.makeText(this, "Hay un problema con tu canción... No es posible leer el medio!", Toast.LENGTH_LONG).show();
             }
         }
