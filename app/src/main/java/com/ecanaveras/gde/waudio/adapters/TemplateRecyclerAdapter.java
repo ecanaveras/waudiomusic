@@ -32,6 +32,8 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
+
 /**
  * Created by ecanaveras on 04/08/2017.
  */
@@ -124,7 +126,7 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
                     mContext.startActivity(intent);
             } else {
                 Log.e(TemplateRecyclerAdapter.class.getName(), "GeneratorWaudio is null");
-                Toast.makeText(mContext, mContext.getResources().getString(R.string.msgProblemGenerateWaudio), Toast.LENGTH_SHORT).show();
+                Toasty.error(mContext, mContext.getResources().getString(R.string.msgProblemGenerateWaudio), Toast.LENGTH_SHORT).show();
             }
         }
     }

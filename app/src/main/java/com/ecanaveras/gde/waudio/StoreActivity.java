@@ -60,6 +60,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
+
 public class StoreActivity extends AppCompatActivity implements RewardedVideoAdListener {
 
 
@@ -288,7 +290,8 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
                     //loadDataTemplates();
                     //Remove Template from Store
                     updateDataTemplates(downloadItemWaudio);
-                    Toast.makeText(StoreActivity.this, downloadItemWaudio.getSimpleName() + " descargado!", Toast.LENGTH_SHORT).show();
+                    //ToDO Traducir
+                    Toasty.info(StoreActivity.this, downloadItemWaudio.getSimpleName() + " descargado!", Toast.LENGTH_SHORT).show();
                     updatePoints(downloadItemWaudio.getValue(), false);
                     mDataFirebaseHelper.incrementItemDownload();
                 }
@@ -299,7 +302,8 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
                         localFile.delete();
                     }
                     Crashlytics.logException(e);
-                    Toast.makeText(StoreActivity.this, downloadItemWaudio.getSimpleName() + " no se ha podido descargar, intenta mas tarde!", Toast.LENGTH_SHORT).show();
+                    //ToDO Traducir
+                    Toasty.error(StoreActivity.this, downloadItemWaudio.getSimpleName() + " no se ha podido descargar, intenta mas tarde!", Toast.LENGTH_SHORT).show();
                     if (mNotifyManager != null)
                         mNotifyManager.cancel(1000);
                 }
@@ -338,7 +342,7 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
         LayoutInflater inflater = this.getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.custom_dialog_points, null);
         TextView textPoints = (TextView) dialogView.findViewById(R.id.lblPoints);
-        textPoints.setText(points + getResources().getString(R.string.lblPoints));
+        textPoints.setText(String.valueOf(points));
         android.support.v7.app.AlertDialog.Builder info = new android.support.v7.app.AlertDialog.Builder(this)
                 .setView(dialogView)
                 .setPositiveButton(getResources().getString(R.string.alert_ok_points), new DialogInterface.OnClickListener() {
@@ -364,7 +368,7 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
         if (menuStore != null) {
             MenuItem ac_points = menuStore.findItem(R.id.action_points);
             if (ac_points != null) {
-                ac_points.setTitle("" + points + " P");
+                ac_points.setTitle(String.valueOf(points));
             }
         }
         btnPoints.setText(String.format(getResources().getString(R.string.lblBtnPoints), points));
@@ -492,7 +496,7 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
     @Override
     public void onRewarded(RewardItem rewardItem) {
         updatePointsAdmob(100, true, true);
-        Toast.makeText(StoreActivity.this, String.format(getResources().getString(R.string.msgWindPoints), 100), Toast.LENGTH_SHORT).show();
+        Toasty.custom(getApplicationContext(), String.format(getResources().getString(R.string.msgWindPoints), 100), getResources().getDrawable(R.drawable.ic_points),getResources().getColor(R.color.colorAccent), Toast.LENGTH_SHORT, true, true).show();
     }
 
     @Override

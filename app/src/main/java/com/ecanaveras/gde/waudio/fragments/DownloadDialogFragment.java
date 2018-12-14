@@ -73,7 +73,7 @@ public class DownloadDialogFragment extends BottomSheetDialogFragment implements
         if (waudioModel.getValue() == null || waudioModel.getValue() == 0) {
             txtCostPoints.setText(getResources().getString(R.string.lblFree));
         } else
-            txtCostPoints.setText("$: " + waudioModel.getValue() + "P");
+            txtCostPoints.setText(String.valueOf(waudioModel.getValue()));
 
         btnPreview.setOnClickListener(this);
         if (behavior != null && behavior instanceof BottomSheetBehavior) {

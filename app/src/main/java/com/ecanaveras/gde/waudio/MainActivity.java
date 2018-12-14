@@ -32,6 +32,8 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int SHARE_WAUDIO_REQUEST = 1;
@@ -208,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SHARE_WAUDIO_REQUEST && resultCode == Activity.RESULT_OK) {
             app.updatePoints(25, true);
-            Toast.makeText(this, "+" + 25 + " " + getResources().getString(R.string.lblPoints), Toast.LENGTH_SHORT).show();
+            Toasty.custom(getApplicationContext(), "+" + 25 + " " + getResources().getString(R.string.lblPoints), getResources().getDrawable(R.drawable.ic_points),getResources().getColor(R.color.colorAccent), Toast.LENGTH_SHORT, true, true).show();
             mFirebaseAnalytics.setUserProperty("shared", String.valueOf(true));
             mDataFirebaseHelper.incrementWaudioShared();
         }

@@ -22,6 +22,8 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.File;
 
+import es.dmoral.toasty.Toasty;
+
 /**
  * Created by elcap on 27/09/2017.
  */
@@ -83,7 +85,7 @@ public class WaudioController {
                                 public void onClick(DialogInterface dialog,
                                                     int whichButton) {
                                     if (fileWaudio.getName().toUpperCase().contains("HEADSET")) {
-                                        Toast.makeText(context, context.getResources().getString(R.string.msgDenegateTemplateDelete), Toast.LENGTH_SHORT).show();
+                                        Toasty.warning(context, context.getResources().getString(R.string.msgDenegateTemplateDelete), Toast.LENGTH_SHORT).show();
                                         return;
                                     }
                                     if (fileWaudio.delete()) {
@@ -96,7 +98,7 @@ public class WaudioController {
                                         Activity activity = (Activity) context;
                                         activity.finish();
                                     } else {
-                                        Toast.makeText(context, context.getResources().getString(R.string.msgErrorDeleteWaudio), Toast.LENGTH_SHORT).show();
+                                        Toasty.error(context, context.getResources().getString(R.string.msgErrorDeleteWaudio), Toast.LENGTH_SHORT).show();
                                     }
 
                                 }
@@ -113,9 +115,9 @@ public class WaudioController {
             return;
         }
         Intent sendIntent = new Intent(Intent.ACTION_SEND);
-        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.N) { //Menor que ANdroid 7
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) { //Menor que ANdroid 7
             sendIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(fileWaudio));
-        }else{
+        } else {
             //Android 7 o superior
             sendIntent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             sendIntent.putExtra(Intent.EXTRA_STREAM, FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", fileWaudio));
@@ -133,7 +135,7 @@ public class WaudioController {
         //Sumar puntos
         if (app != null) {
             app.updatePoints(points, true);
-            Toast.makeText(context, "+" + points + " " + context.getResources().getString(R.string.lblPoints), Toast.LENGTH_SHORT).show();
+            Toasty.custom(context, "+" + points + " " + context.getResources().getString(R.string.lblPoints), context.getResources().getDrawable(R.drawable.ic_points), context.getResources().getColor(R.color.colorAccent), Toast.LENGTH_SHORT, true, true).show();
         }
     }
 

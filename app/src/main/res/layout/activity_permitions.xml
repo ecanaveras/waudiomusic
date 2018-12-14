@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg5"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!--VISTA GENERAL-->
+        <LinearLayout
+            android:id="@+id/layoutPreview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!--VIDEO-->
+            <LinearLayout
+                android:id="@+id/layoutVideo"
+                android:layout_width="match_parent"
+                android:layout_height="260dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="40sp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_sd_storage" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical|right"
+                    android:text="HOLA, PARA HACER MI MAGIA, NECESITO PERMISOS PARA BUSCAR MÚSICA ALMACENADA EN LA MEMORIA INTERNA O EN LA SD, y TAMBIEN GRABAR VOZ, ES TODO!"
+                    android:textAlignment="center"
+                    android:paddingTop="20sp"
+                    android:textSize="25sp"/>
+
+            </LinearLayout>
+
+            <!--BUTTONS LARGE-->
+            <LinearLayout
+                android:id="@+id/layoutButtons"
+                style="@style/ToolbarBackground"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="vertical"
+                android:padding="22dp">
+
+                <Button
+                    android:id="@+id/btnPermitions"
+                    style="@style/WaudioButtonBlank"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:maxHeight="40dp"
+                    android:onClick="onSetupPermitions"
+                    android:text="@string/lblPermitions" />
+
+
+                <!--<Button
+                    android:id="@+id/btnFinish"
+                    style="@style/WaudioButtonRed"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:maxHeight="40dp"
+                    android:onClick="onFinish"
+                    android:text="@string/lblFinish" />-->
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

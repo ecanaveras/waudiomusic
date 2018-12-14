@@ -198,9 +198,11 @@
     <string name="alert_ok_points">GANHAR PONTOS</string>
     <string name="alert_cancel_points">ENTENDIDO</string>
     <string name="msgRewardPoints">GANHAR PONTOS:\n-Vendo Vídeos ( 100P )\n-Compartilhando Waudios ( 25P )\n-Criando Waudios ( 10P )</string>
-    <string name="lblHavePoints">VOCÊ TEM</string>
+    <string name="lblHavePoints">SEUS PONTOS</string>
     <string name="lblPoints">\tPONTOS</string>
     <string name="lblFree">GRATIS</string>
     <string name="msgWindPoints" formatted="false">Ganhou %1$d pontos</string>
     <string name="lblBtnPoints" formatted="false">VOCÊ TEM %1$d PONTOS</string>
+    <string name="landing_activity_label">Landing</string>
+    <string name="lblPermitions">ESTABLECER PERMISOS</string>
 </resources>

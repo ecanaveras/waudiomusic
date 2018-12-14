@@ -1,51 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical"
     tools:context="com.ecanaveras.gde.waudio.SplashScreen">
 
-    <FrameLayout
+    <ImageView
+        android:id="@+id/imgBG"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        android:src="@drawable/splash_screen" />
 
-        <ImageView
-            android:id="@+id/imgBG"
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/msgCopyRights"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="centerCrop"
-            android:src="@drawable/splash_screen" />
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/msgCopyRights2"
+            android:gravity="center"
+            android:text="@string/msgCopyRights"
+            android:textColor="@color/colorTextThirdy"
+            android:textSize="16sp" />
 
-        <RelativeLayout
+        <TextView
+            android:id="@+id/msgCopyRights2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="80dp"
+            android:gravity="center"
+            android:text="@string/msgCopyRights2"
+            android:textColor="@color/colorTextThirdy"
+            android:textSize="16sp" />
+    </RelativeLayout>
 
-            <TextView
-                android:id="@+id/msgCopyRights"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/msgCopyRights2"
-                android:gravity="center"
-                android:text="@string/msgCopyRights"
-                android:textColor="@color/colorTextThirdy"
-                android:textSize="16sp" />
+</FrameLayout>
 
-            <TextView
-                android:id="@+id/msgCopyRights2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="80dp"
-                android:gravity="center"
-                android:text="@string/msgCopyRights2"
-                android:textColor="@color/colorTextThirdy"
-                android:textSize="16sp" />
-        </RelativeLayout>
-
-    </FrameLayout>
-
-
-</LinearLayout>

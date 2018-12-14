@@ -1,26 +1,54 @@
 package com.ecanaveras.gde.waudio;
 
-import android.*;
-import android.Manifest;
-import android.content.DialogInterface;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.text.Html;
 import android.util.Log;
-import android.widget.Toast;
+import android.view.View;
 
 import com.ecanaveras.gde.waudio.util.Mp4Filter;
 
 import java.io.File;
 
 public class SplashScreen extends AppCompatActivity {
+
+    com.ecanaveras.gde.waudio.util.PreferenceManager preferenceManager;
+    //Maximizar Screen Pantalla
+    private static final boolean AUTO_HIDE = true;
+    private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
+    private static final int UI_ANIMATION_DELAY = 300;
+    private final Handler mHideHandler = new Handler();
+    private View mContentView;
+    private final Runnable mHidePart2Runnable = new Runnable() {
+        @SuppressLint("InlinedApi")
+        @Override
+        public void run() {
+            // Delayed removal of status and navigation bar
+
+            // Note that some of these constants are new as of API 16 (Jelly Bean)
+            // and API 19 (KitKat). It is safe to use them, as they are inlined
+            // at compile-time and do nothing on earlier devices.
+            mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        }
+    };
+
+    private final Runnable mHideRunnable = new Runnable() {
+        @Override
+        public void run() {
+            hide();
+        }
+    };
 
     private static int SPLASH_TIME_OUT = 2000;
     private static final int REQUEST_CODE = 1;
@@ -33,17 +61,45 @@ public class SplashScreen extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                solicitarPermisos();
+                gotoActivity();
             }
         }, SPLASH_TIME_OUT);
+
+        mContentView = findViewById(R.id.imgBG);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        // Trigger the initial hide() shortly after the activity has been
+        // created, to briefly hint to the user that UI controls
+        // are available.
+        delayedHide(100);
+    }
+
+    private boolean verificarPermisos() {
+        return ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
     }
 
     private void gotoActivity() {
+        preferenceManager = new com.ecanaveras.gde.waudio.util.PreferenceManager(this);
         Intent mainIntent = null;
-        if (foundWaudios()) {
-            mainIntent = new Intent(SplashScreen.this, MainActivity.class);
+        if (preferenceManager.FirstLaunch()) {
+            mainIntent = new Intent(SplashScreen.this, LandingActivity.class);
         } else {
-            mainIntent = new Intent(SplashScreen.this, ListAudioActivity.class);
+            if (verificarPermisos()) {
+                if (foundWaudios()) {
+                    mainIntent = new Intent(SplashScreen.this, MainActivity.class);
+                } else {
+                    //TODO, mostrar un asistente para crear Waudio, Grabar, o hacer ringtone
+                    mainIntent = new Intent(SplashScreen.this, ListAudioActivity.class);
+                }
+            } else {
+                //Solicitar Permisos
+                mainIntent = new Intent(SplashScreen.this, PermitionsActivity.class);
+            }
         }
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(mainIntent);
@@ -69,63 +125,25 @@ public class SplashScreen extends AppCompatActivity {
         return false;
     }
 
-    private void solicitarPermisos() {
-        if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
-            gotoActivity();
-        } else {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) || ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.RECORD_AUDIO)) {
-                AlertDialog.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
 
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if (i == DialogInterface.BUTTON_POSITIVE) {
-                            requestPermissions();
-                        } else if (i == DialogInterface.BUTTON_NEGATIVE) {
-                            permissionNoGranted();
-                        }
-                    }
-                };
-
-                new AlertDialog.Builder(this, R.style.AlertDialogCustom)
-                        .setTitle(getResources().getString(R.string.alert_title_permitions))
-                        .setMessage(Html.fromHtml(getString(R.string.message_permissions)))
-                        .setPositiveButton(getResources().getString(R.string.alert_continue), onClickListener)
-                        .setNegativeButton(getResources().getString(R.string.alert_cancel), onClickListener)
-                        .show();
-            } else {
-                requestPermissions();
-            }
+    //MANEJAR EL ACTION BAR
+    private void hide() {
+        // Hide UI first
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.hide();
         }
+        //mControlsView.setVisibility(View.GONE);
+        //mVisible = false;
+
+        // Schedule a runnable to remove the status and navigation bar after a delay
+        //mHideHandler.removeCallbacks(mShowPart2Runnable);
+        mHideHandler.postDelayed(mHidePart2Runnable, UI_ANIMATION_DELAY);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CODE) {
-            boolean bothGranted = true;
-            for (int i = 0; i < permissions.length; i++) {
-                if (android.Manifest.permission.RECORD_AUDIO.equals(permissions[i]) || android.Manifest.permission.READ_EXTERNAL_STORAGE.equals(permissions[i])) {
-                    bothGranted &= grantResults[i] == PackageManager.PERMISSION_GRANTED;
-                }
-            }
-            if (bothGranted) {
-                solicitarPermisos();
-            } else {
-                permissionNoGranted();
-            }
-        }
-    }
-
-    private void permissionNoGranted() {
-        Toast.makeText(getApplicationContext(), getResources().getString(R.string.msgDeniedPermitions), Toast.LENGTH_SHORT).show();
-        finish();
-    }
-
-    private void requestPermissions() {
-        ActivityCompat.requestPermissions(this,
-                new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
-                REQUEST_CODE);
+    private void delayedHide(int delayMillis) {
+        mHideHandler.removeCallbacks(mHideRunnable);
+        mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
 }

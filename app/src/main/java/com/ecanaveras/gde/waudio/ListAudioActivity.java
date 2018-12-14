@@ -18,9 +18,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
@@ -35,7 +33,6 @@ import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -49,6 +46,8 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+
+import es.dmoral.toasty.Toasty;
 
 public class ListAudioActivity extends AppCompatActivity implements AudioManager.OnAudioFocusChangeListener, LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -99,7 +98,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
                 mediaPlayer.prepare();
                 mediaPlayer.start();
                 if (showTips) {
-                    Toast.makeText(ListAudioActivity.this, getResources().getString(R.string.tip_pause_music), Toast.LENGTH_SHORT).show();
+                    Toasty.info(ListAudioActivity.this, getResources().getString(R.string.tip_pause_music), Toast.LENGTH_SHORT).show();
                     showTips = false;
                 }
                 /*Snackbar snackbar = Snackbar.make(view, cursor.getString(music_name_idx).toUpperCase(), Snackbar.LENGTH_INDEFINITE)
@@ -405,7 +404,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
     }
 
     private void permissionNoGranted() {
-        Toast.makeText(getApplicationContext(), getResources().getString(R.string.msgDeniedPermitions), Toast.LENGTH_SHORT).show();
+        Toasty.error(getApplicationContext(), getResources().getString(R.string.msgDeniedPermitions), Toast.LENGTH_SHORT).show();
         finish();
     }
 

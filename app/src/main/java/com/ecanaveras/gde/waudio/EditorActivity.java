@@ -72,6 +72,8 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
 
+import es.dmoral.toasty.Toasty;
+
 
 /**
  * The activity for the Ringdroid main editor_pref window.  Keeps track of
@@ -272,7 +274,7 @@ public class EditorActivity extends AppCompatActivity
                 Crashlytics.logException(e);
                 Crashlytics.log("contentURI: " + contentURI);
                 Crashlytics.log("contentURI Path: " + contentURI.getPath());
-                Toast.makeText(this, "Hay un problema con tu canción... No es posible leer el medio!", Toast.LENGTH_LONG).show();
+                Toasty.error(this, "Hay un problema con tu canción... No es posible leer el medio!", Toast.LENGTH_LONG).show();
             }
         }
         return result;
@@ -1059,7 +1061,7 @@ public class EditorActivity extends AppCompatActivity
         resetPositions();
 
 
-        Toast toast = Toast.makeText(this, getResources().getString(R.string.msgChoose30seg), Toast.LENGTH_LONG);
+        Toast toast = Toasty.warning(this, getResources().getString(R.string.msgChoose30seg), Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }

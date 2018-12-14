@@ -27,6 +27,8 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import java.io.File;
 import java.util.Random;
 
+import es.dmoral.toasty.Toasty;
+
 public class WaudioFinalizedActivity extends AppCompatActivity implements AudioManager.OnAudioFocusChangeListener {
 
     private static final int SHARE_WAUDIO_REQUEST = 1;
@@ -123,7 +125,6 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
             waudioController = new WaudioController(this, f);
             if (f.exists()) {
                 getSupportActionBar().setTitle("WAUDIO - " + f.getName().toUpperCase());
-                //Toast.makeText(this, getResources().getString(R.string.msgWaudioSuccess), Toast.LENGTH_SHORT).show();
                 MediaController controller = new MediaController(this);
                 controller.setAnchorView(videoView);
                 videoView.setMediaController(controller);
@@ -236,7 +237,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
                 R.string.msgFinish5,
                 R.string.msgFinish6};
         Random random = new Random();
-        Toast.makeText(this, getResources().getString(idsMsgs[random.nextInt(idsMsgs.length)]), Toast.LENGTH_LONG).show();
+        Toasty.info(this, getResources().getString(idsMsgs[random.nextInt(idsMsgs.length)]), Toast.LENGTH_LONG).show();
         finishAffinity();
         //android.os.Process.killProcess(android.os.Process.myPid());
     }

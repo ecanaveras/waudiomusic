@@ -258,9 +258,17 @@
     <string name="alert_ok_points">EARN POINTS</string>
     <string name="alert_cancel_points">OK</string>
     <string name="msgRewardPoints">WIN POINTS:\n-Watching Videos ( 100P )\n-Sharing Waudios ( 25P )\n-Creating Waudios ( 10P )</string>
-    <string name="lblHavePoints">YOU HAVE</string>
+    <string name="lblHavePoints">YOUR POINTS</string>
     <string name="lblPoints">\tPOINTS</string>
     <string name="lblFree">FREE</string>
     <string name="msgWindPoints" formatted="false">You won %1$d points</string>
     <string name="lblBtnPoints" formatted="false">YOU HAVE %1$d POINTS</string>
+
+    <string name="title_activity_landing">LandingActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="landing_activity_label">Landing</string>
+    <string name="landing_start">START</string>
+    <string name="title_activity_permition">PermitionActivity</string>
+    <string name="lblPermitions">ESTABLECER PERMISOS</string>
 </resources>
