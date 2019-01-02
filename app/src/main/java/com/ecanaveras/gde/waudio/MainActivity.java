@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private AdaptadorSecciones adaptadorSecciones;
     private MainApp app;
     private FloatingActionButton newMusicW;
-    private FloatingActionButton newRecordW;
+    //private FloatingActionButton newRecordW;
     private DataFirebaseHelper mDataFirebaseHelper;
 
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        newRecordW = findViewById(R.id.newRecordW);
+        /*newRecordW = findViewById(R.id.newRecordW);
         newRecordW.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 mainIntent.addFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
                 startActivity(mainIntent);
             }
-        });
+        });*/
 
     }
 
@@ -126,10 +126,10 @@ public class MainActivity extends AppCompatActivity {
             public void onPageSelected(int position) {
                 if (position != 0) {
                     newMusicW.setVisibility(View.GONE);
-                    newRecordW.setVisibility(View.GONE);
+                    //newRecordW.setVisibility(View.GONE);
                 } else {
                     newMusicW.setVisibility(View.VISIBLE);
-                    newRecordW.setVisibility(View.VISIBLE);
+                    //newRecordW.setVisibility(View.VISIBLE);
                 }
             }
 

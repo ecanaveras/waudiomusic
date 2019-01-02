@@ -148,7 +148,6 @@
     <string name="msgStyleChoosed">Ya creaste un Waudio, con este estilo, ¿Quieres verlo?</string>
     <string name="alert_ok_preview">PREVISUALIZAR</string>
     <string name="nameFragmentTracks">MÚSICA</string>
-    <string name="title_fragment_waudios">WAUDIOS</string>
     <string name="title_fragment_styles">ESTILOS</string>
     <string name="msgChooseAudio">Selecciona una pista de audio...</string>
     <string name="tip_pause_music">Tip: para pausar, presiona \'atrás\'</string>
@@ -185,6 +184,7 @@
     <string name="alert_cancel_rating">LUEGUITO</string>
     <string name="lblAvailable">DISPONIBLES</string>
     <string name="msgDownloadNewStyles">DESCARGA NUEVOS ESTILOS</string>
+    <string name="msgDownloadSuccess" formatted="false">%1$s descargado!</string>
     <string name="msgNewStylesAvailable">NUEVOS ESTILOS DISPONIBLES...</string>
     <string name="msgSelectStyle">Escoge un estilo para continuar...</string>
     <string name="msgSelectStyleTip">puedes descargarlos desde Waudio Store</string>
@@ -205,4 +205,14 @@
     <string name="lblBtnPoints" formatted="false">TIENES %1$d PUNTOS</string>
     <string name="landing_activity_label">Landing</string>
     <string name="lblPermitions">ESTABLECER PERMISOS</string>
+    <string name="landing_intro_1">CREA</string>
+    <string name="landing_intro_2">COMPARTE</string>
+    <string name="lading_intro_3">WAUDIO STORE</string>
+    <string name="landing_start">INICIAR</string>
+    <string name="msgPermitions">HOLA, PARA HACER MI MAGIA, NECESITO ALGUNOS PERMISOS, VOY A BUSCAR MÚSICA ALMACENADA EN LA MEMORIA INTERNA O EN LA SD, y TAMBIEN NECESITO GRABAR VOZ, ES TODO!</string>
+    <string name="msgProblemDownload">Out... hay un problema, intenta más tarde!</string>
+    <string name="msgDownloadInProgress">Descarga en progreso...</string>
+    <string name="msgDownloadTry">%1$s no se ha podido descargar, intenta mas tarde!</string>
+    <string name="msgOpenWithFailded">No tienes una app para reproducir videos!</string>
+    <string name="lblDownload">DESCARGAR</string>
 </resources>

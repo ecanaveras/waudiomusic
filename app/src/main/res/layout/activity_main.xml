@@ -49,13 +49,13 @@
         android:orientation="vertical"
         android:padding="10dp">
 
-        <android.support.design.widget.FloatingActionButton
+        <!--<android.support.design.widget.FloatingActionButton
             android:id="@+id/newRecordW"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="6dp"
             app:backgroundTint="@color/colorTextSecondary"
-            app:srcCompat="@drawable/ic_action_mic" />
+            app:srcCompat="@drawable/ic_action_mic" />-->
 
 
         <android.support.design.widget.FloatingActionButton

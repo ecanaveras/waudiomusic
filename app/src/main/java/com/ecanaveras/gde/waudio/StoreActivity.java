@@ -93,7 +93,7 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
 
     private RewardedVideoAd mRewardedVideoAd;
     private InterstitialAd mInterstitialAd;
-    private boolean adsView;
+    private boolean adsView, downloading;
     private String channel;
     private NotificationCompat.Builder mBuilder;
 
@@ -105,9 +105,6 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
         channel = "StoreActivity";
 
         app = (MainApp) getApplicationContext();
-
-        //AdMods
-        MobileAds.initialize(this, MainApp.ADMOB_APP_ID);
 
         //Interticial
         mInterstitialAd = new InterstitialAd(this);
@@ -269,17 +266,24 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
     }
 
     public void onDownload(View v) {
+        if (downloading) {
+            Toasty.warning(this, getResources().getString(R.string.msgDownloadInProgress), Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (downloadItemWaudio.getValue() > points) {
             showInfoPoints(null);
             return;
         }
+        downloading = true;
+        final int notiDownloadID = 1000;
         mNotifyManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mBuilder = new NotificationCompat.Builder(StoreActivity.this, channel);
         mBuilder.setContentTitle("Waudio Store")
-                .setContentText("Download in progress")
+                .setContentText(getResources().getString(R.string.msgDownloadInProgress))
                 .setSmallIcon(R.drawable.ic_noti);
         StorageReference template = mStorage.child("templates").child(downloadItemWaudio.getName());
+        Toasty.warning(this, getResources().getString(R.string.msgDownloadInProgress), Toast.LENGTH_SHORT).show();
         try {
             final File localFile = File.createTempFile(downloadItemWaudio.getName(), "", new File(getExternalFilesDir(null).getAbsolutePath()));
             template.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
@@ -289,9 +293,9 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
                     bottomSheetDialogFragment.dismiss();
                     //loadDataTemplates();
                     //Remove Template from Store
+                    downloading = false;
                     updateDataTemplates(downloadItemWaudio);
-                    //ToDO Traducir
-                    Toasty.info(StoreActivity.this, downloadItemWaudio.getSimpleName() + " descargado!", Toast.LENGTH_SHORT).show();
+                    Toasty.success(StoreActivity.this, String.format(getResources().getString(R.string.msgDownloadSuccess), downloadItemWaudio.getSimpleName()), Toast.LENGTH_SHORT).show();
                     updatePoints(downloadItemWaudio.getValue(), false);
                     mDataFirebaseHelper.incrementItemDownload();
                 }
@@ -301,9 +305,9 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
                     if (localFile.exists()) {
                         localFile.delete();
                     }
+                    downloading = false;
                     Crashlytics.logException(e);
-                    //ToDO Traducir
-                    Toasty.error(StoreActivity.this, downloadItemWaudio.getSimpleName() + " no se ha podido descargar, intenta mas tarde!", Toast.LENGTH_SHORT).show();
+                    Toasty.error(StoreActivity.this, String.format(getResources().getString(R.string.msgDownloadTry), downloadItemWaudio.getSimpleName()), Toast.LENGTH_SHORT).show();
                     if (mNotifyManager != null)
                         mNotifyManager.cancel(1000);
                 }
@@ -315,15 +319,20 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
                         downloaded = (int) ((taskSnapshot.getTotalByteCount() / taskSnapshot.getBytesTransferred()) * 100);
                     mBuilder.setProgress(100, downloaded, false);
                     // Displays the progress bar for the first time.
-                    mNotifyManager.notify(1000, mBuilder.build());
+                    mNotifyManager.notify(notiDownloadID, mBuilder.build());
                     //Toast.makeText(StoreActivity.this, "Descargando " + downloadItemWaudio.getSimpleName() + taskSnapshot.getBytesTransferred() + "/" + taskSnapshot.getTotalByteCount(), Toast.LENGTH_SHORT).show();
                     if (downloaded == 100) {
-                        mNotifyManager.cancel(1000);
+                        mNotifyManager.cancel(notiDownloadID);
                     }
                 }
             });
         } catch (IOException e) {
+            downloading = false;
+            if (mNotifyManager != null) {
+                mNotifyManager.cancel(notiDownloadID);
+            }
             Crashlytics.logException(e);
+            Toasty.error(this, getResources().getString(R.string.msgProblemDownload), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -496,7 +505,7 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
     @Override
     public void onRewarded(RewardItem rewardItem) {
         updatePointsAdmob(100, true, true);
-        Toasty.custom(getApplicationContext(), String.format(getResources().getString(R.string.msgWindPoints), 100), getResources().getDrawable(R.drawable.ic_points),getResources().getColor(R.color.colorAccent), Toast.LENGTH_SHORT, true, true).show();
+        Toasty.custom(getApplicationContext(), String.format(getResources().getString(R.string.msgWindPoints), 100), getResources().getDrawable(R.drawable.ic_points), getResources().getColor(R.color.colorAccent), Toast.LENGTH_SHORT, true, true).show();
     }
 
     @Override

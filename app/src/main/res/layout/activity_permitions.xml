@@ -36,7 +36,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical|right"
-                    android:text="HOLA, PARA HACER MI MAGIA, NECESITO PERMISOS PARA BUSCAR MÚSICA ALMACENADA EN LA MEMORIA INTERNA O EN LA SD, y TAMBIEN GRABAR VOZ, ES TODO!"
+                    android:text="@string/msgPermitions"
                     android:textAlignment="center"
                     android:paddingTop="20sp"
                     android:textSize="25sp"/>

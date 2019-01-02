@@ -3,11 +3,9 @@ package com.ecanaveras.gde.waudio;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -139,7 +137,7 @@ public class LandingActivity extends AppCompatActivity {
     private void finishLanding() {
         preferenceManager.setFirstTimeLaunch(false);
         Intent mainIntent = null;
-        if (verificarPermisos()) {
+        if (((MainApp) getApplicationContext()).checkPermitions()) {
             if (foundWaudios()) {
                 mainIntent = new Intent(this, MainActivity.class);
             } else {
@@ -154,11 +152,6 @@ public class LandingActivity extends AppCompatActivity {
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(mainIntent);
         finish();
-    }
-
-    private boolean verificarPermisos() {
-        return ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
     }
 
     ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {

@@ -354,13 +354,9 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
         } catch (SecurityException e) {
             // No permission to retrieve audio?
             Log.e("Waudio", e.toString());
-
-            // TODO error 1
         } catch (IllegalArgumentException e) {
             // No permission to retrieve audio?
             Log.e("Waudio", e.toString());
-
-            // TODO error 2
         }
 
         mAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {

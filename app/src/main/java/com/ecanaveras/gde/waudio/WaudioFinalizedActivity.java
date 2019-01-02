@@ -129,6 +129,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
                 controller.setAnchorView(videoView);
                 videoView.setMediaController(controller);
                 videoView.setVideoURI(Uri.fromFile(f));
+                videoView.setVideoURI(Uri.fromFile(f));
                 videoView.setKeepScreenOn(true);
                 videoView.requestFocus();
                 videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {

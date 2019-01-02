@@ -204,7 +204,7 @@
     <string name="title_activity_main" translatable="false">Waudio Music</string>
     <string name="action_settings" translatable="false">Settings</string>
     <string name="nameFragmentTracks">MUSIC</string>
-    <string name="title_fragment_waudios">WAUDIOS</string>
+    <string name="title_fragment_waudios" translatable="false">WAUDIOS</string>
     <string name="title_fragment_styles">STYLES</string>
     <string name="msgChooseAudio">Select an audio track ...</string>
     <string name="tip_pause_music">Tip: To pause, press \'back\'</string>
@@ -226,7 +226,7 @@
     <string name="msgWaudioLoading">Loading your Waudios ...</string>
     <string name="menu_action_order_by">Sort by...</string>
     <string name="menu_action_goto_store">Waudio Store</string>
-    <string name="formatOrderby">Ordered for: %1$s</string>
+    <string name="formatOrderby">Ordered by: %1$s</string>
     <string name="lblOrderbyDate">Creation date</string>
     <string name="lblOrderbyTitle">Name</string>
     <string name="msgComingSoonStore">Soon you can download many styles!</string>
@@ -264,11 +264,21 @@
     <string name="msgWindPoints" formatted="false">You won %1$d points</string>
     <string name="lblBtnPoints" formatted="false">YOU HAVE %1$d POINTS</string>
 
-    <string name="title_activity_landing">LandingActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_landing" translatable="false">LandingActivity</string>
+    <string name="dummy_button" translatable="false">Dummy Button</string>
+    <string name="dummy_content" translatable="false">DUMMY\nCONTENT</string>
     <string name="landing_activity_label">Landing</string>
     <string name="landing_start">START</string>
-    <string name="title_activity_permition">PermitionActivity</string>
-    <string name="lblPermitions">ESTABLECER PERMISOS</string>
+    <string name="title_activity_permition" translatable="false">PermitionActivity</string>
+    <string name="lblPermitions">ESTABLISH PERMITS</string>
+    <string name="landing_intro_1">CREATES</string>
+    <string name="landing_intro_2">COMPARTE</string>
+    <string name="lading_intro_3">WAUDIO STORE</string>
+    <string name="msgPermitions">HELLO, TO DO MY MAGIC, I NEED SOME PERMITS, I\'M LOOKING FOR MUSIC STORED IN THE INTERNAL MEMORY OR IN THE SD, AND I ALSO NEED TO RECORD VOICE, IT\'S ALL!</string>
+    <string name="msgDownloadInProgress">Download in progress...</string>
+    <string name="msgDownloadSuccess">%1$s downloaded!</string>
+    <string name="msgProblemDownload">Out ... there\'s a problem, try later!</string>
+    <string name="msgDownloadTry">%1$s could not download, try later!</string>
+    <string name="msgOpenWithFailded">You do not have an app to play videos</string>
+    <string name="lblDownload">DOWNLOAD</string>
 </resources>

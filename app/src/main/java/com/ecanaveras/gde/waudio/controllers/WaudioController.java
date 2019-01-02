@@ -8,13 +8,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.content.FileProvider;
-import android.view.View;
 import android.widget.Toast;
 
 import com.ecanaveras.gde.waudio.BuildConfig;
 import com.ecanaveras.gde.waudio.MainApp;
 import com.ecanaveras.gde.waudio.R;
-import com.ecanaveras.gde.waudio.WaudioFinalizedActivity;
 import com.ecanaveras.gde.waudio.editor.CompareWaudio;
 import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
 import com.ecanaveras.gde.waudio.models.WaudioModel;
@@ -144,6 +142,11 @@ public class WaudioController {
             return;
         }
         Intent intent = new Intent(Intent.ACTION_EDIT, Uri.fromFile(fileWaudio));
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            intent.setData(Uri.fromFile(fileWaudio));
+        } else {
+            intent.setData(FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", fileWaudio));
+        }
         //intent.putExtra("was_get_content_intent", mWasGetContentIntent);
         intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
         intent.setClassName("com.ecanaveras.gde.waudio", "com.ecanaveras.gde.waudio.EditorActivity");
@@ -156,9 +159,27 @@ public class WaudioController {
             return;
         }
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        Uri uri = Uri.fromFile(fileWaudio);
-        intent.setDataAndType(uri, "video/*");
-        context.startActivity(Intent.createChooser(intent, context.getResources().getString(R.string.msgOpenWith)));
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            intent.setDataAndType(Uri.fromFile(fileWaudio), "video/mp4");
+        } else {
+            intent.setDataAndType(FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", fileWaudio), "video/mp4");
+        }
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(Intent.createChooser(intent, context.getResources().getString(R.string.msgOpenWith)));
+        } else {
+            Toasty.warning(context, context.getResources().getString(R.string.msgOpenWithFailded), Toast.LENGTH_SHORT).show();
+        }
+        /*
+        // Verify it resolves
+        PackageManager packageManager = context.getPackageManager();
+        List<ResolveInfo> activities = packageManager.queryIntentActivities(intent, 0);
+        if (activities.size() > 0) {
+            context.startActivity(Intent.createChooser(intent, context.getResources().getString(R.string.msgOpenWith)));
+        } else {
+            Toasty.warning(context, context.getResources().getString(R.string.msgOpenWithFailded), Toast.LENGTH_SHORT).show();
+        }*/
     }
 
 

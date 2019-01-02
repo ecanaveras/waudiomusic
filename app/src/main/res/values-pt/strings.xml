@@ -20,7 +20,7 @@
        Actividad principal/seleccion multimedia
        -->
 
-    <string name="search_edit_box">Buscar</string>
+    <string name="search_edit_box">Achar</string>
 
     <string name="sdcard_readonly">O cartão SD é de apenas leitura e Waudio precisa que sea de escritura.</string>
     <string name="no_sdcard">Waudio apenas pode funcionar com uma placa SD insertada.</string>
@@ -45,7 +45,7 @@
     <!--
        Elementos de menu
        -->
-    <string name="menu_save">Guardar</string>
+    <string name="menu_save">Salvar</string>
     <string name="menu_reset">Reiniciar</string>
     <string name="menu_about">Sobre</string>
     <!--
@@ -56,8 +56,8 @@
     <!--
        Cuadro Guardar archivo
        -->
-    <string name="file_save_title">Guardar como:</string>
-    <string name="file_save_button_save">Guardar</string>
+    <string name="file_save_title">Salvar como:</string>
+    <string name="file_save_button_save">Salvar</string>
     <string name="file_save_button_cancel">Cancelar</string>
     <string name="ringtone_type_label">Tipo:</string>
     <string name="type_music">Música</string>
@@ -78,7 +78,7 @@
        -->
     <string name="alert_title_success">Éxito</string>
     <string name="alert_title_failure">Erro</string>
-    <string name="alert_ok_button">Aceptar</string>
+    <string name="alert_ok_button">Aceitar</string>
     <string name="alert_yes_button">Sim, por favor.</string>
     <string name="alert_no_button">Não, gracias.</string>
     <string name="play_error">Impossível reproduzir este arquivo multimídia</string>
@@ -110,7 +110,7 @@
     <string name="lblNext">PRÓXIMO</string>
     <string name="lblEnd">FIM</string>
     <string name="lblDuration">DURAÇÃO</string>
-    <string name="lblContinue">CONTINUAR</string>
+    <string name="lblContinue">CONTINUE</string>
     <string name="lblStart">INICIO</string>
     <string name="lblSelectTrack">Selecione um áudio</string>
     <string name="message_permissions">Precisamos de alguma permissão para ler o seu áudio</string>
@@ -137,7 +137,7 @@
     <string name="msgConfirmTemplateDelete">Deseja eliminar o Estilo?</string>
     <string name="msgYesDelete">SIM, ELIMINAR</string>
     <string name="alert_cancel">CANCELAR</string>
-    <string name="msgOpenWith">Open Waudio com...</string>
+    <string name="msgOpenWith">Abra o Waudio com...</string>
     <string name="msgWaudioCreate">Crie um escolhendo um estilo</string>
     <string name="lblShare">COMPARTILHAR</string>
     <string name="lblGotoEditor">IR AO EDITOR</string>
@@ -148,7 +148,6 @@
     <string name="msgStyleChoosed">Você já criou um Waudio, com esse estilo, quer vê-lo?</string>
     <string name="alert_ok_preview">VISUALIZAR</string>
     <string name="nameFragmentTracks">MÚSICA</string>
-    <string name="title_fragment_waudios">WAUDIOS</string>
     <string name="title_fragment_styles">ESTILOS</string>
     <string name="msgChooseAudio">Selecione uma faixa de áudio...</string>
     <string name="tip_pause_music">Dica: para pausar, pressione \'para trás\'</string>
@@ -167,7 +166,7 @@
     <string name="msgWaudioLoading">Carregando seus Waudios...</string>
     <string name="menu_action_order_by">Organizar por...</string>
     <string name="menu_action_goto_store">Waudio Store</string>
-    <string name="formatOrderby">Ordenado por: %1$s</string>
+    <string name="formatOrderby">Ordenou por: %1$s</string>
     <string name="lblOrderbyDate">Data de criação</string>
     <string name="lblOrderbyTitle">Nome</string>
     <string name="msgErrorDeleteWaudio">Problemas ao remover o waudio, tente novamente</string>
@@ -175,7 +174,7 @@
     <string name="lblGoHome">VER WAUDIOS</string>
     <string name="msgNoMusic2">PARECE QUE VOCÊ Saiu na ERA da ROCHA!</string>
     <string name="msgNoMusic3">Waudio Music, faz sua mágica apenas com música\n, a internet está cheia disso, ou pergunte a seus amigos e retorna!</string>
-    <string name="msgNoMusic">¿DE VERDAD NO TIENES MÚSICA?</string>
+    <string name="msgNoMusic">¿Você não tem música?</string>
     <string name="msgDenegateTemplateDelete">Meu amigo, este estilo é parte da minha magia, você não pode apagar isso!</string>
     <string name="msgIntroStore">WAUDIO STORE, UM MUNDO DE ESTILOS PARA CRIAR WAUDIOS MARAVILHOSOS...</string>
     <string name="msgItemsAvailable">NUEVOS ESTILOS</string>
@@ -196,13 +195,24 @@
     <string name="lblFrom">UMA IDÉIA DE</string>
     <string name="lblForWorld">PARA O MUNDO</string>
     <string name="alert_ok_points">GANHAR PONTOS</string>
-    <string name="alert_cancel_points">ENTENDIDO</string>
+    <string name="alert_cancel_points">COMPREENDIDO</string>
     <string name="msgRewardPoints">GANHAR PONTOS:\n-Vendo Vídeos ( 100P )\n-Compartilhando Waudios ( 25P )\n-Criando Waudios ( 10P )</string>
     <string name="lblHavePoints">SEUS PONTOS</string>
     <string name="lblPoints">\tPONTOS</string>
-    <string name="lblFree">GRATIS</string>
+    <string name="lblFree">LIVRE</string>
     <string name="msgWindPoints" formatted="false">Ganhou %1$d pontos</string>
     <string name="lblBtnPoints" formatted="false">VOCÊ TEM %1$d PONTOS</string>
     <string name="landing_activity_label">Landing</string>
-    <string name="lblPermitions">ESTABLECER PERMISOS</string>
+    <string name="lblPermitions">ESTABELECER PERMISSÕES</string>
+    <string name="landing_intro_1">CRIAR</string>
+    <string name="landing_intro_2">COMPARTE</string>
+    <string name="lading_intro_3">WAUDIO STORE</string>
+    <string name="landing_start">START</string>
+    <string name="msgPermitions">OLÁ, PARA FAZER A MINHA MAGIA, PRECISO DE ALGUMAS AUTORIZAÇÕES, PROCURO MÚSICA ARMAZENADA NA MEMÓRIA INTERNA OU NO SD, E TAMBÉM PRECISO REGISTRAR VOZ, É TUDO!</string>
+    <string name="msgDownloadInProgress">Descarregar em andamento ...</string>
+    <string name="msgDownloadSuccess">%1$s baixado!</string>
+    <string name="msgProblemDownload">Fora ... tem um problema, tente depois!</string>
+    <string name="msgDownloadTry">%1$s não foi possível baixar, tente mais tarde!</string>
+    <string name="msgOpenWithFailded">Você não tem um aplicativo para reproduzir vídeos</string>
+    <string name="lblDownload">BAIXAR</string>
 </resources>

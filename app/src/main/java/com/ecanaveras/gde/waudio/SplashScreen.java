@@ -2,11 +2,9 @@ package com.ecanaveras.gde.waudio;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -19,6 +17,7 @@ import java.io.File;
 public class SplashScreen extends AppCompatActivity {
 
     com.ecanaveras.gde.waudio.util.PreferenceManager preferenceManager;
+    private static int SPLASH_TIME_OUT = 2000;
     //Maximizar Screen Pantalla
     private static final boolean AUTO_HIDE = true;
     private static final int AUTO_HIDE_DELAY_MILLIS = 3000;
@@ -50,9 +49,6 @@ public class SplashScreen extends AppCompatActivity {
         }
     };
 
-    private static int SPLASH_TIME_OUT = 2000;
-    private static final int REQUEST_CODE = 1;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,29 +74,24 @@ public class SplashScreen extends AppCompatActivity {
         delayedHide(100);
     }
 
-    private boolean verificarPermisos() {
-        return ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
-    }
-
     private void gotoActivity() {
         preferenceManager = new com.ecanaveras.gde.waudio.util.PreferenceManager(this);
         Intent mainIntent = null;
-        if (preferenceManager.FirstLaunch()) {
+        /*if (preferenceManager.FirstLaunch()) {
+            //TODO, mostrar un asistente para crear Waudio, Grabar, o hacer ringtone
             mainIntent = new Intent(SplashScreen.this, LandingActivity.class);
-        } else {
-            if (verificarPermisos()) {
-                if (foundWaudios()) {
-                    mainIntent = new Intent(SplashScreen.this, MainActivity.class);
-                } else {
-                    //TODO, mostrar un asistente para crear Waudio, Grabar, o hacer ringtone
-                    mainIntent = new Intent(SplashScreen.this, ListAudioActivity.class);
-                }
+        } else {*/
+        if (((MainApp) getApplicationContext()).checkPermitions()) {
+            if (foundWaudios()) {
+                mainIntent = new Intent(this, MainActivity.class);
             } else {
-                //Solicitar Permisos
-                mainIntent = new Intent(SplashScreen.this, PermitionsActivity.class);
+                mainIntent = new Intent(this, ListAudioActivity.class);
             }
+        } else {
+            //Solicitar Permisos
+            mainIntent = new Intent(this, PermitionsActivity.class);
         }
+        //}
         mainIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
         startActivity(mainIntent);
         finish();

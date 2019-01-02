@@ -1,9 +1,12 @@
 package com.ecanaveras.gde.waudio;
 
+import android.Manifest;
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.ecanaveras.gde.waudio.editor.CompareWaudio;
@@ -12,6 +15,7 @@ import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
 import com.ecanaveras.gde.waudio.models.WaudioModel;
 import com.ecanaveras.gde.waudio.util.FontsOverride;
 import com.ecanaveras.gde.waudio.util.Mp4Filter;
+import com.google.android.gms.ads.MobileAds;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -60,6 +64,9 @@ public class MainApp extends Application {
                 setupPoints();
             }
         }
+
+        //AdMods
+        MobileAds.initialize(this, MainApp.ADMOB_APP_ID);
     }
 
     private void setupFonts() {
@@ -221,6 +228,10 @@ public class MainApp extends Application {
                 mDataFirebaseHelper.incrementWaudioPoints(valor);
             }
         } else {
+            if (point <= 0) {
+                point = 0;
+                return point;
+            }
             point = point - valor;
             if (valor > 0)
                 mDataFirebaseHelper.incrementWaudioPointsConsumed(valor);
@@ -295,5 +306,11 @@ public class MainApp extends Application {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    public boolean checkPermitions() {
+        return ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
     }
 }

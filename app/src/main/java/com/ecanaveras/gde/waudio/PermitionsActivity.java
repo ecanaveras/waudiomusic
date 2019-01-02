@@ -30,7 +30,7 @@ public class PermitionsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_permitions);
-        if (verificarPermisos())
+        if (((MainApp) getApplicationContext()).checkPermitions())
             gotoActivity();
     }
 
@@ -39,7 +39,7 @@ public class PermitionsActivity extends AppCompatActivity {
     }
 
     private void solicitarPermisos() {
-        if (verificarPermisos()) {
+        if (((MainApp) getApplicationContext()).checkPermitions()) {
             gotoActivity();
         } else {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) || ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.RECORD_AUDIO)) {
@@ -67,18 +67,13 @@ public class PermitionsActivity extends AppCompatActivity {
         }
     }
 
-    private boolean verificarPermisos() {
-        return ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_CODE) {
             boolean bothGranted = true;
             for (int i = 0; i < permissions.length; i++) {
-                if (android.Manifest.permission.RECORD_AUDIO.equals(permissions[i]) || android.Manifest.permission.READ_EXTERNAL_STORAGE.equals(permissions[i])) {
+                if (Manifest.permission.RECORD_AUDIO.equals(permissions[i]) || Manifest.permission.READ_EXTERNAL_STORAGE.equals(permissions[i]) || Manifest.permission.WRITE_EXTERNAL_STORAGE.equals(permissions[i])) {
                     bothGranted &= grantResults[i] == PackageManager.PERMISSION_GRANTED;
                 }
             }
@@ -97,7 +92,7 @@ public class PermitionsActivity extends AppCompatActivity {
 
     private void requestPermissions() {
         ActivityCompat.requestPermissions(this,
-                new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
+                new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
                 REQUEST_CODE);
     }
 
