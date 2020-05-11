@@ -2,9 +2,15 @@ package com.ecanaveras.gde.waudio.fragments;
 
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
@@ -37,9 +43,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
+//import static com.google.android.gms.internal.zzagr.runOnUiThread;
 
 /**
  * Created by ecanaveras on 28/08/2017.
@@ -47,6 +57,7 @@ import java.util.List;
 
 public class LibStylesFragment extends Fragment {
 
+    private static Random random = new Random();
     private RecyclerView recyclerView;
     private TemplateRecyclerAdapter templateRecyclerAdapter;
     private DataFirebaseHelper mDataFirebaseHelper;
@@ -87,7 +98,7 @@ public class LibStylesFragment extends Fragment {
 
         app.reloadWaudios = true;
         prepareTemplates();
-        getNewItemsStore(20);
+        getNewItemsStore();
 
         //Si cambian los templates, actualiza el listado
         observer = new TemplatesFileObserver(getActivity().getExternalFilesDir(null).getAbsolutePath());
@@ -103,39 +114,49 @@ public class LibStylesFragment extends Fragment {
         countItemsStore();
     }
 
-    public void getNewItemsStore(int limit) {
-        mRef.orderByChild("dateModified").limitToLast(limit).addValueEventListener(new ValueEventListener() {
+    public void getNewItemsStore() {
+        new Thread() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                storeWaudioModelList.clear();
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    WaudioModel wt = data.getValue(WaudioModel.class);
-                    storeWaudioModelList.add(wt);
-                }
-                List<WaudioModel> itemsShow = new ArrayList<WaudioModel>();
-                for (WaudioModel store : storeWaudioModelList) {
-                    boolean downloaded = false;
-                    for (WaudioModel sd : sdWaudioModelList) {
-                        //SI NO EXISTE EN LOS TEMPLATES SD
-                        if (store.getName().equals(sd.getName())) {
-                            downloaded = true;
-                            break;
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                    //
+                    storeWaudioModelList.clear();
+                    int cantBanner = 0;
+                    while (cantBanner < 3) {
+                        boolean add = true;
+                        WaudioModel wTmp = getRandomBanner(MainApp.getListBannerWS());
+                        for (WaudioModel w : storeWaudioModelList) {
+                            if (w.getName().equals(wTmp.getName())) {
+                                add = false;
+                                break;
+                            }
                         }
+                        if (add) {
+                            storeWaudioModelList.add(wTmp);
+                            cantBanner++;
+                        }
+
                     }
-                    if (!downloaded)
-                        itemsShow.add(store);
-                    if (itemsShow.size() == 3) {
-                        break;
-                    }
+                    /*runOnUiThread(new Runnable() {
+                        public void run() {
+                            setupViewItemsStore(storeWaudioModelList);
+                        }
+                    });*/
+                    Handler uiHandler = new Handler(Looper.getMainLooper());
+                    uiHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            setupViewItemsStore(storeWaudioModelList);
+                        }
+                    });
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                setupViewItemsStore(itemsShow);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        }.start();
     }
 
     private void setupViewItemsStore(List<WaudioModel> list) {
@@ -149,11 +170,10 @@ public class LibStylesFragment extends Fragment {
         for (WaudioModel waudioModel : list) {
             CardView view = (CardView) inflater.inflate(R.layout.store_item_new, null);
 
-            ImageView img = (ImageView) view.findViewById(R.id.thumbnail);
+            final ImageView img = (ImageView) view.findViewById(R.id.thumbnail);
             TextView title = (TextView) view.findViewById(R.id.title);
             //TextView category = (TextView) view.findViewById(R.id.category);
-
-            Picasso.with(getActivity()).load(waudioModel.getUrlThumbnail()).resize(160, 140).into(img);
+            Picasso.with(getActivity()).load(waudioModel.getResourceId()).resize(160, 140).into(img);
             title.setText(waudioModel.getSimpleName());
             //category.setText(waudioModel.getCategory());
             lyContentItemStore.addView(view);
@@ -165,22 +185,24 @@ public class LibStylesFragment extends Fragment {
     }
 
     private void countItemsStore() {
+        final Context mContext = getActivity();
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.custom_dialog_new_items, null);
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (app.findNewItemStore(dataSnapshot.getChildrenCount()) > 0) {
-                    AlertDialog.Builder info = new AlertDialog.Builder(getActivity())
-                            .setView(dialogView)
-                            .setPositiveButton(getResources().getString(R.string.alert_ok_new_styles), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    onGoStore(null);
-                                }
-                            }).setNegativeButton("OK", null);
-                    info.show();
-
+                if (dataSnapshot != null) {
+                    if (app.findNewItemStore(dataSnapshot.getChildrenCount()) > 0) {
+                        AlertDialog.Builder info = new AlertDialog.Builder(mContext)
+                                .setView(dialogView)
+                                .setPositiveButton(getResources().getString(R.string.alert_ok_new_styles), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        onGoStore(null);
+                                    }
+                                }).setNegativeButton("OK", null);
+                        info.show();
+                    }
                 }
             }
 
@@ -205,6 +227,12 @@ public class LibStylesFragment extends Fragment {
         recyclerView.setAdapter(templateRecyclerAdapter);
         templateRecyclerAdapter.notifyDataSetChanged();
         refresh = false;
+    }
+
+
+    public static WaudioModel getRandomBanner(List<WaudioModel> array) {
+        int rnd = random.nextInt(array.size());
+        return array.get(rnd);
     }
 
     @Override
@@ -233,7 +261,7 @@ public class LibStylesFragment extends Fragment {
         setHasOptionsMenu(isVisible());
         if (refresh) {
             prepareTemplates();
-            getNewItemsStore(20);
+            getNewItemsStore();
         }
     }
 

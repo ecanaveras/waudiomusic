@@ -1,5 +1,6 @@
 package com.ecanaveras.gde.waudio;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -20,9 +21,12 @@ import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.File;
+import java.util.Map;
 
 public class WaudioPreviewActivity extends AppCompatActivity implements AudioManager.OnAudioFocusChangeListener {
 
+
+    private static final int SHARE_WAUDIO_REQUEST = 1;
     public static final String IS_TEMPLATE = "is_template";
     public static String PATH_WAUDIO = "path_waudio";
     public static String IS_WAUDIO = "is_waudio";
@@ -101,7 +105,7 @@ public class WaudioPreviewActivity extends AppCompatActivity implements AudioMan
             if (videoView.isPlaying()) {
                 videoView.pause();
             }
-            waudioController.onShare();
+            waudioController.onShare(this);
         }
 
     }
@@ -156,6 +160,16 @@ public class WaudioPreviewActivity extends AppCompatActivity implements AudioMan
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SHARE_WAUDIO_REQUEST && resultCode == Activity.RESULT_OK && waudioController != null) {
+            waudioController.addPoints(MainApp.POINTS_WAUDIO_SHARED);
+            mFirebaseAnalytics.setUserProperty("shared", String.valueOf(true));
+            mDataFirebaseHelper.incrementWaudioShared();
+        }
     }
 
     @Override

@@ -1,12 +1,8 @@
 package com.ecanaveras.gde.waudio.adapters;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,10 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ecanaveras.gde.waudio.MainActivity;
 import com.ecanaveras.gde.waudio.MainApp;
 import com.ecanaveras.gde.waudio.R;
 import com.ecanaveras.gde.waudio.StoreActivity;
@@ -31,6 +27,8 @@ import com.ecanaveras.gde.waudio.picasso.VideoRequestHandler;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import es.dmoral.toasty.Toasty;
 
 /**
  * Created by ecanaveras on 04/08/2017.
@@ -84,8 +82,6 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
             switch (view.getId()) {
                 case R.id.btnDelete:
                     break;
-                case R.id.btnFavorite:
-                    break;
                 default: //Vista previa o Store
                     if (isRemote) {
                         showDownloadDialog(waudioModel);
@@ -124,7 +120,7 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
                     mContext.startActivity(intent);
             } else {
                 Log.e(TemplateRecyclerAdapter.class.getName(), "GeneratorWaudio is null");
-                Toast.makeText(mContext, mContext.getResources().getString(R.string.msgProblemGenerateWaudio), Toast.LENGTH_SHORT).show();
+                Toasty.error(mContext, mContext.getResources().getString(R.string.msgProblemGenerateWaudio), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -141,9 +137,13 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
         holder.name.setText(waudioModel.getSimpleName());
         holder.category.setText(waudioModel.getCategory());
         if (isRemote) {
+            holder.lyInfoValue.setVisibility(View.VISIBLE);
+            holder.costpoints.setText(waudioModel.getValue() != 0 ? String.valueOf(waudioModel.getValue()) : mContext.getResources().getString(R.string.lblFree));
             Picasso.with(mContext).load(waudioModel.getUrlThumbnail()).into(holder.thumbnail);
-        } else
+        } else {
+            holder.lyInfoValue.setVisibility(View.INVISIBLE);
             picassoInstance.load(VideoRequestHandler.SCHEME_VIDEO + ":" + waudioModel.getPathMp4()).into(holder.thumbnail);
+        }
     }
 
     @Override
@@ -183,19 +183,23 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
 
         public ItemClickListener listener;
 
-        public TextView name, category;
+        public TextView name, category, costpoints;
         public ImageView thumbnail;
         public ImageButton btnPreview;
         public TextView txtNext;
+        public LinearLayout lyInfoValue;
 
 
         public MyViewHolder(View itemView, ItemClickListener listener) {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.title);
             category = (TextView) itemView.findViewById(R.id.category);
+            costpoints = (TextView) itemView.findViewById(R.id.txtCostPoints);
             thumbnail = (ImageView) itemView.findViewById(R.id.thumbnail);
             btnPreview = (ImageButton) itemView.findViewById(R.id.btnPreview);
             txtNext = (TextView) itemView.findViewById(R.id.txtNext);
+            lyInfoValue = (LinearLayout) itemView.findViewById(R.id.lyInfoValue);
+
 
             itemView.setOnClickListener(this);
             if (btnPreview != null)

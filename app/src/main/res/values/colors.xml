@@ -16,6 +16,8 @@
     <color name="colorTextThirdy">#9d9dba</color>
     <color name="colorBgTitleTemplate">#9b11041d</color>
 
+    <color name="colorPoint">#f57160</color>
+
     <!--Editor-->
     <color name="waveform_selected">#f57160</color>
     <color name="waveform_unselected">#a31a4b</color>
@@ -27,5 +29,27 @@
     <color name="timecode_shadow">#aa000000</color>
 
     <color name="black_overlay">#66000000</color>
+
+
+    <!--Landing-->
+
+    <color name="screen1">#F44336</color>
+    <color name="screen2">#64DD17</color>
+    <color name="screen3">#9C27B0</color>
+
+
+    <array name="dot_on_page_active">
+        <item>#B71C1C</item>
+        <item>#8BC34A</item>
+        <item>#4A148C</item>
+
+    </array>
+
+    <array name="dot_on_page_not_active">
+        <item>#FF5252</item>
+        <item>#CCFF90</item>
+        <item>#E040FB</item>
+    </array>
+
 </resources>
 

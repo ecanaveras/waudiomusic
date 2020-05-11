@@ -19,6 +19,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorPrimaryDark"
     android:keepScreenOn="true">
 
@@ -33,33 +34,42 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/lblLoading"
+            android:layout_above="@+id/lblTitleAudioLoading"
             android:layout_centerInParent="true"
             android:src="@drawable/ic_android_happy" />
 
+        <!--<com.airbnb.lottie.LottieAnimationView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="json/deadpool.json"
+            app:lottie_loop="true"
+            app:lottie_scale="2"
+            android:layout_centerInParent="true"/>-->
+
         <TextView
-            android:id="@+id/lblLoading"
+            android:id="@+id/lblTitleAudioLoading"
             android:layout_width="30dp"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/lblTitleAudioLoading"
+            android:layout_above="@+id/lblLoading"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:layout_marginBottom="4dp"
-            android:maxLines="1"
-            android:text="@string/msgAudioLoading"
+            android:maxLines="2"
             android:textAlignment="center"
             android:textAllCaps="true"
             android:textSize="18dp" />
 
         <TextView
-            android:id="@+id/lblTitleAudioLoading"
+            android:id="@+id/lblLoading"
             android:layout_width="30dp"
             android:layout_height="wrap_content"
             android:layout_above="@+id/lblPercent"
             android:layout_alignParentLeft="true"
             android:layout_alignParentRight="true"
             android:layout_marginBottom="4dp"
-            android:maxLines="2"
+            android:text="@string/msgAudioLoading"
+            android:maxLines="1"
             android:textAlignment="center"
             android:textAllCaps="true"
             android:textColor="@color/colorTextThirdy" />

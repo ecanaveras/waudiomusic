@@ -29,9 +29,13 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
+//import static com.google.android.gms.internal.zzagr.runOnUiThread;
 
 public class ListTemplateActivity extends AppCompatActivity {
 
+    private static Random random = new Random();
     private FirebaseAnalytics mFirebaseAnalytics;
 
     private RecyclerView recyclerView;
@@ -77,7 +81,7 @@ public class ListTemplateActivity extends AppCompatActivity {
 
 
         prepareTemplates();
-        getNewItemsStore(20);
+        getNewItemsStore();
 
         lyContentItemStore = (LinearLayout) findViewById(R.id.lyContentItemStore);
         LinearLayout lyContentStore = (LinearLayout) findViewById(R.id.lyContentStore);
@@ -122,45 +126,47 @@ public class ListTemplateActivity extends AppCompatActivity {
         super.onResume();
         if (refresh) {
             prepareTemplates();
-            getNewItemsStore(20);
+            getNewItemsStore();
         }
         /*if (templateRecyclerAdapter != null)
             templateRecyclerAdapter.notifyDataSetChanged();*/
     }
 
-    public void getNewItemsStore(int limit) {
-        mRef.orderByKey().limitToFirst(limit).addValueEventListener(new ValueEventListener() {
+    public void getNewItemsStore() {
+        new Thread() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                storeWaudioModelList.clear();
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    WaudioModel wt = data.getValue(WaudioModel.class);
-                    storeWaudioModelList.add(wt);
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-                List<WaudioModel> itemsShow = new ArrayList<WaudioModel>();
-                for (WaudioModel store : storeWaudioModelList) {
-                    boolean downloaded = false;
-                    for (WaudioModel sd : sdWaudioModelList) {
-                        //SI NO EXISTE EN LOS TEMPLATES SD
-                        if (store.getName().equals(sd.getName())) {
-                            downloaded = true;
+                //
+                storeWaudioModelList.clear();
+                int cantBanner = 0;
+                while (cantBanner < 3) {
+                    boolean add = true;
+                    WaudioModel wTmp = getRandomBanner(MainApp.getListBannerWS());
+                    for (WaudioModel w : storeWaudioModelList) {
+                        if (w.getName().equals(wTmp.getName())) {
+                            add = false;
                             break;
                         }
                     }
-                    if (!downloaded)
-                        itemsShow.add(store);
-                    if (itemsShow.size() == 3) {
-                        break;
+                    if (add) {
+                        storeWaudioModelList.add(wTmp);
+                        cantBanner++;
                     }
+
                 }
-                setupViewItemsStore(itemsShow);
-            }
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        setupViewItemsStore(storeWaudioModelList);
+                    }
+                });
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
             }
-        });
+        }.start();
     }
 
     private void setupViewItemsStore(List<WaudioModel> list) {
@@ -178,13 +184,18 @@ public class ListTemplateActivity extends AppCompatActivity {
             TextView title = (TextView) view.findViewById(R.id.title);
             //TextView category = (TextView) view.findViewById(R.id.category);
 
-            Picasso.with(this).load(waudioModel.getUrlThumbnail()).resize(160, 140).into(img);
+            Picasso.with(this).load(waudioModel.getResourceId()).resize(160, 140).into(img);
             title.setText(waudioModel.getSimpleName());
             //category.setText(waudioModel.getCategory());
             lyContentItemStore.addView(view);
             view.startAnimation(bounce);
         }
         ((LinearLayout) lyContentItemStore.getParent()).setVisibility(View.VISIBLE);
+    }
+
+    public static WaudioModel getRandomBanner(List<WaudioModel> array) {
+        int rnd = random.nextInt(array.size());
+        return array.get(rnd);
     }
 
     public void onGoStore(View view) {

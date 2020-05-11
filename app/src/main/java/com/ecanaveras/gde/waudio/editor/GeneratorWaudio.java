@@ -18,17 +18,8 @@ import com.googlecode.mp4parser.authoring.Movie;
 import com.googlecode.mp4parser.authoring.Track;
 import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
 import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
-import com.googlecode.mp4parser.authoring.tracks.AppendTrack;
 import com.googlecode.mp4parser.authoring.tracks.CroppedTrack;
 
-/*import org.mp4parser.Container;
-import org.mp4parser.muxer.Movie;
-import org.mp4parser.muxer.Track;
-import org.mp4parser.muxer.builder.DefaultMp4Builder;
-import org.mp4parser.muxer.container.mp4.MovieCreator;
-import org.mp4parser.muxer.tracks.AppendTrack;
-import org.mp4parser.muxer.tracks.ClippedTrack;
-*/
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -39,6 +30,15 @@ import java.io.StringWriter;
 import java.nio.channels.FileChannel;
 import java.util.LinkedList;
 import java.util.List;
+
+/*import org.mp4parser.Container;
+import org.mp4parser.muxer.Movie;
+import org.mp4parser.muxer.Track;
+import org.mp4parser.muxer.builder.DefaultMp4Builder;
+import org.mp4parser.muxer.container.mp4.MovieCreator;
+import org.mp4parser.muxer.tracks.AppendTrack;
+import org.mp4parser.muxer.tracks.ClippedTrack;
+*/
 
 /**
  * Created by ecanaveras on 04/08/2017.
@@ -108,7 +108,7 @@ public class GeneratorWaudio implements Serializable {
                     } else {
                         Runnable runnable = new Runnable() {
                             public void run() {
-                                showFinalAlert(new Exception(), "No se ha enviado un plantilla de video");
+                                showFinalAlert(new Exception(), "No se ha enviado una plantilla de video");
                             }
                         };
                         mHandler.post(runnable);
@@ -119,7 +119,7 @@ public class GeneratorWaudio implements Serializable {
                     //context.startActivity(intent);
                 } catch (Exception e) {
                     // log the error and try to create a .wav file instead
-                    if (outFile.exists()) {
+                    if (outFile != null && outFile.exists()) {
                         outFile.delete();
                     }
                     StringWriter writer = new StringWriter();
@@ -149,7 +149,7 @@ public class GeneratorWaudio implements Serializable {
                         // Creating the .wav file also failed. Stop the progress dialog, show an
                         // error message and exit.
                         //mProgressDialog.dismiss();
-                        if (outFile.exists()) {
+                        if (outFile != null && outFile.exists()) {
                             outFile.delete();
                         }
                         /*mInfoContent = e.toString();
@@ -194,7 +194,7 @@ public class GeneratorWaudio implements Serializable {
                             };
                     SoundFile.create(outPath, listener);
                     //Eliminar Audio
-                    if (outFile.exists()) {
+                    if (outFile != null && outFile.exists()) {
                         outFile.delete();
                         System.out.println("Mp3 cortado, eliminado...");
                     }
@@ -302,7 +302,7 @@ public class GeneratorWaudio implements Serializable {
             Log.i("Waudio", outFileWaudio.getName() + " creado exitosamente");
         } catch (IOException e) {
             e.printStackTrace();
-            if (outFileWaudio.exists()) {
+            if (outFileWaudio != null && outFileWaudio.exists()) {
                 outFileWaudio.delete();
             }
         }

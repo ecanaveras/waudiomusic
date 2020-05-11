@@ -1,6 +1,7 @@
 package com.ecanaveras.gde.waudio.listener;
 
 import android.os.FileObserver;
+import android.util.Log;
 
 import com.ecanaveras.gde.waudio.ListTemplateActivity;
 import com.ecanaveras.gde.waudio.fragments.LibStylesFragment;
@@ -39,7 +40,7 @@ public class TemplatesFileObserver extends FileObserver {
 
     @Override
     public void onEvent(int event, String path) {
-        System.out.println(TAG + " RUNNING, EVENT " + event);
+        Log.i(TAG, " RUNNING, EVENT " + event);
         switch (event) {
             case FileObserver.CREATE:
             case FileObserver.DELETE:

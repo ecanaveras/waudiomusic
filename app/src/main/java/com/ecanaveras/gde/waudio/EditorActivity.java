@@ -25,6 +25,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -32,6 +33,7 @@ import android.provider.MediaStore;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -49,6 +51,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.crashlytics.android.Crashlytics;
 import com.ecanaveras.gde.waudio.editor.GeneratorWaudio;
 import com.ecanaveras.gde.waudio.editor.MarkerView;
 import com.ecanaveras.gde.waudio.editor.SoundFile;
@@ -58,10 +61,19 @@ import com.ecanaveras.gde.waudio.util.SamplePlayer;
 import com.ecanaveras.gde.waudio.util.SongMetadataReader;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
+import org.apache.commons.io.IOUtils;
+
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
+
+import es.dmoral.toasty.Toasty;
+
 
 /**
  * The activity for the Ringdroid main editor_pref window.  Keeps track of
@@ -142,6 +154,7 @@ public class EditorActivity extends AppCompatActivity
      * This is a special intent action that means "edit a sound file".
      */
     public static final String EDIT = "com.ecanaveras.gde.waudio.action.EDIT";
+    private static final String PATH_MEDIA = "/Waudio/Media/";
     private LinearLayout le;
     private TextView lblTitleAudio, lblTitleAudioLoading, lblPercent;
 
@@ -153,6 +166,7 @@ public class EditorActivity extends AppCompatActivity
     private LinearLayout lyContentEditor;
     private long back_pressed = 0;
     private Thread mInfoThread;
+    private MainApp app;
 
     //
     // Public methods and protected overrides
@@ -168,6 +182,7 @@ public class EditorActivity extends AppCompatActivity
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
+        app = (MainApp) getApplicationContext();
         setupIntent(getIntent());
 
         mFirebaseAnalytics.setUserProperty("open_editor", String.valueOf(true));
@@ -205,8 +220,8 @@ public class EditorActivity extends AppCompatActivity
         String receivedType = receivedIntent.getType();
 
         //if (receivedIntent.getData() == null) {
-            //onBackPressed();
-            //Toast.makeText(this, getResources().getString(R.string.msgRestart), Toast.LENGTH_SHORT).show();
+        //onBackPressed();
+        //Toast.makeText(this, getResources().getString(R.string.msgRestart), Toast.LENGTH_SHORT).show();
         //}
         // If the Ringdroid media select activity was launched via a
         // GET_CONTENT intent, then we shouldn't display a "saved"
@@ -219,7 +234,9 @@ public class EditorActivity extends AppCompatActivity
                 Uri receivedUri = (Uri) receivedIntent.getParcelableExtra(Intent.EXTRA_STREAM);
                 mFilename = getRealPathFromURI(receivedUri);
             } else {
-                mFilename = receivedIntent.getData().toString().replaceFirst("file://", "").replaceAll("%20", " ");
+                Uri receivedUri = (Uri) receivedIntent.getData();
+                mFilename = getRealPathFromURI(receivedUri);
+                //mFilename = receivedIntent.getData().toString().replaceFirst("file://", "").replaceAll("%20", " ").replaceAll("%2C", ",").replaceAll("%E2%80%93", "–");
             }
         }
 
@@ -243,18 +260,51 @@ public class EditorActivity extends AppCompatActivity
 
 
     private String getRealPathFromURI(Uri contentURI) {
-        String result;
+        String result = null;
         Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
         if (cursor == null) { // Source is Dropbox or other similar local file path
             result = contentURI.getPath();
         } else {
-            cursor.moveToFirst();
-            int idx = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA);
-            result = cursor.getString(idx);
-            cursor.close();
+            try {
+                cursor.moveToFirst();
+                int idx = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA);
+                result = cursor.getString(idx);
+                cursor.close();
+            } catch (IllegalArgumentException e) {
+                Crashlytics.logException(e);
+                Crashlytics.log("contentURI: " + contentURI);
+                Crashlytics.log("contentURI Path: " + contentURI.getPath());
+                Toasty.error(this, "Hay un problema con tu canción... No es posible leer el medio!", Toast.LENGTH_LONG).show();
+            }
         }
         return result;
     }
+
+    /* REVISION PENDIENTE
+    public static String getFileName(Uri uri) {
+        if (uri == null) return null;
+        String fileName = null;
+        String path = uri.getPath();
+        int cut = path.lastIndexOf('/');
+        if (cut != -1) {
+            fileName = path.substring(cut + 1);
+        }
+        return fileName;
+    }
+
+    public static void copyFileTemp(Context context, Uri srcUri, File dstFile) {
+        try {
+            InputStream inputStream = context.getContentResolver().openInputStream(srcUri);
+            if (inputStream == null) return;
+            OutputStream outputStream = new FileOutputStream(dstFile);
+            IOUtils.copy(inputStream, outputStream);
+            inputStream.close();
+            outputStream.close();
+        } catch (IOException e) {
+            FirebaseCrash.report(e);
+        }
+    }
+    */
 
     private void closeThread(Thread thread) {
         if (thread != null && thread.isAlive()) {
@@ -671,6 +721,7 @@ public class EditorActivity extends AppCompatActivity
     }
 
     private void loadFromFile() {
+        app.setFilename(mFilename);
         mFile = new File(mFilename);
 
         SongMetadataReader metadataReader = new SongMetadataReader(
@@ -1010,7 +1061,7 @@ public class EditorActivity extends AppCompatActivity
         resetPositions();
 
 
-        Toast toast = Toast.makeText(this, getResources().getString(R.string.msgChoose30seg), Toast.LENGTH_LONG);
+        Toast toast = Toasty.warning(this, getResources().getString(R.string.msgChoose30seg), Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }
@@ -1379,7 +1430,6 @@ public class EditorActivity extends AppCompatActivity
         double endTime = mWaveformView.pixelsToSeconds(mEndPos);
         int startFrame = mWaveformView.secondsToFrames(startTime);
         int endFrame = mWaveformView.secondsToFrames(endTime);
-        MainApp app = (MainApp) getApplicationContext();
         GeneratorWaudio waudio = new GeneratorWaudio(getApplicationContext(), mSoundFile, mTitle, startTime, endTime, startFrame, endFrame);
         app.setGeneratorWaudio(waudio);
         Intent intent = new Intent(EditorActivity.this, ListTemplateActivity.class);

@@ -126,7 +126,6 @@
     <string name="alert_yes_button">Yes, please!</string>
     <string name="alert_no_button">No, thanks.</string>
 
-    <string name="default_ringtone_success_message">Changed default ringtone</string>
     <string name="play_error">Unable to play this media file</string>
     <string name="no_unique_filename">Unable to find unique filename</string>
     <string name="record_error">Error recording audio</string>
@@ -137,7 +136,7 @@
     <string name="no_space_error">Your SD card is full, there is not enough space to save this file.</string>
 
     <string name="bad_extension_error">Sorry, Waudio is not yet able to edit files of type</string>
-    <string name="no_extension_error">Sorry, Waudio can\'t edit a file if it doesn\'t have an extension like .mp3 or .wav</string>
+    <string name="no_extension_error">Sorry, Waudio can\'t edit a file if it doesn\'t have an extension like .mp3 .m4a .aac ,amr or .wav</string>
 
     <!--
      Choose Contact Activity
@@ -153,16 +152,16 @@
     <string name="message_permissions">We need some permissions to read your audios</string>
     <string name="list_template_activity_label">Waudio - Styles</string>
     <string name="preview_activity_label">Waudio - Preview</string>
-    <string name="hastag">#MadeWithWaudio\u0020</string>
+    <string name="hastag" translatable="false">#WaudioMusic</string>
     <string name="update_tracks">Refresh Tracks</string>
     <string name="menu_qualify">Rate Waudio</string>
-    <string name="urlPlayStore">https://play.google.com/store/apps/details?id=com.ecanaveras.gde.waudio</string>
-    <string name="menu_share">Share Waudio Music</string>
+    <string name="urlPlayStore" translatable="false">https://play.google.com/store/apps/details?id=com.ecanaveras.gde.waudio</string>
+    <string name="menu_share">Share Waudio</string>
     <string name="msgShareApp">Have you tried Waudio? The app that lets you share music in Whatsapp status</string>
     <string name="msgShareTo">Share Waudio...</string>
 
-    <string name="msgPinillos">Pinillos - Colombia</string>
-    <string name="msgReflection">Algunas cosas solo existen, si un día decides crearlas</string>
+    <string name="msgPinillos" translatable="false">Pinillos - Colombia</string>
+    <string name="msgReflection" translatable="false">Algunas cosas solo existen, si un día decides crearlas</string>
     <string name="msgCopyRights2" translatable="false">All rights reserved.</string>
     <string name="lblNext">NEXT</string>
     <string name="lblEnd">END</string>
@@ -205,7 +204,7 @@
     <string name="title_activity_main" translatable="false">Waudio Music</string>
     <string name="action_settings" translatable="false">Settings</string>
     <string name="nameFragmentTracks">MUSIC</string>
-    <string name="title_fragment_waudios">WAUDIOS</string>
+    <string name="title_fragment_waudios" translatable="false">WAUDIOS</string>
     <string name="title_fragment_styles">STYLES</string>
     <string name="msgChooseAudio">Select an audio track ...</string>
     <string name="tip_pause_music">Tip: To pause, press \'back\'</string>
@@ -227,7 +226,7 @@
     <string name="msgWaudioLoading">Loading your Waudios ...</string>
     <string name="menu_action_order_by">Sort by...</string>
     <string name="menu_action_goto_store">Waudio Store</string>
-    <string name="formatOrderby">Ordered for: %1$s</string>
+    <string name="formatOrderby">Ordered by: %1$s</string>
     <string name="lblOrderbyDate">Creation date</string>
     <string name="lblOrderbyTitle">Name</string>
     <string name="msgComingSoonStore">Soon you can download many styles!</string>
@@ -244,16 +243,42 @@
     <string name="msgItemsAvailable">NEW STYLES</string>
     <string name="msgRating">You have fun and we love it!!! \nhow many stars would you give</string>
     <string name="alert_ok_new_styles">SHOW ME</string>
-    <string name="alert_ok_rating">SUPER</string>
+    <string name="alert_ok_rating">QUALIFY</string>
     <string name="alert_cancel_rating">LATER</string>
     <string name="lblAvailable">AVAILABLE</string>
     <string name="msgDownloadNewStyles">DESCARGA NUEVOS ESTILOS</string>
-    <string name="msgNewStylesAvailable">NUEVOS ESTILOS DISPONIBLES...</string>
-    <string name="msgSelectStyle">Escoge un estilo para continuar...</string>
-    <string name="msgSelectStyleTip">puedes descargarlos desde Waudio Store</string>
+    <string name="msgNewStylesAvailable">NEW STYLES AVAILABLE...</string>
+    <string name="msgSelectStyle">Choose a style to continue ...</string>
+    <string name="msgSelectStyleTip">you can download them from Waudio Store</string>
     <string name="msgUIPreparing">99.9 %</string>
     <string name="msgUIReady">Bingooo....</string>
     <string name="lblFrom">UNA IDEA DE</string>
     <string name="lblForWorld">PARA EL MUNDO</string>
     <string name="msgCopyRights" translatable="false">© 2017 ecanaveras.</string>
+    <string name="alert_ok_points">EARN POINTS</string>
+    <string name="alert_cancel_points">OK</string>
+    <string name="msgRewardPoints">WIN POINTS:\n-Watching Videos ( 100P )\n-Sharing Waudios ( 25P )\n-Creating Waudios ( 10P )</string>
+    <string name="lblHavePoints">YOUR POINTS</string>
+    <string name="lblPoints">\tPOINTS</string>
+    <string name="lblFree">FREE</string>
+    <string name="msgWindPoints" formatted="false">You won %1$d points</string>
+    <string name="lblBtnPoints" formatted="false">YOU HAVE %1$d POINTS</string>
+
+    <string name="title_activity_landing" translatable="false">LandingActivity</string>
+    <string name="dummy_button" translatable="false">Dummy Button</string>
+    <string name="dummy_content" translatable="false">DUMMY\nCONTENT</string>
+    <string name="landing_activity_label">Landing</string>
+    <string name="landing_start">START</string>
+    <string name="title_activity_permition" translatable="false">PermitionActivity</string>
+    <string name="lblPermitions">ESTABLISH PERMITS</string>
+    <string name="landing_intro_1">CREATES</string>
+    <string name="landing_intro_2">COMPARTE</string>
+    <string name="lading_intro_3">WAUDIO STORE</string>
+    <string name="msgPermitions">HELLO, TO DO MY MAGIC, I NEED SOME PERMITS, I\'M LOOKING FOR MUSIC STORED IN THE INTERNAL MEMORY OR IN THE SD, AND I ALSO NEED TO RECORD VOICE, IT\'S ALL!</string>
+    <string name="msgDownloadInProgress">Download in progress...</string>
+    <string name="msgDownloadSuccess">%1$s downloaded!</string>
+    <string name="msgProblemDownload">Out ... there\'s a problem, try later!</string>
+    <string name="msgDownloadTry">%1$s could not download, try later!</string>
+    <string name="msgOpenWithFailded">You do not have an app to play videos</string>
+    <string name="lblDownload">DOWNLOAD</string>
 </resources>

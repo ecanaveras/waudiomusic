@@ -1,16 +1,21 @@
 package com.ecanaveras.gde.waudio;
 
+import android.Manifest;
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.preference.PreferenceManager;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 
 import com.ecanaveras.gde.waudio.editor.CompareWaudio;
 import com.ecanaveras.gde.waudio.editor.GeneratorWaudio;
+import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
+import com.ecanaveras.gde.waudio.models.WaudioModel;
 import com.ecanaveras.gde.waudio.util.FontsOverride;
 import com.ecanaveras.gde.waudio.util.Mp4Filter;
-import com.google.firebase.crash.FirebaseCrash;
+import com.google.android.gms.ads.MobileAds;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -27,7 +32,12 @@ import java.util.List;
 
 public class MainApp extends Application {
 
+    public static final String ADMOB_APP_ID = "ca-app-pub-4587362379324712~6454573814";
     public static final String PATH_VIDEOS = "/Waudio/Media/Waudio Videos/";
+    public static final String POINTS = "points";
+    public static final Integer POINTS_WAUDIO_CREATED = 10;
+    public static final Integer POINTS_WAUDIO_SHARED = 25;
+    public static final Integer POINTS_VIDEO_VIEW = 100;
 
     private GeneratorWaudio generatorWaudio;
     private List<CompareWaudio> compareWaudios = new ArrayList<CompareWaudio>();
@@ -37,19 +47,26 @@ public class MainApp extends Application {
     SharedPreferences.Editor editor_pref;
     public boolean reloadWaudios = true;
     public boolean isFirstSearchMusic = false;
+    private DataFirebaseHelper mDataFirebaseHelper;
 
     @Override
     public void onCreate() {
         super.onCreate();
         //FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-        FirebaseCrash.setCrashCollectionEnabled(!BuildConfig.DEBUG);
+        mDataFirebaseHelper = new DataFirebaseHelper();
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         editor_pref = preferences.edit();
         setupFonts();
-        if (preferences.getBoolean("is_version_old", true)) {
-            removeAssetsOld();
+        if (!preferences.getString("version_name", "0").equals(BuildConfig.VERSION_NAME)) {
+            //removeAssetsOld();
             copyAssets();
+            if (preferences.getInt(POINTS, 0) == 0) {
+                setupPoints();
+            }
         }
+
+        //AdMods
+        MobileAds.initialize(this, MainApp.ADMOB_APP_ID);
     }
 
     private void setupFonts() {
@@ -57,6 +74,12 @@ public class MainApp extends Application {
         FontsOverride.setDefaultFont(this, "MONOSPACE", "fonts/Dosis-Regular.ttf");
         FontsOverride.setDefaultFont(this, "SANS_SERIF", "fonts/Dosis-Medium.ttf");
         FontsOverride.setDefaultFont(this, "DEFAULT_BOLD", "fonts/Dosis-Bold.ttf");
+    }
+
+    private void setupPoints() {
+        editor_pref.putInt(POINTS, 500);
+        editor_pref.commit();
+        Log.d("POINTS SETUP", "OK");
     }
 
     private void copyAssets() {
@@ -100,7 +123,7 @@ public class MainApp extends Application {
             }
         }
         //Guardar data
-        editor_pref.putBoolean("is_version_old", false);
+        editor_pref.putString("version_name", BuildConfig.VERSION_NAME);
         editor_pref.commit();
     }
 
@@ -188,34 +211,89 @@ public class MainApp extends Application {
         editor_pref.commit();
     }
 
-    /**
-     * @return Application's version code from the {@code PackageManager}.
-     */
-    public static int getAppVersionCode() {
-        return BuildConfig.VERSION_CODE;
-        /*try {
-            PackageInfo packageInfo = context.getPackageManager()
-                    .getPackageInfo(context.getPackageName(), 0);
-            return packageInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            // should never happen
-            throw new RuntimeException("Could not get package name: " + e);
-        }*/
+    public int updatePoints(int valor, boolean increment) {
+        return updatePoints(valor, increment, false);
     }
 
-    /**
-     * @return Application's version code from the {@code PackageManager}.
-     */
-    public static String getAppVersionName() {
-        return BuildConfig.VERSION_NAME;
-        /*try {
-            PackageInfo packageInfo = context.getPackageManager()
-                    .getPackageInfo(context.getPackageName(), 0);
-            return packageInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            // should never happen
-            throw new RuntimeException("Could not get package name: " + e);
-        }*/
+    public int updatePoints(int valor, boolean increment, boolean isAdmod) {
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        editor_pref = preferences.edit();
+
+        int point = preferences.getInt(MainApp.POINTS, 0);
+        if (increment) {
+            point += valor;
+            if (isAdmod) {
+                mDataFirebaseHelper.incrementWaudioPointsAdmob(valor);
+            } else {
+                mDataFirebaseHelper.incrementWaudioPoints(valor);
+            }
+        } else {
+            if (point <= 0) {
+                point = 0;
+                return point;
+            }
+            point = point - valor;
+            if (valor > 0)
+                mDataFirebaseHelper.incrementWaudioPointsConsumed(valor);
+        }
+        editor_pref.putInt(MainApp.POINTS, point);
+        editor_pref.commit();
+        return point;
+    }
+
+    //Banners
+    public static List<WaudioModel> getListBannerWS() {
+        ArrayList<WaudioModel> list = new ArrayList<>();
+        WaudioModel w1 = new WaudioModel("Atardecer Romance", R.drawable.banner1);
+        WaudioModel w2 = new WaudioModel("Ella People", R.drawable.banner2);
+        WaudioModel w3 = new WaudioModel("Electric Guitar Rock", R.drawable.banner3);
+
+        WaudioModel w4 = new WaudioModel("Dani Aventure", R.drawable.banner4);
+        WaudioModel w5 = new WaudioModel("Indira Anime", R.drawable.banner5);
+        WaudioModel w6 = new WaudioModel("Inglaterra mundo", R.drawable.banner6);
+
+        WaudioModel w7 = new WaudioModel("Johan Urbano", R.drawable.banner7);
+        WaudioModel w8 = new WaudioModel("Kary Amistad", R.drawable.banner8);
+        WaudioModel w9 = new WaudioModel("Kelly Romance", R.drawable.banner9);
+
+        WaudioModel w10 = new WaudioModel("Kenya Libertad", R.drawable.banner10);
+        WaudioModel w11 = new WaudioModel("Kley General", R.drawable.banner11);
+        WaudioModel w12 = new WaudioModel("Motorcycle Aventure", R.drawable.banner12);
+
+        WaudioModel w13 = new WaudioModel("Paz Romance", R.drawable.banner13);
+        WaudioModel w14 = new WaudioModel("Saxo General", R.drawable.banner14);
+        WaudioModel w15 = new WaudioModel("Tu Y Yo Amor", R.drawable.banner15);
+
+        WaudioModel w16 = new WaudioModel("Vallenato Colombia", R.drawable.banner16);
+        WaudioModel w17 = new WaudioModel("Inolvidable Romance", R.drawable.banner17);
+        WaudioModel w18 = new WaudioModel("Jenny General", R.drawable.banner18);
+
+        WaudioModel w19 = new WaudioModel("Kriss Urbano", R.drawable.banner19);
+        WaudioModel w20 = new WaudioModel("Lina Urbano", R.drawable.banner20);
+
+
+        list.add(w1);
+        list.add(w2);
+        list.add(w3);
+        list.add(w4);
+        list.add(w5);
+        list.add(w6);
+        list.add(w7);
+        list.add(w8);
+        list.add(w9);
+        list.add(w10);
+        list.add(w11);
+        list.add(w12);
+        list.add(w13);
+        list.add(w14);
+        list.add(w15);
+        list.add(w16);
+        list.add(w17);
+        list.add(w18);
+        list.add(w19);
+        list.add(w20);
+
+        return list;
     }
 
     public CompareWaudio getCompareWaudioTmp() {
@@ -228,5 +306,11 @@ public class MainApp extends Application {
 
     public void setFilename(String filename) {
         this.filename = filename;
+    }
+
+    public boolean checkPermitions() {
+        return ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
     }
 }

@@ -1,5 +1,6 @@
 package com.ecanaveras.gde.waudio;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -26,7 +27,11 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import java.io.File;
 import java.util.Random;
 
+import es.dmoral.toasty.Toasty;
+
 public class WaudioFinalizedActivity extends AppCompatActivity implements AudioManager.OnAudioFocusChangeListener {
+
+    private static final int SHARE_WAUDIO_REQUEST = 1;
 
     public static final String TEMPLATE_USED = "template_used";
     private FirebaseAnalytics mFirebaseAnalytics;
@@ -120,10 +125,10 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
             waudioController = new WaudioController(this, f);
             if (f.exists()) {
                 getSupportActionBar().setTitle("WAUDIO - " + f.getName().toUpperCase());
-                //Toast.makeText(this, getResources().getString(R.string.msgWaudioSuccess), Toast.LENGTH_SHORT).show();
                 MediaController controller = new MediaController(this);
                 controller.setAnchorView(videoView);
                 videoView.setMediaController(controller);
+                videoView.setVideoURI(Uri.fromFile(f));
                 videoView.setVideoURI(Uri.fromFile(f));
                 videoView.setKeepScreenOn(true);
                 videoView.requestFocus();
@@ -140,6 +145,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
                         audioManager.abandonAudioFocus(WaudioFinalizedActivity.this);
                     }
                 });
+                waudioController.addPoints(MainApp.POINTS_WAUDIO_CREATED);
                 //lblPathWaudio.setText(f.getPath().replace(f.getName(), ""));
                 //lblTitleWaudio.setText(f.getName());
             } else {
@@ -155,7 +161,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
             if (videoView.isPlaying()) {
                 videoView.pause();
             }
-            waudioController.onShare();
+            waudioController.onShare(this);
         }
     }
 
@@ -214,6 +220,16 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
         finish();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == SHARE_WAUDIO_REQUEST && resultCode == Activity.RESULT_OK && waudioController != null) {
+            waudioController.addPoints(MainApp.POINTS_WAUDIO_SHARED);
+            mFirebaseAnalytics.setUserProperty("shared", String.valueOf(true));
+            mDataFirebaseHelper.incrementWaudioShared();
+        }
+    }
+
     public void onFinish(View view) {
         int[] idsMsgs = {R.string.msgFinish1,
                 R.string.msgFinish2,
@@ -222,7 +238,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
                 R.string.msgFinish5,
                 R.string.msgFinish6};
         Random random = new Random();
-        Toast.makeText(this, getResources().getString(idsMsgs[random.nextInt(idsMsgs.length)]), Toast.LENGTH_LONG).show();
+        Toasty.info(this, getResources().getString(idsMsgs[random.nextInt(idsMsgs.length)]), Toast.LENGTH_LONG).show();
         finishAffinity();
         //android.os.Process.killProcess(android.os.Process.myPid());
     }

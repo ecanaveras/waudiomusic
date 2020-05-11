@@ -41,13 +41,31 @@
         android:layout_weight="1"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/fab_margin"
-        app:backgroundTint="@color/playback_indicator"
-        app:srcCompat="@drawable/ic_movie_filter" />
+        android:orientation="vertical"
+        android:padding="10dp">
+
+        <!--<android.support.design.widget.FloatingActionButton
+            android:id="@+id/newRecordW"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            app:backgroundTint="@color/colorTextSecondary"
+            app:srcCompat="@drawable/ic_action_mic" />-->
+
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/newMusicW"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="6dp"
+            app:backgroundTint="@color/playback_indicator"
+            app:srcCompat="@drawable/ic_movie_filter" />
+    </LinearLayout>
+
 
 </android.support.design.widget.CoordinatorLayout>
