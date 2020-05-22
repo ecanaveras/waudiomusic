@@ -16,86 +16,99 @@
  */
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorPrimaryDark"
     android:keepScreenOn="true">
 
+
+    //Carga MP3
+
     <RelativeLayout
         android:id="@+id/lyContentLoading"
-        style="@style/ToolbarBackground"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="10dp">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/lblTitleAudioLoading"
-            android:layout_centerInParent="true"
-            android:src="@drawable/ic_android_happy" />
-
-        <!--<com.airbnb.lottie.LottieAnimationView
+        <LinearLayout
+            android:id="@+id/id_native_ad"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:lottie_autoPlay="true"
-            app:lottie_fileName="json/deadpool.json"
-            app:lottie_loop="true"
-            app:lottie_scale="2"
-            android:layout_centerInParent="true"/>-->
+            android:layout_height="400dp"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_undraw_happy_music"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_above="@+id/tips"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:id="@+id/lblLoading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:maxLines="1"
+                android:text="@string/msgAudioLoading"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textColor="@color/colorTextThirdy" />
+
+            <TextView
+                android:id="@+id/lblTitleAudioLoading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:maxLines="2"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textSize="18dp" />
+
+            <TextView
+                android:id="@+id/lblPercent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="1%"
+                android:textAllCaps="true"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="20dp" />
+
+
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/lblTitleAudioLoading"
-            android:layout_width="30dp"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/lblLoading"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="4dp"
-            android:maxLines="2"
-            android:textAlignment="center"
-            android:textAllCaps="true"
-            android:textSize="18dp" />
-
-        <TextView
-            android:id="@+id/lblLoading"
-            android:layout_width="30dp"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/lblPercent"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="4dp"
-            android:text="@string/msgAudioLoading"
-            android:maxLines="1"
-            android:textAlignment="center"
-            android:textAllCaps="true"
-            android:textColor="@color/colorTextThirdy" />
-
-        <TextView
-            android:id="@+id/lblPercent"
+            android:id="@+id/tips"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="1%"
-            android:textAllCaps="true"
-            android:textColor="@color/colorTextSecondary"
-            android:textSize="45dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
             android:text="@string/tip_cancel_editor"
             android:textAlignment="center"
             android:textColor="@color/colorTextThirdy"
             android:textSize="14sp" />
 
+
     </RelativeLayout>
+
+
+    //Carga extra
 
     <RelativeLayout
         android:id="@+id/lyContentLoading2"
@@ -136,6 +149,8 @@
 
     </RelativeLayout>
 
+    //Editor
+
     <LinearLayout
         android:id="@+id/lyContentEditor"
         style="@style/ToolbarBackground"
@@ -164,10 +179,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="6dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="6dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="6dp"
             android:gravity="center"
             android:orientation="horizontal">
             <!--android:background="@color/waveform_unselected_bkgnd_overlay"-->
@@ -225,8 +240,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:layout_weight="1"
-                android:paddingBottom="2dp"
-                android:paddingTop="2dp">
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -333,7 +348,9 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="0px"
-                android:layout_weight="1">
+                android:layout_weight="1"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp">
 
                 <!--ImageView
                  android:id="@+id/bkgnd"
@@ -361,8 +378,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:contentDescription="@string/end_marker"
-                    android:nextFocusDown="@+id/info"
                     android:nextFocusUp="@+id/startmarker"
+                    android:nextFocusDown="@+id/info"
                     android:src="@drawable/marker_right"
                     android:visibility="gone" />
 
@@ -382,8 +399,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:gravity="center"
-                    android:nextFocusDown="@+id/play"
                     android:nextFocusUp="@+id/endmarker"
+                    android:nextFocusDown="@+id/play"
                     tools:ignore="Suspicious0dp" />
             </LinearLayout>
 
@@ -401,8 +418,8 @@
                     style="@android:style/MediaButton"
                     android:layout_width="64dip"
                     android:layout_height="52dip"
-                    android:layout_marginBottom="6dip"
                     android:layout_marginTop="6dip"
+                    android:layout_marginBottom="6dip"
                     android:layout_weight="1"
                     android:contentDescription="@string/rewind"
                     android:src="@drawable/ic_replay_30" />
@@ -412,8 +429,8 @@
                     style="@android:style/MediaButton"
                     android:layout_width="64dip"
                     android:layout_height="52dip"
-                    android:layout_marginBottom="6dip"
                     android:layout_marginTop="6dip"
+                    android:layout_marginBottom="6dip"
                     android:layout_weight="1"
                     android:contentDescription="@string/rewind"
                     android:src="@drawable/ic_skip_previous" />
@@ -423,8 +440,8 @@
                     style="@android:style/MediaButton"
                     android:layout_width="71dip"
                     android:layout_height="52dip"
-                    android:layout_marginBottom="6dip"
                     android:layout_marginTop="6dip"
+                    android:layout_marginBottom="6dip"
                     android:layout_weight="1"
                     android:contentDescription="@string/play"
                     android:src="@drawable/ic_play_arrow" />
@@ -434,8 +451,8 @@
                     style="@android:style/MediaButton"
                     android:layout_width="64dip"
                     android:layout_height="52dip"
-                    android:layout_marginBottom="6dip"
                     android:layout_marginTop="6dip"
+                    android:layout_marginBottom="6dip"
                     android:layout_weight="1"
                     android:contentDescription="@string/ffwd"
                     android:src="@drawable/ic_skip_next" />
@@ -445,8 +462,8 @@
                     style="@android:style/MediaButton"
                     android:layout_width="64dip"
                     android:layout_height="52dip"
-                    android:layout_marginBottom="6dip"
                     android:layout_marginTop="6dip"
+                    android:layout_marginBottom="6dip"
                     android:layout_weight="1"
                     android:contentDescription="@string/rewind"
                     android:src="@drawable/ic_forward_30" />

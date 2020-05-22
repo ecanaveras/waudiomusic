@@ -6,10 +6,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -138,7 +138,7 @@ public class LandingActivity extends AppCompatActivity {
         preferenceManager.setFirstTimeLaunch(false);
         Intent mainIntent = null;
         if (((MainApp) getApplicationContext()).checkPermitions()) {
-            if (foundWaudios()) {
+            if (((MainApp) getApplicationContext()).foundWaudios()) {
                 mainIntent = new Intent(this, MainActivity.class);
             } else {
                 //TODO, mostrar un asistente para crear Waudio, Grabar, o hacer ringtone
@@ -197,25 +197,6 @@ public class LandingActivity extends AppCompatActivity {
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
-    }
-
-    /**
-     * Busca la existencia de Waudios
-     *
-     * @return
-     */
-    private Boolean foundWaudios() {
-        File dir = new File(Environment.getExternalStorageDirectory().getPath() + MainApp.PATH_VIDEOS);
-        if (dir.exists()) {
-            for (String name : dir.list(new Mp4Filter(".mp4"))) {
-                File vmp4 = new File(dir.getAbsolutePath() + "/" + name);
-                if (vmp4.exists()) {
-                    Log.i(SplashScreen.class.getSimpleName(), "Waudios found!");
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     public class MyViewPagerAdapter extends PagerAdapter {

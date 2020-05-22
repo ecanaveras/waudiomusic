@@ -4,27 +4,20 @@ import android.Manifest;
 import android.animation.Animator;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.cleveroad.audiovisualization.AudioVisualization;
 import com.cleveroad.audiovisualization.DbmHandler;
-import com.cleveroad.audiovisualization.SpeechRecognizerDbmHandler;
-import com.cleveroad.audiovisualization.VisualizerDbmHandler;
 import com.ecanaveras.gde.waudio.wave.AudioRecorder;
 import com.ecanaveras.gde.waudio.wave.Complex;
 import com.ecanaveras.gde.waudio.wave.FFT;
@@ -130,13 +123,13 @@ public class RecordActivity extends AppCompatActivity {
                     btnRecord.setText("Stop Record");
                     audioRecorder.startRecord();
                     lottieRecord.playAnimation();
-                    Toasty.custom(getApplicationContext(), "+100 puntos", getResources().getDrawable(R.drawable.ic_points),getResources().getColor(R.color.colorAccent), Toast.LENGTH_SHORT, true, true).show();
+                    Toasty.custom(getApplicationContext(), "+100 puntos", getDrawable(R.drawable.ic_points),getColor(R.color.colorAccent), Toast.LENGTH_SHORT, true, true).show();
                     //onRecord(true);
                     /*new StyleableToast
                             .Builder(getApplicationContext())
                             .text("+100 Puntos")
                             .textColor(Color.WHITE)
-                            .backgroundColor(getResources().getColor(R.color.colorAccent))
+                            .backgroundColor(getColor(R.color.colorAccent))
                             .iconStart(R.drawable.ic_points)
                             .iconEnd(R.drawable.ic_points)
                             .show();*/
@@ -285,7 +278,7 @@ public class RecordActivity extends AppCompatActivity {
 
 
     //INNER CLASS
-    class RecordButton extends android.support.v7.widget.AppCompatButton {
+    class RecordButton extends androidx.appcompat.widget.AppCompatButton {
         private boolean mStarRecording = true;
 
         private final OnClickListener clicker = new OnClickListener() {
@@ -308,7 +301,7 @@ public class RecordActivity extends AppCompatActivity {
         }
     }
 
-    class PlayButton extends android.support.v7.widget.AppCompatButton {
+    class PlayButton extends androidx.appcompat.widget.AppCompatButton {
 
         private final OnClickListener clicker = new OnClickListener() {
             public boolean mStarPlaying = true;

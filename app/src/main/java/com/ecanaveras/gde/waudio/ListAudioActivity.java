@@ -1,15 +1,13 @@
 package com.ecanaveras.gde.waudio;
 
-import android.Manifest;
 import android.app.LoaderManager;
 import android.app.SearchManager;
 import android.content.ActivityNotFoundException;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.CursorLoader;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.MergeCursor;
 import android.media.AudioManager;
@@ -17,12 +15,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
-import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,6 +31,9 @@ import android.widget.RelativeLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
 
 import com.ecanaveras.gde.waudio.adapters.MusicListAdapter;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -98,11 +93,11 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
                 mediaPlayer.prepare();
                 mediaPlayer.start();
                 if (showTips) {
-                    Toasty.info(ListAudioActivity.this, getResources().getString(R.string.tip_pause_music), Toast.LENGTH_SHORT).show();
+                    Toasty.info(ListAudioActivity.this, getString(R.string.tip_pause_music), Toast.LENGTH_SHORT).show();
                     showTips = false;
                 }
                 /*Snackbar snackbar = Snackbar.make(view, cursor.getString(music_name_idx).toUpperCase(), Snackbar.LENGTH_INDEFINITE)
-                        .setAction(getResources().getString(R.string.lblNext), onClickListener)
+                        .setAction(getString(R.string.lblNext), onClickListener)
                         .setActionTextColor(ContextCompat.getColor(ListAudioActivity.this, R.color.playback_indicator));
                 snackbar.show();*/
                 Animation bounce = AnimationUtils.loadAnimation(ListAudioActivity.this, R.anim.bounce_1);
@@ -110,7 +105,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
                 ((TextView) layoutNext.findViewById(R.id.btnNext)).setText(cursor.getString(music_name_idx));
                 layoutNext.startAnimation(bounce);
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e("MusicGridListener", e.getMessage());
             }
         }
     };
@@ -159,7 +154,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
         listAudio.setOnItemClickListener(MusicGridListener);
         mediaPlayer = new MediaPlayer();
 
-        solicitarPermisos();
+        loadMusic();
     }
 
 
@@ -183,7 +178,22 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
         }
     };
 
-    private void solicitarPermisos() {
+    private void loadMusic() {
+
+        if (((MainApp) getApplicationContext()).checkPermitions()) {
+            setupListView();
+            app.isFirstSearchMusic = true;
+            findMusic(null);
+            mFirebaseAnalytics.setUserProperty("open_list_audio", String.valueOf(true));
+        } else {
+            //Solicitar Permisos
+            Intent mainIntent = null;
+            mainIntent = new Intent(this, PermitionsActivity.class);
+            mainIntent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+            startActivity(mainIntent);
+            finish();
+        }
+        /*
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
             setupListView();
@@ -205,15 +215,15 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
                 };
 
                 new AlertDialog.Builder(this, R.style.AlertDialogCustom)
-                        .setTitle(getResources().getString(R.string.alert_title_permitions))
+                        .setTitle(getString(R.string.alert_title_permitions))
                         .setMessage(Html.fromHtml(getString(R.string.message_permissions)))
-                        .setPositiveButton(getResources().getString(R.string.alert_continue), onClickListener)
-                        .setNegativeButton(getResources().getString(R.string.alert_cancel), onClickListener)
+                        .setPositiveButton(getString(R.string.alert_continue), onClickListener)
+                        .setNegativeButton(getString(R.string.alert_cancel), onClickListener)
                         .show();
             } else {
                 requestPermissions();
             }
-        }
+        }*/
     }
 
     /**
@@ -237,8 +247,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
             MediaStore.Audio.Media.ARTIST,
             MediaStore.Audio.Media.ALBUM,
             MediaStore.Audio.Media.DISPLAY_NAME,
-            MediaStore.Audio.Media.IS_MUSIC,
-            "\"" + MediaStore.Audio.Media.INTERNAL_CONTENT_URI + "\""
+            MediaStore.Audio.Media.IS_MUSIC
     };
 
     private static final String[] EXTERNAL_COLUMNS = new String[]{
@@ -250,8 +259,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
             MediaStore.Audio.Media.ARTIST,
             MediaStore.Audio.Media.ALBUM,
             MediaStore.Audio.Media.DISPLAY_NAME,
-            MediaStore.Audio.Media.IS_MUSIC,
-            "\"" + MediaStore.Audio.Media.EXTERNAL_CONTENT_URI + "\""
+            MediaStore.Audio.Media.IS_MUSIC
     };
 
     private static final int INTERNAL_CURSOR_ID = 0;
@@ -259,7 +267,8 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        ArrayList<String> selectionArgs = new ArrayList<>();
+        ArrayList<String> params = new ArrayList<>();
+        String filter = args != null ? args.getString("filter") : null;
         String[] proj = {""};
         Uri baseUri = null;
         switch (id) {
@@ -270,28 +279,35 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
             case EXTERNAL_CURSOR_ID:
                 proj = EXTERNAL_COLUMNS;
                 baseUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                /*
+                if (filter != null) {
+                    baseUri = Uri.withAppendedPath(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, Uri.encode(args.getString("filter")));
+                } else {
+                    baseUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }*/
                 break;
         }
-        StringBuffer selection = new StringBuffer(MediaStore.Audio.Media.IS_MUSIC + " != 0");
-        String filter = args != null ? args.getString("filter") : null;
+        StringBuffer query = new StringBuffer(MediaStore.Audio.Media.IS_MUSIC + " != 0");
+        //String filter = args != null ? args.getString("filter") : null;
         if (filter != null && !filter.isEmpty()) {
             filter = "%" + filter + "%";
-            selection.append(" AND (");
-            selection.append("_DATA LIKE ?");
-            selection.append("  OR TITLE LIKE ?");
-            selection.append("  OR ARTIST LIKE ?");
-            selection.append("  OR ALBUM LIKE ?");
-            selection.append("  OR _DISPLAY_NAME LIKE ?");
-            selection.append(")");
-            selection.append("  AND _DATA NOT LIKE ? ");
-            selectionArgs.add(filter);
-            selectionArgs.add(filter);
-            selectionArgs.add(filter);
-            selectionArgs.add(filter);
-            selectionArgs.add(filter);
-            selectionArgs.add("%espeak-data/scratch%");
+            query.append(" AND (");
+            query.append("_DATA LIKE ?");
+            query.append("  OR TITLE LIKE ?");
+            query.append("  OR ARTIST LIKE ?");
+            query.append("  OR ALBUM LIKE ?");
+            query.append("  OR _DISPLAY_NAME LIKE ?");
+            query.append(")");
+            query.append("  AND _DATA NOT LIKE ? ");
+            params.add(filter);
+            params.add(filter);
+            params.add(filter);
+            params.add(filter);
+            params.add(filter);
+            params.add("%espeak-data/scratch%");
         }
-        return new CursorLoader(this, baseUri, proj, selection.length() > 0 ? selection.toString() : null, selectionArgs.toArray(new String[selectionArgs.size()]), MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
+        //return new CursorLoader(this, baseUri, proj, selection.length() > 0 ? selection.toString() : null, selectionArgs.toArray(new String[selectionArgs.size()]), MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
+        return new CursorLoader(this, baseUri, proj, query.toString(), params.toArray(new String[params.size()]), MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
     }
 
     @Override
@@ -312,7 +328,7 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
             Cursor mergeCursor = new MergeCursor(new Cursor[]{mExternalCursor});
             mAdapter.swapCursor(mergeCursor);
             /*if (runFirst) {
-                Toast.makeText(this, getResources().getString(R.string.msgChooseAudio), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, getString(R.string.msgChooseAudio), Toast.LENGTH_SHORT).show();
                 runFirst = false;
             }*/
             if (app.isFirstSearchMusic && mExternalCursor.getCount() == 0) {
@@ -353,10 +369,10 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
 
         } catch (SecurityException e) {
             // No permission to retrieve audio?
-            Log.e("Waudio", e.toString());
+            Log.e("WaudioSetupListViewSecu", e.toString());
         } catch (IllegalArgumentException e) {
             // No permission to retrieve audio?
-            Log.e("Waudio", e.toString());
+            Log.e("WaudioSetupListViewIlle", e.toString());
         }
 
         mAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
@@ -399,34 +415,6 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
         return mKeyboardStatus;
     }
 
-    private void permissionNoGranted() {
-        Toasty.error(getApplicationContext(), getResources().getString(R.string.msgDeniedPermitions), Toast.LENGTH_SHORT).show();
-        finish();
-    }
-
-    private void requestPermissions() {
-        ActivityCompat.requestPermissions(this,
-                new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
-                REQUEST_CODE);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CODE) {
-            boolean bothGranted = true;
-            for (int i = 0; i < permissions.length; i++) {
-                if (Manifest.permission.RECORD_AUDIO.equals(permissions[i]) || Manifest.permission.READ_EXTERNAL_STORAGE.equals(permissions[i])) {
-                    bothGranted &= grantResults[i] == PackageManager.PERMISSION_GRANTED;
-                }
-            }
-            if (bothGranted) {
-                solicitarPermisos();
-            } else {
-                permissionNoGranted();
-            }
-        }
-    }
 
     @Override
     protected void onPause() {
@@ -485,17 +473,17 @@ public class ListAudioActivity extends AppCompatActivity implements AudioManager
                 try {
                     startActivity(goToMarket);
                 } catch (ActivityNotFoundException e) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.urlPlayStore))));
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.urlPlayStore))));
                 }
                 break;
             case R.id.action_share:
-                String msg1 = getResources().getString(R.string.msgShareApp);
-                String urlPS = getResources().getString(R.string.urlPlayStore);
+                String msg1 = getString(R.string.msgShareApp);
+                String urlPS = getString(R.string.urlPlayStore);
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, String.format("%s: %s", msg1, urlPS));
                 sendIntent.setType("text/plain");
-                startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.msgShareTo)));
+                startActivity(Intent.createChooser(sendIntent, getText(R.string.msgShareTo)));
                 break;
         }
         return true;

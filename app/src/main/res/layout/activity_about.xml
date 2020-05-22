@@ -26,7 +26,7 @@
                 android:id="@+id/lblFrom"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="70dp"
                 android:gravity="center"
                 android:text="@string/lblFrom"
                 android:textAllCaps="true"
@@ -59,22 +59,34 @@
                 android:id="@+id/lblVersion"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/msgReflection"
+                android:layout_above="@+id/lyNetworks"
                 android:gravity="center"
                 android:textColor="@color/colorTextThirdy"
-                android:textSize="22sp" />
+                android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/msgReflection"
+            <LinearLayout
+                android:id="@+id/lyNetworks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/msgCopyRights"
-                android:layout_margin="25dp"
                 android:gravity="center"
-                android:text="@string/msgReflection"
-                android:textAllCaps="true"
-                android:textColor="@color/colorTextSecondary"
-                android:textSize="18sp" />
+                android:orientation="vertical"
+                android:layout_margin="35dp"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Facebook &amp; Instagram"
+                    android:textColor="@color/colorTextSecondary"
+                    android:textSize="18sp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="WaudioMusic"
+                    android:textColor="@android:color/holo_green_light"
+                    android:textSize="20sp"/>
+            </LinearLayout>
+
 
             <TextView
                 android:id="@+id/msgCopyRights"
@@ -84,7 +96,7 @@
                 android:gravity="center"
                 android:text="@string/msgCopyRights"
                 android:textColor="@color/colorTextThirdy"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/msgCopyRights2"

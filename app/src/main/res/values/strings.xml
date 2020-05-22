@@ -252,9 +252,9 @@
     <string name="msgSelectStyleTip">you can download them from Waudio Store</string>
     <string name="msgUIPreparing">99.9 %</string>
     <string name="msgUIReady">Bingooo....</string>
-    <string name="lblFrom">UNA IDEA DE</string>
-    <string name="lblForWorld">PARA EL MUNDO</string>
-    <string name="msgCopyRights" translatable="false">© 2017 ecanaveras.</string>
+    <string name="lblFrom">AN IDEA MADE IN</string>
+    <string name="lblForWorld">FOR THE WORLD</string>
+    <string name="msgCopyRights" translatable="false">© 2017 - 2020 ecanaveras.</string>
     <string name="alert_ok_points">EARN POINTS</string>
     <string name="alert_cancel_points">OK</string>
     <string name="msgRewardPoints">WIN POINTS:\n-Watching Videos ( 100P )\n-Sharing Waudios ( 25P )\n-Creating Waudios ( 10P )</string>
@@ -272,7 +272,7 @@
     <string name="title_activity_permition" translatable="false">PermitionActivity</string>
     <string name="lblPermitions">ESTABLISH PERMITS</string>
     <string name="landing_intro_1">CREATES</string>
-    <string name="landing_intro_2">COMPARTE</string>
+    <string name="landing_intro_2">SHARE</string>
     <string name="lading_intro_3">WAUDIO STORE</string>
     <string name="msgPermitions">HELLO, TO DO MY MAGIC, I NEED SOME PERMITS, I\'M LOOKING FOR MUSIC STORED IN THE INTERNAL MEMORY OR IN THE SD, AND I ALSO NEED TO RECORD VOICE, IT\'S ALL!</string>
     <string name="msgDownloadInProgress">Download in progress...</string>
@@ -281,4 +281,5 @@
     <string name="msgDownloadTry">%1$s could not download, try later!</string>
     <string name="msgOpenWithFailded">You do not have an app to play videos</string>
     <string name="lblDownload">DOWNLOAD</string>
+    <string name="msgVideoPoints">WATCH VIDEO FOR 100 POINTS</string>
 </resources>

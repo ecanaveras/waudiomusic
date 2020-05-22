@@ -5,18 +5,15 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,7 +40,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,7 +98,7 @@ public class LibStylesFragment extends Fragment {
 
         //Si cambian los templates, actualiza el listado
         observer = new TemplatesFileObserver(getActivity().getExternalFilesDir(null).getAbsolutePath());
-        observer.setFragment(this);
+        observer.setStylesFragment(this);
         observer.startWatching();
 
         return view;
@@ -114,6 +110,9 @@ public class LibStylesFragment extends Fragment {
         countItemsStore();
     }
 
+    /**
+     * Mostrar banner con Estilos
+     */
     public void getNewItemsStore() {
         new Thread() {
             @Override
@@ -173,7 +172,7 @@ public class LibStylesFragment extends Fragment {
             final ImageView img = (ImageView) view.findViewById(R.id.thumbnail);
             TextView title = (TextView) view.findViewById(R.id.title);
             //TextView category = (TextView) view.findViewById(R.id.category);
-            Picasso.with(getActivity()).load(waudioModel.getResourceId()).resize(160, 140).into(img);
+            Picasso.get().load(waudioModel.getResourceId()).resize(160, 140).into(img);
             title.setText(waudioModel.getSimpleName());
             //category.setText(waudioModel.getCategory());
             lyContentItemStore.addView(view);
@@ -195,7 +194,7 @@ public class LibStylesFragment extends Fragment {
                     if (app.findNewItemStore(dataSnapshot.getChildrenCount()) > 0) {
                         AlertDialog.Builder info = new AlertDialog.Builder(mContext)
                                 .setView(dialogView)
-                                .setPositiveButton(getResources().getString(R.string.alert_ok_new_styles), new DialogInterface.OnClickListener() {
+                                .setPositiveButton(getString(R.string.alert_ok_new_styles), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
                                         onGoStore(null);
@@ -245,7 +244,7 @@ public class LibStylesFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_goto_store:
-                //Snackbar.make(getView(), getResources().getString(R.string.msgComingSoonStore), Snackbar.LENGTH_SHORT).show();
+                //Snackbar.make(getView(), getString(R.string.msgComingSoonStore), Snackbar.LENGTH_SHORT).show();
                 onGoStore(null);
                 break;
             //case R.id.action_update_store:

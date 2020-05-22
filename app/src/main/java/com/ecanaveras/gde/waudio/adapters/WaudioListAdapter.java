@@ -1,15 +1,11 @@
 package com.ecanaveras.gde.waudio.adapters;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.support.design.widget.Snackbar;
+import com.google.android.material.snackbar.Snackbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +27,6 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by elcap on 29/08/2017.
@@ -135,7 +130,7 @@ public class WaudioListAdapter extends SimpleCursorAdapter implements View.OnCli
 
         if (waudio != null) {
             File w = new File(waudio.getPathMp4());
-            waudioController = new WaudioController(mContext, w);
+            waudioController = new WaudioController(mContext, w, false);
             waudioController.onShare(null);
         }
     }
@@ -162,13 +157,16 @@ public class WaudioListAdapter extends SimpleCursorAdapter implements View.OnCli
             int columnPath = cursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
             WaudioModel waudio = new WaudioModel(cursor.getString(columnName), cursor.getString(columnPath));
             File wDel = new File(waudio.getPathMp4());
-            if (wDel.exists()) {
+            waudioController = new WaudioController(mContext, wDel, true);
+            waudioController.onDelete();
+            /*if (wDel.exists()) {
                 wDel.delete();
             }
             mContext.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(wDel)));
+             */
         }
         mDataFirebaseHelper.incrementWaudioDeleted(mSelection.size());
-        Snackbar.make(((MainActivity) mContext).findViewById(android.R.id.content), String.format(mContext.getResources().getString(R.string.info_contextmenu_deleted_waudio), mSelection.size()), Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(((MainActivity) mContext).findViewById(android.R.id.content), String.format(mContext.getString(R.string.info_contextmenu_deleted_waudio), mSelection.size()), Snackbar.LENGTH_SHORT).show();
         clearSelection();
     }
 

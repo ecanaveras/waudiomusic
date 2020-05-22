@@ -11,7 +11,7 @@ import android.view.MotionEvent;
  * Created by ecanaveras on 13/07/2017.
  */
 
-public class MarkerView extends android.support.v7.widget.AppCompatImageView {
+public class MarkerView extends androidx.appcompat.widget.AppCompatImageView {
 
     public interface MarkerListener {
         public void markerTouchStart(MarkerView marker, float pos);

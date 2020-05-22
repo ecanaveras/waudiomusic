@@ -25,15 +25,13 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -43,9 +41,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,15 +61,17 @@ import com.ecanaveras.gde.waudio.editor.WaveformView;
 import com.ecanaveras.gde.waudio.util.FileSaveDialog;
 import com.ecanaveras.gde.waudio.util.SamplePlayer;
 import com.ecanaveras.gde.waudio.util.SongMetadataReader;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.formats.MediaView;
+import com.google.android.gms.ads.formats.NativeAdOptions;
+import com.google.android.gms.ads.formats.UnifiedNativeAd;
+import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
-import org.apache.commons.io.IOUtils;
-
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
@@ -191,6 +195,7 @@ public class EditorActivity extends AppCompatActivity
     @Override
     protected void onNewIntent(Intent intent) {
         //cancelEdition();
+        super.onNewIntent(intent);
         Boolean edicion = intent.getBooleanExtra("continue_edition", false);
         if (!edicion) {
             intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
@@ -221,7 +226,7 @@ public class EditorActivity extends AppCompatActivity
 
         //if (receivedIntent.getData() == null) {
         //onBackPressed();
-        //Toast.makeText(this, getResources().getString(R.string.msgRestart), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, getString(R.string.msgRestart), Toast.LENGTH_SHORT).show();
         //}
         // If the Ringdroid media select activity was launched via a
         // GET_CONTENT intent, then we shouldn't display a "saved"
@@ -322,7 +327,7 @@ public class EditorActivity extends AppCompatActivity
             super.onBackPressed();
             this.finish();
         } else
-            Toast.makeText(this, getResources().getString(R.string.msgCancelEditor), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.msgCancelEditor), Toast.LENGTH_SHORT).show();
         back_pressed = System.currentTimeMillis();
 
     }
@@ -379,6 +384,7 @@ public class EditorActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode,
                                     int resultCode,
                                     Intent dataIntent) {
+        super.onActivityResult(requestCode, resultCode, dataIntent);
         Log.v("Waudio", "EditActivity onActivityResult");
         if (requestCode == REQUEST_CODE_CHOOSE_CONTACT) {
             // The user finished saving their ringtone and they're
@@ -743,6 +749,24 @@ public class EditorActivity extends AppCompatActivity
 
         //Layout Loading
         lyContentLoading.setVisibility(View.VISIBLE);
+        //Lanzar publicidad
+        //TODO PUBLICIDAD
+        AdLoader adLoader = new AdLoader.Builder(this, MainApp.ADMOB_CARGA_MP3_EDITOR)
+                .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
+                    @Override
+                    public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
+                        // Show the ad.
+                        UnifiedNativeAdView adView = (UnifiedNativeAdView) getLayoutInflater().inflate(R.layout.native_ad_layout, null);
+                        mapUnifiedNativeAdToLayout(unifiedNativeAd, adView);
+
+                        LinearLayout nativeAdLayout = findViewById(R.id.id_native_ad);
+                        nativeAdLayout.removeAllViews();
+                        nativeAdLayout.addView(adView);
+                    }
+                })
+                .build();
+        adLoader.loadAds(new AdRequest.Builder().build(), 3);
+
         /*mProgressDialog = new ProgressDialog(EditorActivity.this, R.style.AlertDialogCustom);
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressDialog.setTitle(R.string.progress_dialog_loading);
@@ -835,10 +859,10 @@ public class EditorActivity extends AppCompatActivity
                                 String[] components = name.split("\\.");
                                 String err;
                                 if (components.length < 2) {
-                                    err = getResources().getString(
+                                    err = getString(
                                             R.string.no_extension_error);
                                 } else {
-                                    err = getResources().getString(
+                                    err = getString(
                                             R.string.bad_extension_error) + " " +
                                             components[components.length - 1];
                                 }
@@ -864,7 +888,7 @@ public class EditorActivity extends AppCompatActivity
 
                             Runnable runnable = new Runnable() {
                                 public void run() {
-                                    showFinalAlert(e, getResources().getText(R.string.read_error));
+                                    showFinalAlert(e, getText(R.string.read_error));
                                 }
                             };
                             mHandler.post(runnable);
@@ -908,10 +932,10 @@ public class EditorActivity extends AppCompatActivity
         mRecordingKeepGoing = true;
         mFinishActivity = false;
         AlertDialog.Builder adBuilder = new AlertDialog.Builder(EditorActivity.this);
-        adBuilder.setTitle(getResources().getText(R.string.progress_dialog_recording));
+        adBuilder.setTitle(getText(R.string.progress_dialog_recording));
         adBuilder.setCancelable(true);
         adBuilder.setNegativeButton(
-                getResources().getText(R.string.progress_dialog_cancel),
+                getText(R.string.progress_dialog_cancel),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         mRecordingKeepGoing = false;
@@ -919,7 +943,7 @@ public class EditorActivity extends AppCompatActivity
                     }
                 });
         adBuilder.setPositiveButton(
-                getResources().getText(R.string.progress_dialog_stop),
+                getText(R.string.progress_dialog_stop),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         mRecordingKeepGoing = false;
@@ -963,7 +987,7 @@ public class EditorActivity extends AppCompatActivity
                             public void run() {
                                 showFinalAlert(
                                         new Exception(),
-                                        getResources().getText(R.string.record_error)
+                                        getText(R.string.record_error)
                                 );
                             }
                         };
@@ -983,7 +1007,7 @@ public class EditorActivity extends AppCompatActivity
 
                     Runnable runnable = new Runnable() {
                         public void run() {
-                            showFinalAlert(e, getResources().getText(R.string.record_error));
+                            showFinalAlert(e, getText(R.string.record_error));
                         }
                     };
                     mHandler.post(runnable);
@@ -1039,7 +1063,7 @@ public class EditorActivity extends AppCompatActivity
                         mSoundFile.getSampleRate() + " Hz, " +
                         mSoundFile.getAvgBitrateKbps() + " kbps, " +
                         formatTime(mMaxPos) + " " +
-                        getResources().getString(R.string.time_seconds);
+                        getString(R.string.time_seconds);
         mInfo.setText(mCaption);*/
 
         //UI Show/Hide
@@ -1061,7 +1085,7 @@ public class EditorActivity extends AppCompatActivity
         resetPositions();
 
 
-        Toast toast = Toasty.warning(this, getResources().getString(R.string.msgChoose30seg), Toast.LENGTH_LONG);
+        Toast toast = Toasty.warning(this, getString(R.string.msgChoose30seg), Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER, 0, 0);
         toast.show();
     }
@@ -1123,10 +1147,10 @@ public class EditorActivity extends AppCompatActivity
         mWaveformView.invalidate();
 
         mStartMarker.setContentDescription(
-                getResources().getText(R.string.start_marker) + " " +
+                getText(R.string.start_marker) + " " +
                         formatTime(mStartPos));
         mEndMarker.setContentDescription(
-                getResources().getText(R.string.end_marker) + " " +
+                getText(R.string.end_marker) + " " +
                         formatTime(mEndPos));
 
         int startX = mStartPos - mOffset - mMarkerLeftInset;
@@ -1220,10 +1244,10 @@ public class EditorActivity extends AppCompatActivity
     private void enableDisableButtons() {
         if (mIsPlaying) {
             mPlayButton.setImageResource(R.drawable.ic_pause);
-            mPlayButton.setContentDescription(getResources().getText(R.string.stop));
+            mPlayButton.setContentDescription(getText(R.string.stop));
         } else {
             mPlayButton.setImageResource(R.drawable.ic_play_arrow);
-            mPlayButton.setContentDescription(getResources().getText(R.string.play));
+            mPlayButton.setContentDescription(getText(R.string.play));
         }
     }
 
@@ -1390,11 +1414,11 @@ public class EditorActivity extends AppCompatActivity
         if (e != null) {
             Log.e("Waudio", "Error: " + message);
             Log.e("Waudio", getStackTrace(e));
-            title = getResources().getText(R.string.alert_title_failure);
+            title = getText(R.string.alert_title_failure);
             setResult(RESULT_CANCELED, new Intent());
         } else {
             Log.v("Waudio", "Success: " + message);
-            title = getResources().getText(R.string.alert_title_success);
+            title = getText(R.string.alert_title_success);
         }
 
         new AlertDialog.Builder(EditorActivity.this)
@@ -1413,7 +1437,7 @@ public class EditorActivity extends AppCompatActivity
     }
 
     private void showFinalAlert(Exception e, int messageResourceId) {
-        showFinalAlert(e, getResources().getText(messageResourceId));
+        showFinalAlert(e, getText(messageResourceId));
     }
 
 
@@ -1454,6 +1478,66 @@ public class EditorActivity extends AppCompatActivity
         FileSaveDialog dlog = new FileSaveDialog(
                 this, getResources(), mTitle, message);
         dlog.show();
+    }
+
+    public void mapUnifiedNativeAdToLayout(UnifiedNativeAd adFromGoogle, UnifiedNativeAdView myAdView) {
+        MediaView mediaView = myAdView.findViewById(R.id.ad_media);
+        myAdView.setMediaView(mediaView);
+
+        myAdView.setHeadlineView(myAdView.findViewById(R.id.ad_headline));
+        myAdView.setBodyView(myAdView.findViewById(R.id.ad_body));
+        myAdView.setCallToActionView(myAdView.findViewById(R.id.ad_call_to_action));
+        myAdView.setIconView(myAdView.findViewById(R.id.ad_icon));
+        myAdView.setPriceView(myAdView.findViewById(R.id.ad_price));
+        myAdView.setStarRatingView(myAdView.findViewById(R.id.ad_rating));
+        myAdView.setStoreView(myAdView.findViewById(R.id.ad_store));
+        myAdView.setAdvertiserView(myAdView.findViewById(R.id.ad_advertiser));
+
+        ((TextView) myAdView.getHeadlineView()).setText(adFromGoogle.getHeadline());
+
+        if (adFromGoogle.getBody() == null) {
+            myAdView.getBodyView().setVisibility(View.GONE);
+        } else {
+            ((TextView) myAdView.getBodyView()).setText(adFromGoogle.getBody());
+        }
+
+        if (adFromGoogle.getCallToAction() == null) {
+            myAdView.getCallToActionView().setVisibility(View.GONE);
+        } else {
+            ((Button) myAdView.getCallToActionView()).setText(adFromGoogle.getCallToAction());
+        }
+
+        if (adFromGoogle.getIcon() == null) {
+            myAdView.getIconView().setVisibility(View.GONE);
+        } else {
+            ((ImageView) myAdView.getIconView()).setImageDrawable(adFromGoogle.getIcon().getDrawable());
+        }
+
+        if (adFromGoogle.getPrice() == null) {
+            myAdView.getPriceView().setVisibility(View.GONE);
+        } else {
+            ((TextView) myAdView.getPriceView()).setText(adFromGoogle.getPrice());
+        }
+
+        if (adFromGoogle.getStarRating() == null) {
+            myAdView.getStarRatingView().setVisibility(View.GONE);
+        } else {
+            ((RatingBar) myAdView.getStarRatingView()).setRating(adFromGoogle.getStarRating().floatValue());
+        }
+
+        if (adFromGoogle.getStore() == null) {
+            myAdView.getStoreView().setVisibility(View.GONE);
+        } else {
+            ((TextView) myAdView.getStoreView()).setText(adFromGoogle.getStore());
+        }
+
+        if (adFromGoogle.getAdvertiser() == null) {
+            myAdView.getAdvertiserView().setVisibility(View.GONE);
+        } else {
+            ((TextView) myAdView.getAdvertiserView()).setText(adFromGoogle.getAdvertiser());
+        }
+
+        myAdView.setNativeAd(adFromGoogle);
     }
 
     private OnClickListener mPlayListener = new OnClickListener() {
