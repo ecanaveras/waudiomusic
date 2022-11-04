@@ -163,10 +163,10 @@ public class GeneratorWaudio implements Serializable {
                         CharSequence errorMessage;
                         if (e.getMessage() != null
                                 && e.getMessage().equals("No space left on device")) {
-                            errorMessage = context.getResources().getText(R.string.no_space_error);
+                            errorMessage = context.getText(R.string.no_space_error);
                             e = null;
                         } else {
-                            errorMessage = context.getResources().getText(R.string.write_error);
+                            errorMessage = context.getText(R.string.write_error);
                         }
                         final CharSequence finalErrorMessage = errorMessage;
                         final Exception finalException = e;
@@ -210,7 +210,7 @@ public class GeneratorWaudio implements Serializable {
 
                     Runnable runnable = new Runnable() {
                         public void run() {
-                            showFinalAlert(e, context.getResources().getText(R.string.write_error));
+                            showFinalAlert(e, context.getText(R.string.write_error));
                         }
                     };
                     mHandler.post(runnable);
@@ -474,11 +474,11 @@ public class GeneratorWaudio implements Serializable {
         if (e != null) {
             Log.e("Waudio", "Error: " + message);
             Log.e("Waudio", getStackTrace(e));
-            title = context.getResources().getText(R.string.alert_title_failure);
+            title = context.getText(R.string.alert_title_failure);
             //setResult(RESULT_CANCELED, new Intent());
         } else {
             Log.v("Waudio", "Success: " + message);
-            title = context.getResources().getText(R.string.alert_title_success);
+            title = context.getText(R.string.alert_title_success);
         }
 
         new AlertDialog.Builder(context)
@@ -497,7 +497,7 @@ public class GeneratorWaudio implements Serializable {
     }
 
     private void showFinalAlert(Exception e, int messageResourceId) {
-        showFinalAlert(e, context.getResources().getText(messageResourceId));
+        showFinalAlert(e, context.getText(messageResourceId));
     }
 
 

@@ -3,11 +3,11 @@ package com.ecanaveras.gde.waudio.fragments;
 import android.app.Dialog;
 import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.design.widget.CoordinatorLayout;
+
+import androidx.annotation.NonNull;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -68,10 +68,10 @@ public class DownloadDialogFragment extends BottomSheetDialogFragment implements
         //Data
         txtTitle.setText(waudioModel.getSimpleName());
         txtCategory.setText(waudioModel.getCategory());
-        Picasso.with(getContext()).load(waudioModel.getUrlThumbnail()).into(imgThumbnail);
+        Picasso.get().load(waudioModel.getUrlThumbnail()).into(imgThumbnail);
         txtSizeWaudio.setText(waudioModel.getSizeFormat());
         if (waudioModel.getValue() == null || waudioModel.getValue() == 0) {
-            txtCostPoints.setText(getResources().getString(R.string.lblFree));
+            txtCostPoints.setText(getString(R.string.lblFree));
         } else
             txtCostPoints.setText(String.valueOf(waudioModel.getValue()));
 

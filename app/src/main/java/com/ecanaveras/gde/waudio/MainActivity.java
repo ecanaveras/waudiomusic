@@ -9,13 +9,13 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.TabLayout;
-import android.support.v13.app.FragmentStatePagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.tabs.TabLayout;
+import androidx.legacy.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -180,13 +180,13 @@ public class MainActivity extends AppCompatActivity {
                 goToStore();
                 break;
             case R.id.action_share:
-                String msg1 = getResources().getString(R.string.msgShareApp);
-                String urlPS = getResources().getString(R.string.urlPlayStore);
+                String msg1 = getString(R.string.msgShareApp);
+                String urlPS = getString(R.string.urlPlayStore);
                 Intent sendIntent = new Intent();
                 sendIntent.setAction(Intent.ACTION_SEND);
                 sendIntent.putExtra(Intent.EXTRA_TEXT, String.format("%s: %s", msg1, urlPS));
                 sendIntent.setType("text/plain");
-                startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.msgShareTo)));
+                startActivity(Intent.createChooser(sendIntent, getText(R.string.msgShareTo)));
                 break;
             case R.id.action_about:
                 Intent intent = new Intent(this, AboutActivity.class);
@@ -201,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
         try {
             startActivity(goToMarket);
         } catch (ActivityNotFoundException e) {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.urlPlayStore))));
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.urlPlayStore))));
         }
     }
 
@@ -210,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SHARE_WAUDIO_REQUEST && resultCode == Activity.RESULT_OK) {
             app.updatePoints(25, true);
-            Toasty.custom(getApplicationContext(), "+" + 25 + " " + getResources().getString(R.string.lblPoints), getResources().getDrawable(R.drawable.ic_points),getResources().getColor(R.color.colorAccent), Toast.LENGTH_SHORT, true, true).show();
+            Toasty.custom(getApplicationContext(), "+" + 25 + " " + getString(R.string.lblPoints), getDrawable(R.drawable.ic_points),getColor(R.color.colorAccent), Toast.LENGTH_SHORT, true, true).show();
             mFirebaseAnalytics.setUserProperty("shared", String.valueOf(true));
             mDataFirebaseHelper.incrementWaudioShared();
         }
@@ -224,14 +224,14 @@ public class MainActivity extends AppCompatActivity {
             final View dialogView = inflater.inflate(R.layout.custom_dialog_rating, null);
             AlertDialog.Builder info = new AlertDialog.Builder(this)
                     .setView(dialogView)
-                    .setPositiveButton(getResources().getString(R.string.alert_ok_rating), new DialogInterface.OnClickListener() {
+                    .setPositiveButton(getString(R.string.alert_ok_rating), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             app.saveRating();
                             mDataFirebaseHelper.incrementWaudioRating();
                             goToStore();
                         }
-                    }).setNegativeButton(getResources().getString(R.string.alert_cancel_rating), new DialogInterface.OnClickListener() {
+                    }).setNegativeButton(getString(R.string.alert_cancel_rating), new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             app.decrementCountWaudioCreated();
@@ -246,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
         if (back_pressed + 2000 > System.currentTimeMillis()) {
             finishAffinity();
         } else
-            Toast.makeText(this, getResources().getString(R.string.msgExit), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.msgExit), Toast.LENGTH_SHORT).show();
         back_pressed = System.currentTimeMillis();
     }
 

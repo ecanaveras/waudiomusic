@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
@@ -105,11 +105,13 @@ public class SplashScreen extends AppCompatActivity {
     private Boolean foundWaudios() {
         File dir = new File(Environment.getExternalStorageDirectory().getPath() + MainApp.PATH_VIDEOS);
         if (dir.exists()) {
-            for (String name : dir.list(new Mp4Filter(".mp4"))) {
-                File vmp4 = new File(dir.getAbsolutePath() + "/" + name);
-                if (vmp4.exists()) {
-                    Log.i(SplashScreen.class.getSimpleName(), "Waudios found!");
-                    return true;
+            if(dir.list() != null) {
+                for (String name : dir.list(new Mp4Filter(".mp4"))) {
+                    File vmp4 = new File(dir.getAbsolutePath() + "/" + name);
+                    if (vmp4.exists()) {
+                        Log.i(SplashScreen.class.getSimpleName(), "Waudios found!");
+                        return true;
+                    }
                 }
             }
         }

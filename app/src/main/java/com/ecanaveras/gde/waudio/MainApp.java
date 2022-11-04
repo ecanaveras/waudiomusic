@@ -5,8 +5,11 @@ import android.app.Application;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.os.Environment;
 import android.preference.PreferenceManager;
-import android.support.v4.app.ActivityCompat;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import android.util.Log;
 
 import com.ecanaveras.gde.waudio.editor.CompareWaudio;
@@ -16,6 +19,8 @@ import com.ecanaveras.gde.waudio.models.WaudioModel;
 import com.ecanaveras.gde.waudio.util.FontsOverride;
 import com.ecanaveras.gde.waudio.util.Mp4Filter;
 import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,6 +30,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by ecanaveras on 05/08/2017.
@@ -33,6 +39,8 @@ import java.util.List;
 public class MainApp extends Application {
 
     public static final String ADMOB_APP_ID = "ca-app-pub-4587362379324712~6454573814";
+    public static final String ADMOB_CARGA_MP3_EDITOR = "ca-app-pub-4587362379324712/3001775814";
+    public static final String ADMOB_VIDEO_REWARDS = "ca-app-pub-4587362379324712/3001775814";
     public static final String PATH_VIDEOS = "/Waudio/Media/Waudio Videos/";
     public static final String POINTS = "points";
     public static final Integer POINTS_WAUDIO_CREATED = 10;
@@ -66,7 +74,8 @@ public class MainApp extends Application {
         }
 
         //AdMods
-        MobileAds.initialize(this, MainApp.ADMOB_APP_ID);
+        //MobileAds.initialize(this, MainApp.ADMOB_APP_ID);
+        MobileAds.initialize(this);
     }
 
     private void setupFonts() {
@@ -170,6 +179,25 @@ public class MainApp extends Application {
             if (cw.equals(compareWaudio)) {
                 this.compareWaudioTmp = cw;
                 return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Busca la existencia de Waudios
+     *
+     * @return
+     */
+    public boolean foundWaudios() {
+        File dir = new File(Environment.getExternalStorageDirectory().getPath() + MainApp.PATH_VIDEOS);
+        if (dir.exists()) {
+            for (String name : Objects.requireNonNull(dir.list(new Mp4Filter(".mp4")))) {
+                File vmp4 = new File(dir.getAbsolutePath() + "/" + name);
+                if (vmp4.exists()) {
+                    Log.i(MainApp.class.getSimpleName(), "Waudios found!");
+                    return true;
+                }
             }
         }
         return false;
@@ -309,8 +337,8 @@ public class MainApp extends Application {
     }
 
     public boolean checkPermitions() {
-        return ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, android.Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
+        return ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED;
     }
 }

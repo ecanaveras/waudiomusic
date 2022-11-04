@@ -215,4 +215,5 @@
     <string name="msgDownloadTry">%1$s no se ha podido descargar, intenta mas tarde!</string>
     <string name="msgOpenWithFailded">No tienes una app para reproducir videos!</string>
     <string name="lblDownload">DESCARGAR</string>
+    <string name="msgVideoPoints">VER VIDEO PARA GANAR 100 PUNTOS</string>
 </resources>

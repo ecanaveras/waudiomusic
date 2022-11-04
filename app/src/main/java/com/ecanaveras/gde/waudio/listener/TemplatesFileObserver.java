@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.ecanaveras.gde.waudio.ListTemplateActivity;
 import com.ecanaveras.gde.waudio.fragments.LibStylesFragment;
+import com.ecanaveras.gde.waudio.fragments.LibWaudiosFragment;
 
 import java.io.File;
 
@@ -16,7 +17,8 @@ public class TemplatesFileObserver extends FileObserver {
 
     static final String TAG = "TemplatesFileObserver";
 
-    private LibStylesFragment fragment;
+    private LibStylesFragment stylesFragment;
+    private LibWaudiosFragment waudiosFragment;
     private ListTemplateActivity activity;
     String rootPath;
 
@@ -49,11 +51,13 @@ public class TemplatesFileObserver extends FileObserver {
             case FileObserver.MOVED_FROM:
             case FileObserver.MOVED_TO:
             case FileObserver.MOVE_SELF:
-                if (fragment != null)
-                    fragment.refresh = true;
+                if (stylesFragment != null)
+                    stylesFragment.refresh = true;
+                if(waudiosFragment != null)
+                    //TODO CORREGIR REfresh de Waudios
+                    waudiosFragment.refresh = true;
                 if (activity != null)
                     activity.refresh = true;
-
                 break;
             default:
                 // just ignore
@@ -65,7 +69,10 @@ public class TemplatesFileObserver extends FileObserver {
         this.activity = activity;
     }
 
-    public void setFragment(LibStylesFragment fragment) {
-        this.fragment = fragment;
+    public void setStylesFragment(LibStylesFragment stylesFragment) {
+        this.stylesFragment = stylesFragment;
+    }
+    public void setWaudiosFragment(LibWaudiosFragment waudiosFragment) {
+        this.waudiosFragment = waudiosFragment;
     }
 }

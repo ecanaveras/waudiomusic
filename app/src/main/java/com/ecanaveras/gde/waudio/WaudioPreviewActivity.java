@@ -7,7 +7,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -21,7 +21,6 @@ import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.io.File;
-import java.util.Map;
 
 public class WaudioPreviewActivity extends AppCompatActivity implements AudioManager.OnAudioFocusChangeListener {
 
@@ -75,7 +74,7 @@ public class WaudioPreviewActivity extends AppCompatActivity implements AudioMan
 
         if (intent != null) {
             wFile = new File(intent.getStringExtra(PATH_WAUDIO));
-            waudioController = new WaudioController(this, wFile);
+            waudioController = new WaudioController(this, wFile, false);
             setupWaudioVideo(wFile);
         }
     }

@@ -10,7 +10,9 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -20,7 +22,6 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.ecanaveras.gde.waudio.controllers.WaudioController;
-import com.ecanaveras.gde.waudio.editor.CompareWaudio;
 import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -47,6 +48,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
     private TextView lblTitleWaudio, lblPathWaudio;
     private Intent intent;
     private boolean goBack;
+    private boolean addPoints = true;
     private int position = 0;
     private AudioManager audioManager;
     private String templateUsed;
@@ -90,6 +92,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
 
         if (intent.getStringExtra("waudio") != null) {
             pathWaudio = intent.getStringExtra("waudio");
+            addPoints = intent.getBooleanExtra("points", false);
         }
         if (pathWaudio == null && app.getGeneratorWaudio() != null && app.getGeneratorWaudio().getOutFileWaudio() != null) {
             pathWaudio = app.getGeneratorWaudio().getOutFileWaudio().getAbsolutePath();
@@ -122,7 +125,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
     private void loadWaudio() {
         if (pathWaudio != null) {
             File f = new File(pathWaudio);
-            waudioController = new WaudioController(this, f);
+            waudioController = new WaudioController(this, f, false);
             if (f.exists()) {
                 getSupportActionBar().setTitle("WAUDIO - " + f.getName().toUpperCase());
                 MediaController controller = new MediaController(this);
@@ -145,13 +148,14 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
                         audioManager.abandonAudioFocus(WaudioFinalizedActivity.this);
                     }
                 });
-                waudioController.addPoints(MainApp.POINTS_WAUDIO_CREATED);
+                if (addPoints)
+                    waudioController.addPoints(MainApp.POINTS_WAUDIO_CREATED);
                 //lblPathWaudio.setText(f.getPath().replace(f.getName(), ""));
                 //lblTitleWaudio.setText(f.getName());
             } else {
                 lp.setVisibility(View.GONE);
                 app.removeWaudio(app.getCompareWaudioTmp());
-                showBackAlert(getResources().getString(R.string.msgWaudioNoFound), getResources().getString(R.string.msgWaudioCreate), getResources().getString(R.string.msgChooseStyle), false);
+                showBackAlert(getString(R.string.msgWaudioNoFound), getString(R.string.msgWaudioCreate), getString(R.string.msgChooseStyle), false);
             }
         }
     }
@@ -238,7 +242,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
                 R.string.msgFinish5,
                 R.string.msgFinish6};
         Random random = new Random();
-        Toasty.info(this, getResources().getString(idsMsgs[random.nextInt(idsMsgs.length)]), Toast.LENGTH_LONG).show();
+        Toasty.info(this, getString(idsMsgs[random.nextInt(idsMsgs.length)]), Toast.LENGTH_LONG).show();
         finishAffinity();
         //android.os.Process.killProcess(android.os.Process.myPid());
     }
@@ -250,7 +254,8 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
         if (goBack) {
             super.onBackPressed();
         } else {
-            showBackAlert(getResources().getString(R.string.alert_title_choose_style), getResources().getString(R.string.msgWarningStyle), getResources().getString(R.string.alert_ok_choose_style), true);
+            finish();
+            //showBackAlert(getString(R.string.alert_title_choose_style), getString(R.string.msgWarningStyle), getString(R.string.alert_ok_choose_style), true);
         }
     }
 

@@ -3,7 +3,7 @@ package com.ecanaveras.gde.waudio.adapters;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -120,7 +120,7 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
                     mContext.startActivity(intent);
             } else {
                 Log.e(TemplateRecyclerAdapter.class.getName(), "GeneratorWaudio is null");
-                Toasty.error(mContext, mContext.getResources().getString(R.string.msgProblemGenerateWaudio), Toast.LENGTH_SHORT).show();
+                Toasty.error(mContext, mContext.getString(R.string.msgProblemGenerateWaudio), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -138,8 +138,8 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
         holder.category.setText(waudioModel.getCategory());
         if (isRemote) {
             holder.lyInfoValue.setVisibility(View.VISIBLE);
-            holder.costpoints.setText(waudioModel.getValue() != 0 ? String.valueOf(waudioModel.getValue()) : mContext.getResources().getString(R.string.lblFree));
-            Picasso.with(mContext).load(waudioModel.getUrlThumbnail()).into(holder.thumbnail);
+            holder.costpoints.setText(waudioModel.getValue() != 0 ? String.valueOf(waudioModel.getValue()) : mContext.getString(R.string.lblFree));
+            Picasso.get().load(waudioModel.getUrlThumbnail()).into(holder.thumbnail);
         } else {
             holder.lyInfoValue.setVisibility(View.INVISIBLE);
             picassoInstance.load(VideoRequestHandler.SCHEME_VIDEO + ":" + waudioModel.getPathMp4()).into(holder.thumbnail);
@@ -159,12 +159,13 @@ public class TemplateRecyclerAdapter extends RecyclerView.Adapter<TemplateRecycl
     private void showAlert(final String pathFile) {
         new android.app.AlertDialog.Builder(mContext, R.style.AlertDialogCustom)
                 .setTitle("Hey...")
-                .setMessage(mContext.getResources().getString(R.string.msgStyleChoosed))
-                .setPositiveButton(mContext.getResources().getString(R.string.alert_ok_preview), new DialogInterface.OnClickListener() {
+                .setMessage(mContext.getString(R.string.msgStyleChoosed))
+                .setPositiveButton(mContext.getString(R.string.alert_ok_preview), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Intent intent = new Intent(mContext, WaudioFinalizedActivity.class);
                         intent.putExtra("waudio", pathFile);
+                        intent.putExtra("points", false);
                         mContext.startActivity(intent);
                     }
                 })

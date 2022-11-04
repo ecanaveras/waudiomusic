@@ -9,13 +9,18 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.v4.app.NotificationCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.ads.rewarded.RewardItem;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.rewarded.RewardedAdCallback;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import androidx.core.app.NotificationCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -34,13 +39,8 @@ import com.ecanaveras.gde.waudio.adapters.TemplateRecyclerAdapter;
 import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
 import com.ecanaveras.gde.waudio.fragments.DownloadDialogFragment;
 import com.ecanaveras.gde.waudio.models.WaudioModel;
-import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.reward.RewardItem;
-import com.google.android.gms.ads.reward.RewardedVideoAd;
-import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.analytics.FirebaseAnalytics;
@@ -62,7 +62,7 @@ import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 
-public class StoreActivity extends AppCompatActivity implements RewardedVideoAdListener {
+public class StoreActivity extends AppCompatActivity {
 
 
     private List<WaudioModel> storeWaudioModelList = new ArrayList<WaudioModel>();
@@ -91,9 +91,8 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
     private int points;
     private MainApp app;
 
-    private RewardedVideoAd mRewardedVideoAd;
-    private InterstitialAd mInterstitialAd;
-    private boolean adsView, downloading;
+    private RewardedAd mRewardedAd;
+    private boolean adsLoaded, downloading;
     private String channel;
     private NotificationCompat.Builder mBuilder;
 
@@ -107,7 +106,7 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
         app = (MainApp) getApplicationContext();
 
         //Interticial
-        mInterstitialAd = new InterstitialAd(this);
+        /*mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("ca-app-pub-4587362379324712/5089093626");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
 
@@ -119,11 +118,18 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
                 mInterstitialAd.loadAd(new AdRequest.Builder().build());
             }
 
-        });
+        });*/
 
         //Video Ads
-        mRewardedVideoAd = MobileAds.getRewardedVideoAdInstance(this);
-        mRewardedVideoAd.setRewardedVideoAdListener(this);
+        /*mRewardedAd = new RewardedAd(this, MainApp.ADMOB_VIDEO_REWARDS);
+        mRewardedAd.loadAd(new AdRequest.Builder().build(), new RewardedAdLoadCallback() {
+            @Override
+            public void onRewardedAdLoaded() {
+                super.onRewardedAdLoaded();
+                System.out.println("VIDEO READY");
+                StoreActivity.this.adsLoaded = true;
+            }
+        });*/
 
         // Obtain the FirebaseAnalytics instance.
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
@@ -150,14 +156,8 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
         updatePoints(0, false);
 
         loadDataTemplates();
-
-        loadRewardedVideoAd();
     }
 
-    private void loadRewardedVideoAd() {
-        mRewardedVideoAd.loadAd("ca-app-pub-4587362379324712/4320075509",
-                new AdRequest.Builder().build());
-    }
 
     private void loadDataTemplates() {
         sdWaudioModelList.clear();
@@ -267,7 +267,7 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
 
     public void onDownload(View v) {
         if (downloading) {
-            Toasty.warning(this, getResources().getString(R.string.msgDownloadInProgress), Toast.LENGTH_SHORT).show();
+            Toasty.warning(this, getString(R.string.msgDownloadInProgress), Toast.LENGTH_SHORT).show();
             return;
         }
         if (downloadItemWaudio.getValue() > points) {
@@ -280,10 +280,10 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mBuilder = new NotificationCompat.Builder(StoreActivity.this, channel);
         mBuilder.setContentTitle("Waudio Store")
-                .setContentText(getResources().getString(R.string.msgDownloadInProgress))
+                .setContentText(getString(R.string.msgDownloadInProgress))
                 .setSmallIcon(R.drawable.ic_noti);
         StorageReference template = mStorage.child("templates").child(downloadItemWaudio.getName());
-        Toasty.warning(this, getResources().getString(R.string.msgDownloadInProgress), Toast.LENGTH_SHORT).show();
+        Toasty.warning(this, getString(R.string.msgDownloadInProgress), Toast.LENGTH_SHORT).show();
         try {
             final File localFile = File.createTempFile(downloadItemWaudio.getName(), "", new File(getExternalFilesDir(null).getAbsolutePath()));
             template.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
@@ -295,7 +295,7 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
                     //Remove Template from Store
                     downloading = false;
                     updateDataTemplates(downloadItemWaudio);
-                    Toasty.success(StoreActivity.this, String.format(getResources().getString(R.string.msgDownloadSuccess), downloadItemWaudio.getSimpleName()), Toast.LENGTH_SHORT).show();
+                    Toasty.success(StoreActivity.this, String.format(getString(R.string.msgDownloadSuccess), downloadItemWaudio.getSimpleName()), Toast.LENGTH_SHORT).show();
                     updatePoints(downloadItemWaudio.getValue(), false);
                     mDataFirebaseHelper.incrementItemDownload();
                 }
@@ -307,7 +307,7 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
                     }
                     downloading = false;
                     Crashlytics.logException(e);
-                    Toasty.error(StoreActivity.this, String.format(getResources().getString(R.string.msgDownloadTry), downloadItemWaudio.getSimpleName()), Toast.LENGTH_SHORT).show();
+                    Toasty.error(StoreActivity.this, String.format(getString(R.string.msgDownloadTry), downloadItemWaudio.getSimpleName()), Toast.LENGTH_SHORT).show();
                     if (mNotifyManager != null)
                         mNotifyManager.cancel(1000);
                 }
@@ -332,7 +332,7 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
                 mNotifyManager.cancel(notiDownloadID);
             }
             Crashlytics.logException(e);
-            Toasty.error(this, getResources().getString(R.string.msgProblemDownload), Toast.LENGTH_SHORT).show();
+            Toasty.error(this, getString(R.string.msgProblemDownload), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -348,25 +348,38 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
 
     public void showInfoPoints(View v) {
         mDataFirebaseHelper.incrementWaudioViewPoinst();
-        LayoutInflater inflater = this.getLayoutInflater();
+        Intent intent = new Intent(this, WaudioPointsActivity.class);
+        startActivity(intent);
+        /*LayoutInflater inflater = this.getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.custom_dialog_points, null);
         TextView textPoints = (TextView) dialogView.findViewById(R.id.lblPoints);
         textPoints.setText(String.valueOf(points));
-        android.support.v7.app.AlertDialog.Builder info = new android.support.v7.app.AlertDialog.Builder(this)
+        androidx.appcompat.app.AlertDialog.Builder info = new androidx.appcompat.app.AlertDialog.Builder(this)
                 .setView(dialogView)
-                .setPositiveButton(getResources().getString(R.string.alert_ok_points), new DialogInterface.OnClickListener() {
+                .setPositiveButton(getString(R.string.alert_ok_points), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if (mRewardedVideoAd.isLoaded()) {
-                            mRewardedVideoAd.show();
+                        if(!adsLoaded){
+                            System.out.println("VIDEO NO CARGADO");
+                            return;
                         }
+                        mRewardedAd.show(StoreActivity.this, new RewardedAdCallback() {
+                            @Override
+                            public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
+                                updatePointsAdmob(rewardItem.getAmount(), true, true);
+                                Toasty.custom(getApplicationContext(), String.format(getString(R.string.msgWindPoints), rewardItem.getAmount()), getDrawable(R.drawable.ic_points), getColor(R.color.colorAccent), Toast.LENGTH_SHORT, true, true).show();
+                            }
+                        });
                     }
-                }).setNegativeButton(getResources().getString(R.string.alert_cancel_points), new DialogInterface.OnClickListener() {
+                }).setPositiveButtonIcon(getDrawable(R.drawable.ic_points)).setNegativeButton(getString(R.string.alert_cancel_points), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                     }
                 });
         info.show();
+
+         */
+
     }
 
     public void onPreview(View v) {
@@ -380,7 +393,7 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
                 ac_points.setTitle(String.valueOf(points));
             }
         }
-        btnPoints.setText(String.format(getResources().getString(R.string.lblBtnPoints), points));
+        btnPoints.setText(String.format(getString(R.string.lblBtnPoints), points));
         Animation bounce = AnimationUtils.loadAnimation(this, R.anim.bounce);
         btnPoints.setAnimation(bounce);
         bounce.start();
@@ -388,32 +401,22 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
 
     @Override
     protected void onResume() {
-        mRewardedVideoAd.resume(this);
         updateViewPoints();
         super.onResume();
     }
 
-    @Override
-    public void onPause() {
-        mRewardedVideoAd.pause(this);
-        super.onPause();
-    }
 
     @Override
     public void onBackPressed() {
-        if (!adsView && mInterstitialAd.isLoaded()) {
+        /*if (!adsView && mInterstitialAd.isLoaded()) {
             mInterstitialAd.show();
             adsView = true;
         } else {
             super.onBackPressed();
-        }
+        }*/
+        super.onBackPressed();
     }
 
-    @Override
-    public void onDestroy() {
-        mRewardedVideoAd.destroy(this);
-        super.onDestroy();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -474,52 +477,13 @@ public class StoreActivity extends AppCompatActivity implements RewardedVideoAdL
                 try {
                     startActivity(goToMarket);
                 } catch (ActivityNotFoundException e) {
-                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.urlPlayStore))));
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.urlPlayStore))));
                 }
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onRewardedVideoAdLoaded() {
-
-    }
-
-    @Override
-    public void onRewardedVideoAdOpened() {
-        mDataFirebaseHelper.incrementWaudioViewVideos();
-        loadRewardedVideoAd();
-    }
-
-    @Override
-    public void onRewardedVideoStarted() {
-
-    }
-
-    @Override
-    public void onRewardedVideoAdClosed() {
-        loadRewardedVideoAd();
-    }
-
-    @Override
-    public void onRewarded(RewardItem rewardItem) {
-        updatePointsAdmob(100, true, true);
-        Toasty.custom(getApplicationContext(), String.format(getResources().getString(R.string.msgWindPoints), 100), getResources().getDrawable(R.drawable.ic_points), getResources().getColor(R.color.colorAccent), Toast.LENGTH_SHORT, true, true).show();
-    }
-
-    @Override
-    public void onRewardedVideoAdLeftApplication() {
-        loadRewardedVideoAd();
-    }
-
-    @Override
-    public void onRewardedVideoAdFailedToLoad(int i) {
-        loadRewardedVideoAd();
-    }
-
-    @Override
-    public void onRewardedVideoCompleted() {
-
-    }
 }
+
+

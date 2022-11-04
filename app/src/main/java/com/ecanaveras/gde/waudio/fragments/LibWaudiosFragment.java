@@ -15,7 +15,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
-import android.support.design.widget.Snackbar;
+
+import com.ecanaveras.gde.waudio.listener.TemplatesFileObserver;
+import com.google.android.material.snackbar.Snackbar;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
@@ -32,7 +34,6 @@ import android.widget.ListView;
 import com.ecanaveras.gde.waudio.MainApp;
 import com.ecanaveras.gde.waudio.R;
 import com.ecanaveras.gde.waudio.adapters.WaudioListAdapter;
-import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 
@@ -56,6 +57,9 @@ public class LibWaudiosFragment extends Fragment implements LoaderManager.Loader
     private SharedPreferences preferences;
     SharedPreferences.Editor editor_pref;
 
+    private TemplatesFileObserver observer;
+    public boolean refresh = true;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_lib_waudios, container, false);
@@ -71,14 +75,25 @@ public class LibWaudiosFragment extends Fragment implements LoaderManager.Loader
         }
         setupListView();
         orderBy = preferences.getString(PREF_ORDERBY, orderbyDefault);
-        findWaudios(orderBy);
+        findWaudios();
+
+        //Si cambian los waudios, actualiza el listado
+        System.out.println("Ruta Waudios:"+Environment.getExternalStorageDirectory().getPath() + MainApp.PATH_VIDEOS);
+        observer = new TemplatesFileObserver(Environment.getExternalStorageDirectory().getPath() + MainApp.PATH_VIDEOS);
+        observer.setWaudiosFragment(this);
+        observer.startWatching();
+
         return view;
     }
 
-    public void findWaudios(String orderby) {
+    public void findWaudios() {
+        if (!refresh) {
+            return;
+        }
         Bundle args = new Bundle();
-        args.putString("orderby", orderby);
+        args.putString("orderby", orderBy);
         getLoaderManager().restartLoader(EXTERNAL_CURSOR_ID, args, this);
+        this.refresh = false;
     }
 
     private static final String[] EXTERNAL_COLUMNS = new String[]{
@@ -88,8 +103,7 @@ public class LibWaudiosFragment extends Fragment implements LoaderManager.Loader
             MediaStore.Video.Media.TITLE,
             MediaStore.Video.Media.DISPLAY_NAME,
             MediaStore.Video.Media.DATE_MODIFIED,
-            MediaStore.Video.Media.SIZE,
-            "\"" + MediaStore.Video.Media.EXTERNAL_CONTENT_URI + "\""
+            MediaStore.Video.Media.SIZE
     };
 
     @Override
@@ -125,18 +139,18 @@ public class LibWaudiosFragment extends Fragment implements LoaderManager.Loader
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_orderby:
-                String lblOrder = getResources().getString(R.string.lblOrderbyDate);
+                String lblOrder = getString(R.string.lblOrderbyDate);
                 if (orderBy.equals(orderbyDefault)) {
                     orderBy = orderbyTitle;
-                    lblOrder = getResources().getString(R.string.lblOrderbyTitle);
+                    lblOrder = getString(R.string.lblOrderbyTitle);
                 } else {
                     orderBy = orderbyDefault;
                 }
-                findWaudios(orderBy);
+                findWaudios();
                 //Guardar la preferencia
                 editor_pref.putString(PREF_ORDERBY, orderBy);
                 editor_pref.commit();
-                Snackbar.make(getView(), String.format(getResources().getString(R.string.formatOrderby), lblOrder), Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(getView(), String.format(getString(R.string.formatOrderby), lblOrder), Snackbar.LENGTH_SHORT).show();
                 break;
         }
 
@@ -147,6 +161,9 @@ public class LibWaudiosFragment extends Fragment implements LoaderManager.Loader
     public void onResume() {
         super.onResume();
         setHasOptionsMenu(isVisible());
+        if(refresh){
+            findWaudios();
+        }
     }
 
     private void setupListView() {
@@ -175,12 +192,9 @@ public class LibWaudiosFragment extends Fragment implements LoaderManager.Loader
             // No permission to retrieve audio?
             Log.e("Waudio", e.toString());
 
-            // TODO error 1
         } catch (IllegalArgumentException e) {
             // No permission to retrieve audio?
             Log.e("Waudio", e.toString());
-
-            // TODO error 2
         }
 
         listWaudios.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
@@ -226,10 +240,10 @@ public class LibWaudiosFragment extends Fragment implements LoaderManager.Loader
                         break;
                     case R.id.action_delete:
                         new AlertDialog.Builder(getActivity(), R.style.AlertDialogCustom)
-                                .setTitle(getActivity().getResources().getString(R.string.msgDeleteWaudio))
-                                .setMessage(String.format(getActivity().getResources().getString(R.string.formatContextMenuDeleteWaudio), nr))
+                                .setTitle(getActivity().getString(R.string.msgDeleteWaudio))
+                                .setMessage(String.format(getActivity().getString(R.string.formatContextMenuDeleteWaudio), nr))
                                 .setPositiveButton(
-                                        getActivity().getResources().getString(R.string.msgYesDelete),
+                                        getActivity().getString(R.string.msgYesDelete),
                                         new DialogInterface.OnClickListener() {
                                             public void onClick(DialogInterface dialog,
                                                                 int whichButton) {
@@ -237,7 +251,7 @@ public class LibWaudiosFragment extends Fragment implements LoaderManager.Loader
                                             }
                                         })
                                 .setCancelable(true)
-                                .setNegativeButton(getActivity().getResources().getString(R.string.alert_cancel), null)
+                                .setNegativeButton(getActivity().getString(R.string.alert_cancel), null)
                                 .show();
                         break;
                 }
