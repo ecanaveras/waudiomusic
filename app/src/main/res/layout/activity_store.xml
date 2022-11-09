@@ -1,82 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
-    <ScrollView
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:background="@color/album">
 
-        <FrameLayout
+        <ImageView
+            android:id="@+id/imgBg"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:src="@drawable/bg6"
+            tools:visibility="visible" />
 
-            <ImageView
-                android:id="@+id/imgBg"
+        <!--LOADING-->
+        <LinearLayout
+            android:id="@+id/layoutWait"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/msgStyleLoading" />
+
+        </LinearLayout>
+
+        <!--CONTENT-->
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/layoutRecycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            android:visibility="visible">
+
+            <ScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
-                android:src="@drawable/bg6" />
+                android:orientation="vertical">
 
-            <!--LISTA-->
-            <LinearLayout
-                android:id="@+id/layoutRecycler"
+                <!--LISTA-->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:visibility="visible">
+
+                    <RelativeLayout
+                        android:id="@+id/layoutNext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="60dp"
+                        android:orientation="vertical"
+                        android:padding="12dp">
+
+                        <Button
+                            android:id="@+id/btnPoints"
+                            style="@style/WaudioButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="35dp"
+                            android:onClick="showInfoPoints"
+                            android:textAllCaps="true" />
+
+                    </RelativeLayout>
+
+                    <!--<ImageView
+                        android:id="@+id/imgTemplate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_android_building"/>-->
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:clipToPadding="false"
+                        android:scrollbars="vertical" />
+
+                </LinearLayout>
+
+            </ScrollView>
+
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/bottom_sheet"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:background="@color/colorBgCard"
+                android:clipToPadding="true"
+                app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+            </androidx.core.widget.NestedScrollView>
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        <!--OFFLINE-->
+        <RelativeLayout
+            android:id="@+id/layourOffline"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="visible">
+                android:layout_above="@+id/imgOffline"
+                android:layout_marginBottom="30dp"
+                android:gravity="center"
+                android:text="Facebook &amp; Instagram"
+                android:textColor="@color/colorTextPrimary"
+                android:textSize="18sp" />
 
-                <RelativeLayout
-                    android:id="@+id/layoutNext"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:minHeight="60dp"
-                    android:orientation="vertical"
-                    android:padding="12dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/imgOffline"
+                android:gravity="center"
+                android:text="WaudioMusic"
+                android:textColor="@color/colorPrimaryDark"
+                android:textSize="20sp" />
 
-                    <Button
-                        android:id="@+id/btnPoints"
-                        style="@style/WaudioButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="35dp"
-                        android:onClick="showInfoPoints"
-                        android:textAllCaps="true" />
+            <ImageView
+                android:id="@+id/imgOffline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginBottom="40dp"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ic_undraw_server_down" />
 
-                </RelativeLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/imgOffline"
+                android:gravity="center"
+                android:text="OFFLINE"
+                android:textSize="20dp" />
+        </RelativeLayout>
 
-                <!--<ImageView
-                    android:id="@+id/imgTemplate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_android_building"/>-->
+    </FrameLayout>
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_view"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:clipToPadding="false"
-                    android:scrollbars="vertical" />
 
-            </LinearLayout>
-
-        </FrameLayout>
-
-    </ScrollView>
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/bottom_sheet"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@color/colorBgCard"
-        android:clipToPadding="true"
-        app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
-
-    </androidx.core.widget.NestedScrollView>
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</RelativeLayout>

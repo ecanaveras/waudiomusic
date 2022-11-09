@@ -39,8 +39,8 @@ import java.util.Objects;
 public class MainApp extends Application {
 
     public static final String ADMOB_APP_ID = "ca-app-pub-4587362379324712~6454573814";
-    public static final String ADMOB_CARGA_MP3_EDITOR = "ca-app-pub-4587362379324712/3001775814";
-    public static final String ADMOB_VIDEO_REWARDS = "ca-app-pub-4587362379324712/3001775814";
+    public static final String ADMOB_EDITOR_ADS = "ca-app-pub-4587362379324712/3001775814";
+    public static final String ADMOB_VIDEO_REWARDS = "ca-app-pub-4587362379324712/4320075509";
     public static final String PATH_VIDEOS = "/Waudio/Media/Waudio Videos/";
     public static final String POINTS = "points";
     public static final Integer POINTS_WAUDIO_CREATED = 10;
@@ -267,6 +267,12 @@ public class MainApp extends Application {
         editor_pref.putInt(MainApp.POINTS, point);
         editor_pref.commit();
         return point;
+    }
+
+    public int getPoints(){
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        editor_pref = preferences.edit();
+        return preferences.getInt(MainApp.POINTS, 0);
     }
 
     //Banners

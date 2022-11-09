@@ -1,22 +1,26 @@
 package com.ecanaveras.gde.waudio;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdValue;
+import com.google.android.gms.ads.OnPaidEventListener;
+import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAd;
-import com.google.android.gms.ads.rewarded.RewardedAdCallback;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
+
+import es.dmoral.toasty.Toasty;
 
 public class WaudioPointsActivity extends AppCompatActivity {
 
@@ -24,6 +28,8 @@ public class WaudioPointsActivity extends AppCompatActivity {
     Button videoButton;
     ImageView iconPoints;
     TextView adTextView;
+    Animation bounce;
+    Animation bounceButton;
 
     private int points;
     private MainApp app;
@@ -39,15 +45,6 @@ public class WaudioPointsActivity extends AppCompatActivity {
         adTextView = findViewById(R.id.ad_text);
         iconPoints = findViewById(R.id.imgIconPoints);
 
-        rewardedAd = new RewardedAd(this, MainApp.ADMOB_VIDEO_REWARDS);
-
-        rewardedAd.loadAd(new AdRequest.Builder().build(), new RewardedAdLoadCallback() {
-            @Override
-            public void onRewardedAdLoaded() {
-                super.onRewardedAdLoaded();
-                videoButton.setVisibility(View.VISIBLE);
-            }
-        });
 
         videoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,27 +53,53 @@ public class WaudioPointsActivity extends AppCompatActivity {
             }
         });
 
-        updatePoints(0, false);
+        bounce = AnimationUtils.loadAnimation(this, R.anim.bounce);
+        bounceButton = AnimationUtils.loadAnimation(this, R.anim.bounce);
+
+        reloadRewardedAd();
+        updateViewPoints();
     }
 
-    public void displayAd() {
-        rewardedAd.show(this, new RewardedAdCallback() {
+    private void reloadRewardedAd() {
+        rewardedAd.load(this, MainApp.ADMOB_VIDEO_REWARDS, new AdRequest.Builder().build(), new RewardedAdLoadCallback() {
             @Override
-            public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
-                videoButton.setVisibility(View.INVISIBLE);
-                updatePoints(rewardItem.getAmount(), true);
+            public void onAdLoaded(RewardedAd ad) {
+                super.onAdLoaded(ad);
+                rewardedAd = ad;
+                videoButton.setEnabled(true);
+                videoButton.setAnimation(bounceButton);
+                bounceButton.start();
             }
         });
     }
 
-    private void updatePoints(int valor, boolean increment) {
-        points = app.updatePoints(valor, increment);
+    private void displayAd() {
+        if (rewardedAd != null) {
+            rewardedAd.show(this, new OnUserEarnedRewardListener() {
+                @Override
+                public void onUserEarnedReward(@NonNull RewardItem rewardItem) {
+                    videoButton.setEnabled(false);
+                    if (rewardItem != null) {
+                        Toasty.custom(getApplicationContext(), String.format(getString(R.string.msgWindPoints), rewardItem.getAmount()), getDrawable(R.drawable.ic_points), getColor(R.color.colorAccent), Toast.LENGTH_SHORT, true, true).show();
+                        updatePointsAdmob(rewardItem.getAmount(), true, true);
+                        reloadRewardedAd();
+                    }
+                }
+            });
+        }
+
+    }
+
+
+    private void updatePointsAdmob(int valor, boolean increment, boolean isAdmob) {
+        app.updatePoints(valor, increment, isAdmob);
         updateViewPoints();
     }
 
+
     private void updateViewPoints() {
+        points = app.getPoints();
         adTextView.setText(String.format(getString(R.string.lblBtnPoints), points));
-        Animation bounce = AnimationUtils.loadAnimation(this, R.anim.bounce);
         adTextView.setAnimation(bounce);
         iconPoints.setAnimation(bounce);
         bounce.start();

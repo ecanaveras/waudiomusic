@@ -29,8 +29,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import androidx.core.content.ContextCompat;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
@@ -42,7 +40,6 @@ import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -53,7 +50,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.crashlytics.android.Crashlytics;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import com.ecanaveras.gde.waudio.editor.GeneratorWaudio;
 import com.ecanaveras.gde.waudio.editor.MarkerView;
 import com.ecanaveras.gde.waudio.editor.SoundFile;
@@ -61,15 +61,13 @@ import com.ecanaveras.gde.waudio.editor.WaveformView;
 import com.ecanaveras.gde.waudio.util.FileSaveDialog;
 import com.ecanaveras.gde.waudio.util.SamplePlayer;
 import com.ecanaveras.gde.waudio.util.SongMetadataReader;
-import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.formats.MediaView;
-import com.google.android.gms.ads.formats.NativeAdOptions;
-import com.google.android.gms.ads.formats.UnifiedNativeAd;
-import com.google.android.gms.ads.formats.UnifiedNativeAdView;
+import com.google.android.gms.ads.nativead.MediaView;
+import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.gms.ads.nativead.NativeAdView;
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -89,6 +87,7 @@ public class EditorActivity extends AppCompatActivity
         WaveformView.WaveformListener, AudioManager.OnAudioFocusChangeListener {
 
     private FirebaseAnalytics mFirebaseAnalytics;
+    private FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
 
     private long mLoadingLastUpdateTime;
     private boolean mLoadingKeepGoing;
@@ -256,16 +255,20 @@ public class EditorActivity extends AppCompatActivity
 
         mHandler.postDelayed(mTimerRunnable, 100);
 
-        if (!mFilename.equals("record")) {
+        if (!"record".equals(mFilename)) {
             loadFromFile();
         } else {
-            recordAudio();
+            //recordAudio();
+            Toasty.warning(this, "Hay problemas con el archivo");
         }
     }
 
 
     private String getRealPathFromURI(Uri contentURI) {
         String result = null;
+        if(contentURI == null){
+            return null;
+        }
         Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
         if (cursor == null) { // Source is Dropbox or other similar local file path
             result = contentURI.getPath();
@@ -276,9 +279,9 @@ public class EditorActivity extends AppCompatActivity
                 result = cursor.getString(idx);
                 cursor.close();
             } catch (IllegalArgumentException e) {
-                Crashlytics.logException(e);
-                Crashlytics.log("contentURI: " + contentURI);
-                Crashlytics.log("contentURI Path: " + contentURI.getPath());
+                crashlytics.recordException(e);
+                crashlytics.log("contentURI: " + contentURI);
+                crashlytics.log("contentURI Path: " + contentURI.getPath());
                 Toasty.error(this, "Hay un problema con tu canción... No es posible leer el medio!", Toast.LENGTH_LONG).show();
             }
         }
@@ -750,19 +753,15 @@ public class EditorActivity extends AppCompatActivity
         //Layout Loading
         lyContentLoading.setVisibility(View.VISIBLE);
         //Lanzar publicidad
-        //TODO PUBLICIDAD
-        AdLoader adLoader = new AdLoader.Builder(this, MainApp.ADMOB_CARGA_MP3_EDITOR)
-                .forUnifiedNativeAd(new UnifiedNativeAd.OnUnifiedNativeAdLoadedListener() {
-                    @Override
-                    public void onUnifiedNativeAdLoaded(UnifiedNativeAd unifiedNativeAd) {
-                        // Show the ad.
-                        UnifiedNativeAdView adView = (UnifiedNativeAdView) getLayoutInflater().inflate(R.layout.native_ad_layout, null);
-                        mapUnifiedNativeAdToLayout(unifiedNativeAd, adView);
+        AdLoader adLoader = new AdLoader.Builder(this, MainApp.ADMOB_EDITOR_ADS)
+                .forNativeAd(nativeAd -> {
+                    // Show the ad.
+                    NativeAdView adView = (NativeAdView) getLayoutInflater().inflate(R.layout.native_ad_layout, null);
+                    mapUnifiedNativeAdToLayout(nativeAd, adView);
 
-                        LinearLayout nativeAdLayout = findViewById(R.id.id_native_ad);
-                        nativeAdLayout.removeAllViews();
-                        nativeAdLayout.addView(adView);
-                    }
+                    LinearLayout nativeAdLayout = findViewById(R.id.id_native_ad);
+                    nativeAdLayout.removeAllViews();
+                    nativeAdLayout.addView(adView);
                 })
                 .build();
         adLoader.loadAds(new AdRequest.Builder().build(), 3);
@@ -1480,7 +1479,7 @@ public class EditorActivity extends AppCompatActivity
         dlog.show();
     }
 
-    public void mapUnifiedNativeAdToLayout(UnifiedNativeAd adFromGoogle, UnifiedNativeAdView myAdView) {
+    public void mapUnifiedNativeAdToLayout(NativeAd adFromGoogle, NativeAdView myAdView) {
         MediaView mediaView = myAdView.findViewById(R.id.ad_media);
         myAdView.setMediaView(mediaView);
 
@@ -1695,4 +1694,5 @@ public class EditorActivity extends AppCompatActivity
                 break;
         }
     }
+
 }

@@ -1,12 +1,13 @@
 package com.ecanaveras.gde.waudio.wave;
 
+import android.annotation.SuppressLint;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
-import android.util.Log;
 import android.os.Process;
+import android.util.Log;
 
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.io.FileNotFoundException;
 
@@ -27,6 +28,8 @@ public class AudioRecorder implements IAudioRecorder {
     public static final int RECORDER_STATE_STARTING = 1;
     public static final int RECORDER_STATE_STOPPING = 2;
     public static final int RECORDER_STATE_BUSY = 3;
+
+    private FirebaseCrashlytics crashlytics = FirebaseCrashlytics.getInstance();
 
     private volatile int recorderState;
 
@@ -57,7 +60,7 @@ public class AudioRecorder implements IAudioRecorder {
             startRecordThread();
         } catch (FileNotFoundException e) {
             onRecordFailure();
-            Crashlytics.logException(e);
+            crashlytics.recordException(e);
         }
     }
 
@@ -70,7 +73,9 @@ public class AudioRecorder implements IAudioRecorder {
                 int bufferSize = Math.max(BUFFER_BYTES_ELEMENTS * BUFFER_BYTES_PER_ELEMENT,
                         AudioRecord.getMinBufferSize(RECORDER_SAMPLE_RATE, RECORDER_CHANNELS_IN, RECORDER_AUDIO_ENCODING));
 
+                @SuppressLint("MissingPermission")
                 AudioRecord recorder = new AudioRecord(MediaRecorder.AudioSource.MIC, RECORDER_SAMPLE_RATE, RECORDER_CHANNELS_IN, RECORDER_AUDIO_ENCODING, bufferSize);
+                //TODO Verificar permisos
 
                 try {
                     if (recorderState == RECORDER_STATE_STARTING) {
