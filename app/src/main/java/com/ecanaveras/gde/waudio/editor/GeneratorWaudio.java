@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -20,7 +22,18 @@ import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
 import com.googlecode.mp4parser.authoring.container.mp4.MovieCreator;
 import com.googlecode.mp4parser.authoring.tracks.CroppedTrack;
 
+import org.jcodec.api.FrameGrab;
+import org.jcodec.api.JCodecException;
+import org.jcodec.api.SequenceEncoder;
+import org.jcodec.api.android.AndroidSequenceEncoder;
+import org.jcodec.common.AndroidUtil;
+import org.jcodec.common.io.NIOUtils;
+import org.jcodec.common.io.SeekableByteChannel;
+import org.jcodec.common.model.Picture;
+import org.jcodec.common.model.Rational;
+
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -267,11 +280,44 @@ public class GeneratorWaudio implements Serializable {
     /***
      * Crea un Waudio
      * @param audioInFile
+     * @param videoInFile
      */
     private void createWaudio(String audioInFile, String videoInFile) {
         try {
             Movie listAudio = MovieCreator.build(audioInFile);
-            Movie movie = MovieCreator.build(videoInFile);
+//            Movie movie = MovieCreator.build(videoInFile);
+
+            String externalRootDir = Environment.getExternalStorageDirectory().getPath();
+            if (!externalRootDir.endsWith("/")) {
+                externalRootDir += "/";
+            }
+
+            File fileTest = getSDPathToFile(PATH_MEDIA, "Test2.mp4");
+
+            SeekableByteChannel out = null;
+            try {
+                out = NIOUtils.writableFileChannel(fileTest.getAbsolutePath());
+                AndroidSequenceEncoder encoder = new AndroidSequenceEncoder(out, Rational.R(25,1));
+                //Toda imagen debe tener dimensiones que pares ej: 1280X720
+                String inputImage = externalRootDir.concat("Waudio/Media/").concat("music1.jpg");
+                Bitmap bitmap = BitmapFactory.decodeFile(inputImage);
+                //FOR
+                for (int i = 0; i < 30; i++) {
+                    encoder.encodeImage(bitmap);
+                }
+                //ENDFOR
+                encoder.finish();
+            } finally {
+                NIOUtils.closeQuietly(out);
+            }
+
+
+//            Log.i("pathVideo", videoInFile);
+//            String externalRootDir = Environment.getExternalStorageDirectory().getPath();
+//            if (!externalRootDir.endsWith("/")) {
+//                externalRootDir += "/";
+//            }
+            Movie movie = MovieCreator.build(fileTest.getAbsolutePath());
 
             //Audio
             long audioDuration = 0;

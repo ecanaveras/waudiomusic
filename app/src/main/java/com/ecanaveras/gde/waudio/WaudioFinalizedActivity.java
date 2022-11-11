@@ -88,6 +88,7 @@ public class WaudioFinalizedActivity extends AppCompatActivity implements AudioM
 
 
     private void checkWaudio() {
+        //TODO Controlar que esta busqueda no sea infinita
         Log.i("Checking W Generation", "CHECK");
 
         if (intent.getStringExtra("waudio") != null) {

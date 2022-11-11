@@ -37,6 +37,7 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -116,6 +117,7 @@ public class EditorActivity extends AppCompatActivity
     private ImageButton mPlayButton;
     private ImageButton mRewindButton;
     private ImageButton mFfwdButton;
+    private Button btnNextAudioLoaded;
     private boolean mKeyDown;
     private String mCaption = "";
     private int mWidth;
@@ -165,11 +167,13 @@ public class EditorActivity extends AppCompatActivity
     private AudioManager audioManager;
     private ImageButton mBack30s;
     private ImageButton mNext30s;
-    private RelativeLayout lyContentLoading, lyContentLoading2;
+    private RelativeLayout lyContentLoading;
     private LinearLayout lyContentEditor;
     private long back_pressed = 0;
     private Thread mInfoThread;
     private MainApp app;
+
+    private Animation bounceButton;
 
     //
     // Public methods and protected overrides
@@ -182,6 +186,9 @@ public class EditorActivity extends AppCompatActivity
     public void onCreate(Bundle icicle) {
         Log.v("Waudio", "EditActivity OnCreate");
         super.onCreate(icicle);
+
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getSupportActionBar().hide();
 
         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
@@ -266,7 +273,7 @@ public class EditorActivity extends AppCompatActivity
 
     private String getRealPathFromURI(Uri contentURI) {
         String result = null;
-        if(contentURI == null){
+        if (contentURI == null) {
             return null;
         }
         Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
@@ -667,14 +674,13 @@ public class EditorActivity extends AppCompatActivity
         mDurationText = (TextView) findViewById(R.id.durationtext);
 
         lyContentLoading = (RelativeLayout) findViewById(R.id.lyContentLoading);
-        lyContentLoading2 = (RelativeLayout) findViewById(R.id.lyContentLoading2);
         lyContentEditor = (LinearLayout) findViewById(R.id.lyContentEditor);
 
         lyContentLoading.setVisibility(View.VISIBLE);
         lyContentLoading.setVisibility(View.GONE);
         lyContentEditor.setVisibility(View.GONE);
 
-        ((RadioGroup) findViewById(R.id.toggleGroup)).setOnCheckedChangeListener(ToggleListener);
+        bounceButton = AnimationUtils.loadAnimation(this, R.anim.bounce);
 
         mNext30s = (ImageButton) findViewById(R.id.next30);
         mNext30s.setOnClickListener(mNext30sListener);
@@ -687,6 +693,8 @@ public class EditorActivity extends AppCompatActivity
         mRewindButton.setOnClickListener(mRewindListener);
         mFfwdButton = (ImageButton) findViewById(R.id.ffwd);
         mFfwdButton.setOnClickListener(mFfwdListener);
+
+        btnNextAudioLoaded = (Button) findViewById(R.id.btnNextAudioLoaded);
 
         /*TextView markStartButton = (TextView) findViewById(R.id.mark_start);
         markStartButton.setOnClickListener(mMarkStartListener);
@@ -766,69 +774,6 @@ public class EditorActivity extends AppCompatActivity
                 .build();
         adLoader.loadAds(new AdRequest.Builder().build(), 3);
 
-        /*mProgressDialog = new ProgressDialog(EditorActivity.this, R.style.AlertDialogCustom);
-        mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        mProgressDialog.setTitle(R.string.progress_dialog_loading);
-        mProgressDialog.setCancelable(true);
-        mProgressDialog.setOnCancelListener(
-                new DialogInterface.OnCancelListener() {
-                    public void onCancel(DialogInterface dialog) {
-                        mLoadingKeepGoing = false;
-                        mFinishActivity = true;
-                    }
-                });
-        mProgressDialog.show();*/
-        //lw.setVisibility(View.VISIBLE);
-
-        //Mantener al Usuario en espera
-        mInfoThread = new Thread() {
-
-            boolean closePercent = false;
-            int seconds = 0;
-
-            @Override
-            public void run() {
-                while (lyContentLoading.getVisibility() == View.VISIBLE) {
-                    try {
-                        Thread.sleep(1000);
-                        seconds++;
-                        final String info = lblPercent.getText().toString().replace("%", "").replace(",", ".");
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (!lblPercent.getText().toString().startsWith("Bingo")) {
-                                    Double porc = Double.parseDouble(info);
-                                    if (porc.intValue() > 80 && porc < 99.9 && porc.equals(Double.parseDouble(info))) {
-                                        porc += 0.1;
-                                        lblPercent.setText(new DecimalFormat("##.#").format(porc) + "%");
-                                    } else if (porc >= 99.9 && !closePercent) {
-                                        closePercent = true;
-                                        Animation animationIn = AnimationUtils.loadAnimation(EditorActivity.this, R.anim.slide_in);
-                                        Animation animationOut = AnimationUtils.loadAnimation(EditorActivity.this, R.anim.slide_out);
-                                        lyContentLoading.startAnimation(animationOut);
-                                        lyContentLoading.setVisibility(View.GONE);
-                                        lyContentLoading2.startAnimation(animationIn);
-                                        lyContentLoading2.setVisibility(View.VISIBLE);
-                                    }
-                                    //System.out.println("Info:" + info + " PORCT:" + porc);
-                                }
-                            }
-                        });
-                        if (closePercent) {
-                            break;
-                        }
-                        //System.out.println("DEMORA: " + seconds);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-        }
-
-        ;
-        mInfoThread.start();
-
         final SoundFile.ProgressListener listener =
                 new SoundFile.ProgressListener() {
                     public boolean reportProgress(double fractionComplete) {
@@ -897,7 +842,11 @@ public class EditorActivity extends AppCompatActivity
                         if (mLoadingKeepGoing) {
                             Runnable runnable = new Runnable() {
                                 public void run() {
-                                    finishOpeningSoundFile();
+                                    lblPercent.setText(new DecimalFormat("##.#").format(100) + "%");
+                                    if(lyContentLoading.getVisibility() == View.VISIBLE) {
+                                        btnNextAudioLoaded.setVisibility(View.VISIBLE);
+                                        btnNextAudioLoaded.startAnimation(bounceButton);
+                                    }
                                 }
                             };
                             mHandler.post(runnable);
@@ -1031,16 +980,14 @@ public class EditorActivity extends AppCompatActivity
     private void finishOpeningSoundFile() {
         Animation animationIn = AnimationUtils.loadAnimation(this, R.anim.slide_in);
         Animation animationOut = AnimationUtils.loadAnimation(this, R.anim.slide_out);
-        lyContentEditor.startAnimation(animationIn);
-        lyContentEditor.setVisibility(View.VISIBLE);
+
         if (lyContentLoading.getVisibility() == View.VISIBLE) {
             lyContentLoading.startAnimation(animationOut);
             lyContentLoading.setVisibility(View.GONE);
         }
-        if (lyContentLoading2.getVisibility() == View.VISIBLE) {
-            lyContentLoading2.startAnimation(animationOut);
-            lyContentLoading2.setVisibility(View.GONE);
-        }
+
+        lyContentEditor.startAnimation(animationIn);
+        lyContentEditor.setVisibility(View.VISIBLE);
 
         mWaveformView.setSoundFile(mSoundFile);
         mWaveformView.recomputeHeights(mDensity);
@@ -1378,28 +1325,17 @@ public class EditorActivity extends AppCompatActivity
     }
 
     public void onToggle(View view) {
-        ((RadioGroup) view.getParent()).check(view.getId());
         switch (view.getId()) {
             case R.id.tBtnMax30s:
                 mEndPos = mWaveformView.secondsToPixels(Double.valueOf(formatTime(mStartPos)) + 30);
                 max30s = true;
                 break;
-            case R.id.tBtnFree:
+            default:
                 max30s = false;
                 break;
         }
         updateDisplay();
     }
-
-    static final RadioGroup.OnCheckedChangeListener ToggleListener = new RadioGroup.OnCheckedChangeListener() {
-        @Override
-        public void onCheckedChanged(final RadioGroup radioGroup, final int i) {
-            for (int j = 0; j < radioGroup.getChildCount(); j++) {
-                final ToggleButton view = (ToggleButton) radioGroup.getChildAt(j);
-                view.setChecked(view.getId() == i);
-            }
-        }
-    };
 
     /**
      * Show a "final" alert dialog that will exit the activity
@@ -1457,6 +1393,15 @@ public class EditorActivity extends AppCompatActivity
         app.setGeneratorWaudio(waudio);
         Intent intent = new Intent(EditorActivity.this, ListTemplateActivity.class);
         startActivity(intent);
+    }
+
+    /**
+     * Boton siguiente al cargar el audio, permite ver la publicidad
+     *
+     * @param view
+     */
+    public void onNextAudioLoaded(View view) {
+        finishOpeningSoundFile();
     }
 
     private void onSave() {
