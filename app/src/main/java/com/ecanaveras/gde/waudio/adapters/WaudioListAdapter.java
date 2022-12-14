@@ -142,6 +142,7 @@ public class WaudioListAdapter extends SimpleCursorAdapter implements View.OnCli
 
         for (Integer position : mSelection.keySet()) {
             shareWaudio(position);
+            mDataFirebaseHelper.incrementWaudioShared();
         }
         clearSelection();
     }

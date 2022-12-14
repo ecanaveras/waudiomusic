@@ -12,6 +12,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.ecanaveras.gde.waudio.firebase.DataFirebaseHelper;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdValue;
 import com.google.android.gms.ads.OnPaidEventListener;
@@ -33,11 +34,14 @@ public class WaudioPointsActivity extends AppCompatActivity {
 
     private int points;
     private MainApp app;
+    private DataFirebaseHelper mDataFirebaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_waudio_points);
+
+        mDataFirebaseHelper = new DataFirebaseHelper();
 
         app = (MainApp) getApplicationContext();
 
@@ -67,14 +71,14 @@ public class WaudioPointsActivity extends AppCompatActivity {
                 super.onAdLoaded(ad);
                 rewardedAd = ad;
                 videoButton.setEnabled(true);
-                videoButton.setAnimation(bounceButton);
-                bounceButton.start();
+                videoButton.startAnimation(bounceButton);
             }
         });
     }
 
     private void displayAd() {
         if (rewardedAd != null) {
+            mDataFirebaseHelper.incrementWaudioViewVideos();
             rewardedAd.show(this, new OnUserEarnedRewardListener() {
                 @Override
                 public void onUserEarnedReward(@NonNull RewardItem rewardItem) {

@@ -16,7 +16,6 @@
  */
 -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -24,14 +23,15 @@
     android:keepScreenOn="true">
 
 
-    //Carga MP3
+    <!--Carga MP3-->
 
     <RelativeLayout
         android:id="@+id/lyContentLoading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:padding="10dp"
+        android:visibility="gone">
 
         <LinearLayout
             android:id="@+id/id_native_ad"
@@ -44,16 +44,16 @@
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
                 android:layout_gravity="center"
-                android:src="@drawable/ic_undraw_happy_music"/>
+                android:src="@drawable/ic_undraw_happy_music" />
 
         </LinearLayout>
 
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="160dp"
             android:layout_above="@+id/tips"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="10dp"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -90,7 +90,20 @@
                 android:textSize="20dp" />
 
 
+            <Button
+                android:id="@+id/btnNextAudioLoaded"
+                style="@style/WaudioButton"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginEnd="12dp"
+                android:onClick="onNextAudioLoaded"
+                android:text="@string/lblNext"
+                android:visibility="invisible" />
+
         </LinearLayout>
+
 
         <TextView
             android:id="@+id/tips"
@@ -104,52 +117,9 @@
             android:textColor="@color/colorTextThirdy"
             android:textSize="14sp" />
 
-
     </RelativeLayout>
 
-
-    //Carga extra
-
-    <RelativeLayout
-        android:id="@+id/lyContentLoading2"
-        style="@style/ToolbarBackground"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="10dp"
-        android:visibility="gone">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/lblLoading2"
-            android:layout_centerInParent="true"
-            android:src="@drawable/ic_android_building" />
-
-        <TextView
-            android:id="@+id/lblLoading2"
-            android:layout_width="30dp"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/lblPercent2"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="4dp"
-            android:maxLines="2"
-            android:text="@string/msgAudioLoading2"
-            android:textAlignment="center"
-            android:textAllCaps="true"
-            android:textSize="18dp" />
-
-        <ProgressBar
-            android:id="@+id/lblPercent2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true" />
-
-
-    </RelativeLayout>
-
-    //Editor
+    <!--    Editor-->
 
     <LinearLayout
         android:id="@+id/lyContentEditor"
@@ -159,7 +129,9 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg4" >
 
         <TextView
             android:id="@+id/lblTitleAudio"
@@ -187,52 +159,6 @@
             android:orientation="horizontal">
             <!--android:background="@color/waveform_unselected_bkgnd_overlay"-->
 
-            <!--TOGGLEBUTTONS-->
-            <LinearLayout
-                android:id="@+id/toogleButtons"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <RadioGroup
-                    android:id="@+id/toggleGroup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <ToggleButton
-                        android:id="@+id/tBtnMax30s"
-                        style="@style/WaudioToggle"
-                        android:layout_width="55dp"
-                        android:layout_height="30dp"
-                        android:background="@drawable/customtoogle"
-                        android:checked="true"
-                        android:onClick="onToggle"
-                        android:textOff="Max 30s"
-                        android:textOn="Max 30s" />
-
-                    <ToggleButton
-                        android:id="@+id/tBtnFree"
-                        style="@style/WaudioToggle"
-                        android:layout_width="55dp"
-                        android:layout_height="30dp"
-                        android:background="@drawable/customtoogle"
-                        android:checked="false"
-                        android:onClick="onToggle"
-                        android:textOff="Free"
-                        android:textOn="Free" />
-
-                </RadioGroup>
-
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/VerticalDividerForList"
-                android:layout_height="30dp"
-                android:layout_marginLeft="4dp" />
 
             <!--INFO TIMERS-->
             <LinearLayout
@@ -337,20 +263,62 @@
             android:layout_width="match_parent" />
 
 
+        <!--TOGGLEBUTTONS-->
+        <LinearLayout
+            android:id="@+id/toogleButtons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="6dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+
+            <androidx.appcompat.widget.SwitchCompat
+                android:id="@+id/tBtnMax30s"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:checked="true"
+                android:onClick="onToggle"
+                android:textOff="OFF"
+                android:textOn="ON"
+                android:text="MAXIMO 30 SEGUNDOS"
+                android:textColor="@color/colorTextPrimary"
+                android:textSize="12sp"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="MAXIMO 30 SEGUNDOS"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            style="@style/HorizontalDividerBottom"
+            android:layout_width="match_parent" />
+
+
+        <!--        EDITOR Selection-->
         <LinearLayout
             android:id="@+id/layoutEditor"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="visible">
+            android:visibility="visible"
+            >
 
             <!--WAVEFORM-->
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="0px"
+                android:background="@color/waveform_unselected_bkgnd_overlay"
                 android:layout_weight="1"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp">
+                android:paddingLeft="30dp"
+                android:paddingRight="30dp">
 
                 <!--ImageView
                  android:id="@+id/bkgnd"
@@ -362,21 +330,24 @@
                 <com.ecanaveras.gde.waudio.editor.WaveformView
                     android:id="@+id/waveform"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="150dp" />
 
                 <com.ecanaveras.gde.waudio.editor.MarkerView
                     android:id="@+id/startmarker"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignStart="@id/waveform"
                     android:contentDescription="@string/start_marker"
                     android:nextFocusDown="@+id/endmarker"
                     android:src="@drawable/marker_left"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    android:translationZ="1dp"/>
 
                 <com.ecanaveras.gde.waudio.editor.MarkerView
                     android:id="@+id/endmarker"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignEnd="@id/waveform"
                     android:contentDescription="@string/end_marker"
                     android:nextFocusUp="@+id/startmarker"
                     android:nextFocusDown="@+id/info"
