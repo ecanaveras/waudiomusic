@@ -10,6 +10,7 @@ Para crear un nuevo repositorio en GitHub, sigue estos pasos:
 ## Clonar un repositorio
 
 Puedes clonar un repositorio de GitHub utilizando el comando `git clone`. Por ejemplo:
+
 git clone https://github.com/usuario/repositorio.git
 
 
@@ -32,7 +33,6 @@ git add archivo-modificado.js
 Después de agregar los cambios, puedes confirmarlos utilizando el comando `git commit` y proporcionando un mensaje descriptivo. Por ejemplo:
 
 git commit -m "Agregar nuevas funcionalidades al proyecto"
-
 
 
 ## Enviar cambios
@@ -67,6 +67,4 @@ git merge rama-a-fusionar
 
 
 Ten en cuenta que es posible que se produzcan conflictos de fusión en caso de que haya cambios conflictivos en ambas ramas. En ese caso, deberás resolver los conflictos manualmente antes de completar la fusión.
-
-
 
